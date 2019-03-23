@@ -55,6 +55,14 @@
 <style scoped>
     #login-form {
         display: inline-block;
-        max-width: 500px;
+        max-width: 350px;
+        text-align: center;
+        position: absolute;
+        top: 50px;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        margin: auto;
+
     }
 </style>

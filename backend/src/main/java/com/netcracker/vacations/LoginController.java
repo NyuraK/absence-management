@@ -16,8 +16,6 @@ public class LoginController {
 
     @PostMapping("/login")
     public void check(@RequestBody Map<String, String> credentials) {
-//        Map<String, String> credentials = new HashMap<>();
-//        credentials.put("login", login); credentials.put("password", password);
         System.out.println("profit? " + users.contains(credentials));
     }
 
