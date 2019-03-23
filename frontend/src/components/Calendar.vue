@@ -1,8 +1,7 @@
 <template>
-    <v-calendar
-            is-double-paned :attributes='attributes'>
-    </v-calendar>
-
+        <v-calendar
+                is-double-paned :attributes='attributes'>
+        </v-calendar>
 </template>
 
 <script>
@@ -30,9 +29,6 @@
                     }
                 ],
             };
-        },
-        computed() {
-            return
         }
     };
 </script>

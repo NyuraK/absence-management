@@ -46,6 +46,7 @@
                 api.login(user);
                 this.login='';
                 this.password='';
+                this.$router.push('/calendar');
             }
         }
     }
