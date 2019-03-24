@@ -87,7 +87,7 @@ CREATE TABLE `hibernate_sequence` (
 
 LOCK TABLES `hibernate_sequence` WRITE;
 /*!40000 ALTER TABLE `hibernate_sequence` DISABLE KEYS */;
-INSERT INTO `hibernate_sequence` VALUES (4);
+INSERT INTO `hibernate_sequence` VALUES (1);
 /*!40000 ALTER TABLE `hibernate_sequence` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -100,10 +100,15 @@ DROP TABLE IF EXISTS `user_entity`;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `user_entity` (
   `id_of_employe` int(11) NOT NULL,
+  `email` varchar(255) DEFAULT NULL,
   `family_name` varchar(255) DEFAULT NULL,
   `first_name` varchar(255) DEFAULT NULL,
+  `hire_date` varchar(255) DEFAULT NULL,
   `login` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
+  `phone_number` varchar(255) DEFAULT NULL,
+  `rest_days` int(11) DEFAULT NULL,
+  `role` varchar(255) DEFAULT NULL,
   `surname` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id_of_employe`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -115,7 +120,6 @@ CREATE TABLE `user_entity` (
 
 LOCK TABLES `user_entity` WRITE;
 /*!40000 ALTER TABLE `user_entity` DISABLE KEYS */;
-INSERT INTO `user_entity` VALUES (1,NULL,'Anna','AnnaKapranova','1234','Kapranova'),(2,NULL,'Artem','ArtemRogovskii','5678','Rogovskii'),(3,NULL,'Denis','DenisMitskovskii','9012','Mitskovskii');
 /*!40000 ALTER TABLE `user_entity` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -128,4 +132,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-03-24 19:26:59
+-- Dump completed on 2019-03-24 20:37:30
