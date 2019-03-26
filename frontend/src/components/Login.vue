@@ -26,27 +26,42 @@
 
             <b-button type="submit" variant="primary">Log in</b-button>
         </b-form>
+        <transition>
+            <b-modal id="modal1" title="BootstrapVue" v-if="!success">
+                <p class="my-4">Wrong login or password!</p>
+            </b-modal>
+        </transition>
     </div>
 </template>
 
 <script>
-    import api from '../Api.js'
+    import {instance} from '../Api.js'
 
     export default {
         name: "Login",
         data () {
             return {
                 login: '',
-                password: ''
+                password: '',
+                success: false
             }
         },
         methods: {
             check: function () {
                 let user = {login: this.login, password: this.password};
-                api.login(user);
+
+                instance.post('/login', user).then(response => {
+                    this.success = response.data;
+                })
+                .catch(e => {
+                    this.errors.push(e)
+                });
+
                 this.login='';
                 this.password='';
-                this.$router.push('/calendar');
+                if (this.success) {
+                    this.$router.push('/calendar');
+                }
             }
         }
     }

@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.netcracker.vacations.VacationsApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.77 s - in com.netcracker.vacations.VacationsApplicationTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 13.086 s - in com.netcracker.vacations.VacationsApplicationTests

@@ -15,8 +15,9 @@ public class LoginController {
     }};
 
     @PostMapping("/login")
-    public void check(@RequestBody Map<String, String> credentials) {
+    public boolean check(@RequestBody Map<String, String> credentials) {
         System.out.println("profit? " + users.contains(credentials));
+        return users.contains(credentials);
     }
 
 }

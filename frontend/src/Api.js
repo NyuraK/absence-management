@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const SERVER_URL = 'http://localhost:8088';
 
-const instance = axios.create({
+export const instance = axios.create({
     baseURL: SERVER_URL,
     timeout: 1000
 });
