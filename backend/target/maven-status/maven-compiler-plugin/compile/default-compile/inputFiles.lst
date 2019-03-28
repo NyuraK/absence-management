@@ -1,2 +1,12 @@
+C:\Users\Anna\IdeaProjects\vacations\backend\src\main\java\com\netcracker\vacations\security\JwtTokenProvider.java
+C:\Users\Anna\IdeaProjects\vacations\backend\src\main\java\com\netcracker\vacations\security\Role.java
+C:\Users\Anna\IdeaProjects\vacations\backend\src\main\java\com\netcracker\vacations\security\RawAccessJwtToken.java
+C:\Users\Anna\IdeaProjects\vacations\backend\src\main\java\com\netcracker\vacations\security\JwtToken.java
 C:\Users\Anna\IdeaProjects\vacations\backend\src\main\java\com\netcracker\vacations\LoginController.java
+C:\Users\Anna\IdeaProjects\vacations\backend\src\main\java\com\netcracker\vacations\config\JwtConfig.java
+C:\Users\Anna\IdeaProjects\vacations\backend\src\main\java\com\netcracker\vacations\exception\MyAuthenticationException.java
 C:\Users\Anna\IdeaProjects\vacations\backend\src\main\java\com\netcracker\vacations\VacationsApplication.java
+C:\Users\Anna\IdeaProjects\vacations\backend\src\main\java\com\netcracker\vacations\exception\JwtExpiredTokenException.java
+C:\Users\Anna\IdeaProjects\vacations\backend\src\main\java\com\netcracker\vacations\config\WebSecurityConfiguration.java
+C:\Users\Anna\IdeaProjects\vacations\backend\src\main\java\com\netcracker\vacations\UserService.java
+C:\Users\Anna\IdeaProjects\vacations\backend\src\main\java\com\netcracker\vacations\security\JwtTokenFilter.java
