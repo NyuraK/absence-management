@@ -72,7 +72,7 @@ public class JwtLoginTokenFilter extends AbstractAuthenticationProcessingFilter 
                 .compact();
 
         // Add token to header
-        response.addHeader(jwtConfig.getHeader(), jwtConfig.getPrefix() + token);
+        response.addHeader(jwtConfig.getHeader(), token);
     }
 
     // A (temporary) class just to represent the user credentials

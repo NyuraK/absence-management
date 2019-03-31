@@ -33,19 +33,16 @@ export default new Vuex.Store({
 
     actions: {
         login(context, payload) {
-            let params = new URLSearchParams()
-            params.append('username', payload.username)
-            params.append('password', payload.password)
             console.log(payload)
             return new Promise((resolve, reject) => {
 
                 instance.post('/login', payload)
                     .then((response) => {
-                        let accessToken = response.data.token;
-                        console.log(accessToken);
+                        console.log(response);
+                        let accessToken = response.headers['authorization'];
                         context.commit('authSuccess', accessToken);
                         localStorage.setItem('token', accessToken);
-                        instance.defaults.headers.common['Authorization'] = "Bearer " + accessToken;
+                        instance.defaults.headers.common['Authorization'] = 'Bearer ' + accessToken;
                         resolve(response);
 
                     })
@@ -53,7 +50,6 @@ export default new Vuex.Store({
                         localStorage.removeItem('token');
                         context.commit('authError')
                         console.log(error);
-                        console.log("no profit =(")
                         reject(error);
                     })
 
