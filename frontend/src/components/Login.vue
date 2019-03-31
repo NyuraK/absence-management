@@ -47,8 +47,8 @@
         methods: {
             check: function () {
                 this.$store.dispatch('login',{username:this.username, password:this.password}).then(()=>{
-                    this.$router.push('/secured');
-                })
+                    this.$router.push('/calendar');
+                });
 
                 this.username='';
                 this.password='';

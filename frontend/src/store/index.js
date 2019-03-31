@@ -2,7 +2,7 @@ import Vuex from 'vuex'
 import Vue from 'vue'
 import {instance} from "../Api";
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
 
@@ -18,14 +18,12 @@ export default new Vuex.Store({
             state.token = token;
             state.status = 'success';
         },
-        LOADER(state, payload) {
-            state.loader = payload;
-        },
 
         authError(state) {
             state.token = '';
             state.status = 'error';
         },
+
         authLogout(state) {
             state.token = ''
         }
@@ -33,7 +31,7 @@ export default new Vuex.Store({
 
     actions: {
         login(context, payload) {
-            console.log(payload)
+            console.log(payload);
             return new Promise((resolve, reject) => {
 
                 instance.post('/login', payload)
@@ -48,7 +46,7 @@ export default new Vuex.Store({
                     })
                     .catch((error) => {
                         localStorage.removeItem('token');
-                        context.commit('authError')
+                        context.commit('authError');
                         console.log(error);
                         reject(error);
                     })

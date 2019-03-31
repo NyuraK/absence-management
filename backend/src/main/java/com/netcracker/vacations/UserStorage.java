@@ -1,6 +1,5 @@
 package com.netcracker.vacations;
 
-import com.netcracker.vacations.security.Role;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -15,17 +14,17 @@ import java.util.List;
 public class UserStorage {
 
     private final List<UserStorage.AppUser> users = Arrays.asList(
-            new UserStorage.AppUser(1, "Artem", new BCryptPasswordEncoder().encode("5678"), Role.USER),
-            new UserStorage.AppUser(2, "Anna", new BCryptPasswordEncoder().encode("1234"), Role.ADMIN)
+            new UserStorage.AppUser(1, "Artem", new BCryptPasswordEncoder().encode("5678"), "USER"),
+            new UserStorage.AppUser(2, "Anna", new BCryptPasswordEncoder().encode("1234"), "ADMIN")
     );
 
-    public List<Role> getRole(String username) {
-        for (AppUser user: users) {
-            if (user.username.equals(username))
-                return user.getRole();
-        }
-        return null;
-    }
+//    public List<String> getRole(String username) {
+//        for (AppUser user: users) {
+//            if (user.username.equals(username))
+//                return user.getRole();
+//        }
+//        return null;
+//    }
 
     public List<AppUser> getUsers() {
         return users;
@@ -35,13 +34,14 @@ public class UserStorage {
     public class AppUser {
         private Integer id;
         private String username, password;
-        private List<Role> roles = new ArrayList<>();
-
-        public AppUser(Integer id, String username, String password, Role role) {
+//        private List<String> roles = new ArrayList<>();
+        private String role;
+        public AppUser(Integer id, String username, String password, String role) {
             this.id = id;
             this.username = username;
             this.password = password;
-            this.roles.add(role);
+//            this.roles.add(role);
+            this.role = role;
         }
 
         public String getUsername() {
@@ -60,13 +60,13 @@ public class UserStorage {
             this.password = password;
         }
 
-        public List<Role> getRole() {
-            return roles;
+        public String getRole() {
+            return role;
         }
 
-        public void setRole(Role role) {
-            this.roles.add(role);
-        }
+//        public void setRole(String role) {
+//            this.roles.add(role);
+//        }
     }
 
 }

@@ -67,10 +67,13 @@ public class JwtLoginTokenFilter extends AbstractAuthenticationProcessingFilter 
         String token = Jwts.builder()
                 .setSubject(auth.getName())
                 .claim("authorities", authorities)
-                .setExpiration(new Date(now + jwtConfig.getExpiration() * 1000))  // in milliseconds
-                .signWith(SignatureAlgorithm.HS512, jwtConfig.getSecret().getBytes())
+                .setIssuedAt(new Date(now))
+                .setExpiration(new Date(now + jwtConfig.getExpiration() * 1000))  // jwtConfig.getExpiration() = 86400
+                .signWith(SignatureAlgorithm.HS512, jwtConfig.getSecret())
                 .compact();
 
+        System.out.println("authorities from login " + authorities);
+        System.out.println("token " + token);
         // Add token to header
         response.addHeader(jwtConfig.getHeader(), token);
     }
