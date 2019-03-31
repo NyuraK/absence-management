@@ -20,6 +20,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -28,14 +29,15 @@ import java.util.Date;
 import java.util.stream.Collectors;
 
 public class JwtTokenFilter extends AbstractAuthenticationProcessingFilter {
+
+    @Autowired
     private AuthenticationManager authManager;
 
     private final JwtConfig jwtConfig;
 
     @Autowired
-    public JwtTokenFilter(String url, AuthenticationManager authManager, JwtConfig jwtConfig) {
+    public JwtTokenFilter(String url, JwtConfig jwtConfig) {
         super(new AntPathRequestMatcher(url));
-        this.authManager = authManager;
         this.jwtConfig = jwtConfig;
         this.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher(jwtConfig.getUri(), "POST"));
     }
@@ -55,19 +57,6 @@ public class JwtTokenFilter extends AbstractAuthenticationProcessingFilter {
                 creds.getUsername(), creds.getPassword(), Collections.emptyList());
 
         return authManager.authenticate(authToken);
-//        return getAuthenticationManager().authenticate(new JwtAuthenticationToken(token));
-    }
-
-    private String extract(String header) {
-        String HEADER_PREFIX = "Bearer ";
-        if (StringUtils.isBlank(header)) {
-            throw new AuthenticationServiceException("Authorization header cannot be blank!");
-        }
-
-        if (header.length() < HEADER_PREFIX.length()) {
-            throw new AuthenticationServiceException("Invalid authorization header size.");
-        }
-        return header.substring(HEADER_PREFIX.length(), header.length());
     }
 
     @Override
@@ -88,10 +77,6 @@ public class JwtTokenFilter extends AbstractAuthenticationProcessingFilter {
 
         // Add token to header
         response.addHeader(jwtConfig.getHeader(), jwtConfig.getPrefix() + token);
-//        SecurityContext context = SecurityContextHolder.createEmptyContext();
-//        context.setAuthentication(auth);
-//        SecurityContextHolder.setContext(context);
-//        chain.doFilter(request, response);
     }
 
     // A (temporary) class just to represent the user credentials

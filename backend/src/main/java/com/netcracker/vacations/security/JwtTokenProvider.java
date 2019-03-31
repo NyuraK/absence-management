@@ -1,66 +1,69 @@
 package com.netcracker.vacations.security;
 
 import com.netcracker.vacations.config.JwtConfig;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.netcracker.vacations.exception.MyAuthenticationException;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
 
 @Component
 public class JwtTokenProvider{
     private final JwtConfig jwtConfig;
+    private final AppUserService myUserService;
 
     @Autowired
-    public JwtTokenProvider(JwtConfig jwtSettings) {
+    public JwtTokenProvider(JwtConfig jwtSettings, AppUserService myUserService) {
         this.jwtConfig = jwtSettings;
+        this.myUserService = myUserService;
     }
 
-//    @Override
-//    public Authentication authenticate(Authentication auth) throws AuthenticationException {
-//        RawAccessJwtToken rawAccessToken = (RawAccessJwtToken) auth.getCredentials();
-//        Jws<Claims> jwsClaims = rawAccessToken.parseClaims(jwtConfig.getSecret());
-//        String subject = jwsClaims.getBody().getSubject();
-//        List<String> scopes = jwsClaims.getBody().get("scopes", List.class);
-//        List<GrantedAuthority> authorities = scopes.stream()
-//                .map(authority -> new SimpleGrantedAuthority(authority))
-//                .collect(Collectors.toList());
+//    public String createToken(String username, List<Role> roles) {
 //
-////        UserContext confitext = UserContext.create(subject, authorities);
+//        Claims claims = Jwts.claims().setSubject(username);
+//        claims.put("auth", roles.stream().map(s -> new SimpleGrantedAuthority(s.getAuthority())).filter(Objects::nonNull).collect(Collectors.toList()));
 //
-////        return new JwtAuthenticationToken(context, context.getAuthorities());
-//        return auth;
+//        Date now = new Date();
+//        Date validity = new Date(now.getTime() + jwtConfig.getExpiration());
+//
+//        return Jwts.builder()//
+//                .setClaims(claims)//
+//                .setIssuedAt(now)//
+//                .setExpiration(validity)//
+//                .signWith(SignatureAlgorithm.HS256, jwtConfig.getSecret())//
+//                .compact();
 //    }
 
-    public String createToken(String username, List<Role> roles) {
-
-        Claims claims = Jwts.claims().setSubject(username);
-        claims.put("auth", roles.stream().map(s -> new SimpleGrantedAuthority(s.getAuthority())).filter(Objects::nonNull).collect(Collectors.toList()));
-
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + jwtConfig.getExpiration());
-
-        return Jwts.builder()//
-                .setClaims(claims)//
-                .setIssuedAt(now)//
-                .setExpiration(validity)//
-                .signWith(SignatureAlgorithm.HS256, jwtConfig.getSecret())//
-                .compact();
+    public Authentication getAuthentication(String token) {
+        UserDetails userDetails = myUserService.loadUserByUsername(getUsername(token));
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-//    @Override
-//    public boolean supports(Class<?> aClass) {
-//        return false;
-//    }
+    public String getUsername(String token) {
+        return Jwts.parser().setSigningKey(jwtConfig.getSecret()).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public String resolveToken(HttpServletRequest req) {
+        String bearerToken = req.getHeader("Authorization");
+        System.out.println("\nToken: " + bearerToken + "\n");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7);
+        }
+        return null;
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser().setSigningKey(jwtConfig.getSecret()).parseClaimsJws(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new MyAuthenticationException("Expired or invalid JWT token", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

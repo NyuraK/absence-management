@@ -61,6 +61,13 @@
             <artifactId>lombok</artifactId>
         </dependency>
 
+        <!--this is here because I have 10sdk, ClassNotFoundException appeared-->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+
         <!-- Testing -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

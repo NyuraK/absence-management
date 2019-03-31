@@ -35,7 +35,6 @@
 </template>
 
 <script>
-    import {instance} from '../Api.js'
 
     export default {
         name: "Login",
@@ -43,25 +42,17 @@
             return {
                 login: '',
                 password: '',
-                success: false
             }
         },
         methods: {
             check: function () {
-                let user = {login: this.login, password: this.password};
-
-                instance.post('/login', user).then(response => {
-                    this.success = response.data;
+                this.$store.dispatch('login',{login:this.login, password:this.password}).then(()=>{
+                    this.$router.push('/secured');
                 })
-                .catch(e => {
-                    this.errors.push(e)
-                });
 
                 this.login='';
                 this.password='';
-                if (this.success) {
-                    this.$router.push('/calendar');
-                }
+
             }
         }
     }

@@ -5,14 +5,8 @@
 </template>
 
 <script>
-import Login from './components/Login.vue'
-import Calendar from './components/Calendar.vue'
 export default {
   name: 'app',
-  components: {
-    Login,
-    Calendar
-  }
 }
 </script>
 
