@@ -29,40 +29,7 @@ import java.util.stream.Collectors;
 public class AppUserService implements UserDetailsService {
 
     @Autowired
-    private JwtConfig jwtConfig;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
     private UserStorage userStorage;
-
-    public String signin(String username, String password) {
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-            String token = createToken(username, userStorage.getRole(username));
-            System.out.println("\n\n\ntoken" + token + "\nuser name" +
-                    username + "\n" + password + "\n");
-            return token;
-        } catch (AuthenticationException e) {
-            throw new MyAuthenticationException("Invalid username/password supplied", HttpStatus.UNPROCESSABLE_ENTITY);
-        }
-    }
-
-    private String createToken(String username, List<Role> roles) {
-        Claims claims = Jwts.claims().setSubject(username);
-        claims.put("auth", roles.stream().map(s -> new SimpleGrantedAuthority(s.getAuthority())).filter(Objects::nonNull).collect(Collectors.toList()));
-
-        Date now = new Date();
-        Date validity = new Date(now.getTime() + jwtConfig.getExpiration());
-
-        return Jwts.builder()//
-                .setClaims(claims)//
-                .setIssuedAt(now)//
-                .setExpiration(validity)//
-                .signWith(SignatureAlgorithm.HS256, jwtConfig.getSecret())//
-                .compact();
-    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

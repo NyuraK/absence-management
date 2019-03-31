@@ -10,7 +10,7 @@
                 <b-form-input
                         id="exampleInput1"
                         type="text"
-                        v-model="login"
+                        v-model="username"
                         required
                         placeholder="Enter email" />
             </b-form-group>
@@ -40,17 +40,17 @@
         name: "Login",
         data () {
             return {
-                login: '',
+                username: '',
                 password: '',
             }
         },
         methods: {
             check: function () {
-                this.$store.dispatch('login',{login:this.login, password:this.password}).then(()=>{
+                this.$store.dispatch('login',{username:this.username, password:this.password}).then(()=>{
                     this.$router.push('/secured');
                 })
 
-                this.login='';
+                this.username='';
                 this.password='';
 
             }

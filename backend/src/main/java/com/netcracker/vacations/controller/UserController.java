@@ -11,7 +11,7 @@ import java.util.Date;
 
 @RestController
 @RequestMapping("/secured")
-public class UserController extends MyAbtractController {
+public class UserController {
 
     @GetMapping("/home")
     public ResponseEntity getPersonalView() {

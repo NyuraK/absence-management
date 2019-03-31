@@ -1,6 +1,9 @@
 package com.netcracker.vacations.config;
 
-import com.netcracker.vacations.security.*;
+import com.netcracker.vacations.security.AppUserService;
+import com.netcracker.vacations.security.JwtLoginTokenFilter;
+import com.netcracker.vacations.security.JwtTokenFilter;
+import com.netcracker.vacations.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,30 +23,43 @@ import java.util.Arrays;
 
 @EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
-//    @Bean
-//    CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration config = new CorsConfiguration();
-//        config.setAllowCredentials(true);
-//        config.setAllowedOrigins(Arrays.asList("http://localhost:8088"));
-//        config.addAllowedHeader("*");
-//        config.addAllowedMethod("*");
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", config);
-//        return source;
-//    }
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.setAllowedOrigins(Arrays.asList("http://localhost:8088"));
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
+    }
 
-    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    private AppUserService appUserService;
+
     private JwtConfig jwtConfig;
 
     @Autowired
-    private JwtTokenProvider jwtTokenProvider;
+    public WebSecurityConfiguration(JwtTokenProvider jwtTokenProvider, AppUserService appUserService, JwtConfig jwtConfig) {
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.appUserService = appUserService;
+        this.jwtConfig = jwtConfig;
+    }
+
+    public WebSecurityConfiguration(boolean disableDefaults, JwtTokenProvider jwtTokenProvider, AppUserService appUserService) {
+        super(disableDefaults);
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.appUserService = appUserService;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
         // Disable CSRF (cross site request forgery)
         http.csrf().disable();
-
+        http.cors();
         // No session will be created or used by spring security
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
@@ -51,44 +67,27 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/onlyforadmin/**").hasAuthority("ADMIN")
                 .antMatchers("/secured/**").hasAnyAuthority("USER", "ADMIN")
-                .antMatchers("/login").permitAll()
+                .antMatchers("/**").permitAll()
                 // Disallow everything else..
-                .anyRequest().permitAll();
-
+//                .anyRequest().permitAll();
+                .and()
+                .addFilterBefore(new JwtLoginTokenFilter("/login", authenticationManagerBean(), jwtConfig), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
         // If a user try to access a resource without having enough permissions
 //        http.exceptionHandling().accessDeniedPage("/login");
 
         // Apply JWT
-//        http.addFilterBefore(new JwtTokenFilter("login", jwtConfig), UsernamePasswordAuthenticationFilter.class);
-//        http.addFilterBefore(new JwtAuthTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
-        http.apply(new JwtTokenFilterConfigurer(jwtTokenProvider));
-
+//        http.addFilterBefore(new JwtLoginTokenFilter("login", jwtConfig), UsernamePasswordAuthenticationFilter.class);
+//        http.addFilterBefore(new JwtTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
         // Optional, if you want to test the API from a browser
-         http.httpBasic();
+//         http.httpBasic();
     }
 
-    @Autowired
-    private AppUserService appUserService;
 
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        http
-//                    .cors()
-//                .and()
-//                    .authorizeRequests()
-//                    .antMatchers("/onlyforadmin/**").hasAuthority("ADMIN")
-//                    .antMatchers("/secured/**").hasAnyAuthority("USER", "ADMIN")
-//                    .antMatchers("/**").permitAll()
-//                .and()
-//                    .addFilterBefore(new JwtTokenFilter("/login", authenticationManager(), jwtConfig), UsernamePasswordAuthenticationFilter.class);
-////                    .addFilterBefore(new JwtAuthTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-//
-//    }
-
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(appUserService).passwordEncoder(passwordEncoder());
-//    }
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(appUserService).passwordEncoder(passwordEncoder());
+    }
 
     @Bean
     @Override

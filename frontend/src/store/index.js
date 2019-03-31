@@ -34,15 +34,15 @@ export default new Vuex.Store({
     actions: {
         login(context, payload) {
             let params = new URLSearchParams()
-            params.append('login', payload.login)
+            params.append('username', payload.username)
             params.append('password', payload.password)
             console.log(payload)
             return new Promise((resolve, reject) => {
 
-                instance.post('/signin', params)
+                instance.post('/login', payload)
                     .then((response) => {
-                        let accessToken = response.data.auth.token;
-                        console.log(response);
+                        let accessToken = response.data.token;
+                        console.log(accessToken);
                         context.commit('authSuccess', accessToken);
                         localStorage.setItem('token', accessToken);
                         instance.defaults.headers.common['Authorization'] = "Bearer " + accessToken;

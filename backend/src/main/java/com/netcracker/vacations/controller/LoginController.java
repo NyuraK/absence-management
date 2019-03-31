@@ -16,12 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RestController
-@RequestMapping("/")
 public class LoginController {
-
-    @Autowired
-    protected AppUserService appUserService;
 
     private List<Map<String, String>> users = new ArrayList<Map<String, String>>() {{
         add(new HashMap<String, String>() {{
@@ -44,11 +39,10 @@ public class LoginController {
 //        return appUserService.signin(login, password);
 //    }
 
-    @PostMapping("/signin")
     public String check(HttpServletRequest request) {
 //        String login = request.getParameter("login");
 //        String password = request.getParameter("password");
         System.out.println("\n\nrequest " + request.getUserPrincipal().getName());
-        return appUserService.signin("Anna", "1234");
+        return "";
     }
 }
