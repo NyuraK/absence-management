@@ -48,8 +48,8 @@
         methods: {
             check: function () {
                 this.$store.dispatch('login',{username:this.username, password:this.password}).then(()=>{
-                    this.$router.push('/calendar');
-                })
+                    this.$router.push('/home');
+                });
                 this.username='';
                 this.password='';
             }

@@ -10,9 +10,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping()
 public class TempController {
 
+    @GetMapping("/calendar")
+    public ResponseEntity getCalendar() {
+        return ResponseEntity.ok("calendar!");
+    }
+
     @GetMapping("/admin/home")
     public ResponseEntity getPersonalView() {
-        return ResponseEntity.ok("Welcome, Admin!");
+        return ResponseEntity.ok("Welcome, Admin!!");
     }
 
     @GetMapping("/user/home")
@@ -24,6 +29,5 @@ public class TempController {
     public ResponseEntity submitRequest() {
         return ResponseEntity.ok("Welcome, Manager!");
     }
-
 
 }

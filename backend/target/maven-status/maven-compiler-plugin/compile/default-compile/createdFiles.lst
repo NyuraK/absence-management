@@ -4,6 +4,7 @@ com\netcracker\vacations\controller\UniversalController.class
 com\netcracker\vacations\VacationsApplication.class
 com\netcracker\vacations\controller\TempController.class
 com\netcracker\vacations\config\WebSecurityConfiguration.class
+com\netcracker\vacations\config\FrontConfig.class
 com\netcracker\vacations\security\JwtLoginTokenFilter$UserCredentials.class
 com\netcracker\vacations\security\JwtLoginTokenFilter.class
 com\netcracker\vacations\service\AppUserService.class

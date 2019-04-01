@@ -35,7 +35,7 @@ export default new Vuex.Store({
                 let data = {
                     username: payload.username,
                     password: payload.password
-                }
+                };
                 instance.post('/login', data)
                     .then((response) => {
                         console.log(response);
@@ -43,7 +43,7 @@ export default new Vuex.Store({
                         console.log(accessToken);
                         context.commit('authSuccess', accessToken);
                         localStorage.setItem('token', accessToken);
-                        instance.defaults.headers.common['Authorization'] = 'Bearer ' + accessToken;
+                        instance.defaults.headers.common['Authorization'] = accessToken;
                         resolve(response);
                     })
                     .catch((error) => {

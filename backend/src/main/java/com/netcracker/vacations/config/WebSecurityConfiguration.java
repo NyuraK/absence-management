@@ -54,11 +54,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // Entry points
         http.authorizeRequests()
                 .antMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
-                .antMatchers("/user/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                .antMatchers("/user/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN", "ROLE_MANAGER")
                 .antMatchers("/manager/**").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN")
                 .antMatchers("/**").permitAll()
                 // Disallow everything else..
-//                .anyRequest().denyAll();
+//                .anyRequest().denyAll()
                 .and()
                 .addFilterBefore(new JwtLoginTokenFilter("/login", authenticationManagerBean(), jwtConfig), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
