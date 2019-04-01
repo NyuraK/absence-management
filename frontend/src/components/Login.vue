@@ -1,6 +1,6 @@
 <template>
     <div id="login-form">
-        <b-form @submit="check">
+        <b-form>
             <b-form-group
                     id="exampleInputGroup1"
                     label="Username:"
@@ -24,8 +24,9 @@
                         placeholder="Enter password" />
             </b-form-group>
 
-            <b-button type="submit" variant="primary">Log in</b-button>
         </b-form>
+        <b-button type="submit" variant="primary" v-on:click="check">Log in</b-button>
+
         <transition>
             <b-modal id="modal1" title="BootstrapVue" v-if="!success">
                 <p class="my-4">Wrong login or password!</p>
@@ -48,11 +49,9 @@
             check: function () {
                 this.$store.dispatch('login',{username:this.username, password:this.password}).then(()=>{
                     this.$router.push('/calendar');
-                });
-
+                })
                 this.username='';
                 this.password='';
-
             }
         }
     }

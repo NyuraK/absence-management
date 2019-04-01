@@ -31,18 +31,20 @@ export default new Vuex.Store({
 
     actions: {
         login(context, payload) {
-            console.log(payload);
             return new Promise((resolve, reject) => {
-
-                instance.post('/login', payload)
+                let data = {
+                    username: payload.username,
+                    password: payload.password
+                }
+                instance.post('/login', data)
                     .then((response) => {
                         console.log(response);
                         let accessToken = response.headers['authorization'];
+                        console.log(accessToken);
                         context.commit('authSuccess', accessToken);
                         localStorage.setItem('token', accessToken);
                         instance.defaults.headers.common['Authorization'] = 'Bearer ' + accessToken;
                         resolve(response);
-
                     })
                     .catch((error) => {
                         localStorage.removeItem('token');

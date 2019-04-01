@@ -11,8 +11,6 @@ import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
-window.Bus=new Vue;
-
 window.token = localStorage.getItem('token');
 window.user = localStorage.getItem('user');
 

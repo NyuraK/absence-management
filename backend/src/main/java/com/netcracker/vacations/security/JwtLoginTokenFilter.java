@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netcracker.vacations.config.JwtConfig;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,7 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.stream.Collectors;
 
 public class JwtLoginTokenFilter extends AbstractAuthenticationProcessingFilter {
@@ -32,14 +30,13 @@ public class JwtLoginTokenFilter extends AbstractAuthenticationProcessingFilter 
     public JwtLoginTokenFilter(String url, AuthenticationManager authManager, JwtConfig jwtConfig) {
         super(new AntPathRequestMatcher(url));
         this.authManager = authManager;
-        this.jwtConfig=jwtConfig;
+        this.jwtConfig = jwtConfig;
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
         UserCredentials creds = null;
-
         try {
             creds = new ObjectMapper().readValue(request.getInputStream(), UserCredentials.class);
         } catch (IOException e) {
@@ -59,6 +56,7 @@ public class JwtLoginTokenFilter extends AbstractAuthenticationProcessingFilter 
         Long now = System.currentTimeMillis();
 
         // Convert to list of strings.
+
         // This is important because it affects the way we get them back in the Gateway.
         String authorities = auth.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
@@ -72,10 +70,9 @@ public class JwtLoginTokenFilter extends AbstractAuthenticationProcessingFilter 
                 .signWith(SignatureAlgorithm.HS512, jwtConfig.getSecret())
                 .compact();
 
-        System.out.println("authorities from login " + authorities);
-        System.out.println("token " + token);
         // Add token to header
-        response.addHeader(jwtConfig.getHeader(), token);
+        response.addHeader(jwtConfig.getHeader(), jwtConfig.getPrefix() + token);
+
     }
 
     // A (temporary) class just to represent the user credentials
@@ -86,18 +83,23 @@ public class JwtLoginTokenFilter extends AbstractAuthenticationProcessingFilter 
         public String getUsername() {
             return username;
         }
+
         Collection<GrantedAuthority> getAuthorities() {
             return authorities;
         }
+
         void setAuthorities(Collection<GrantedAuthority> authorities) {
             this.authorities = authorities;
         }
+
         public void setUsername(String username) {
             this.username = username;
         }
+
         public String getPassword() {
             return password;
         }
+
         public void setPassword(String password) {
             this.password = password;
         }

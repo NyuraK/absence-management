@@ -23,16 +23,16 @@ const router = new VueRouter({
 
 const openRoutes = ['Login', 'Calendar'];
 
-// router.beforeEach((to, from, next) => {
-//
-//     if (openRoutes.includes(to.name)) {
-//         next()
-//     } else if (store.getters.isAuthenticated) {
-//         next()
-//     } else {
-//         next('/')
-//     }
-//
-// });
+router.beforeEach((to, from, next) => {
+
+    if (openRoutes.includes(to.name)) {
+        next()
+    } else if (store.getters.isAuthenticated) {
+        next()
+    } else {
+        next('/')
+    }
+
+});
 
 export default router

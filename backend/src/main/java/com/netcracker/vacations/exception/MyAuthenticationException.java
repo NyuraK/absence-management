@@ -4,8 +4,6 @@ import org.springframework.http.HttpStatus;
 
 public class MyAuthenticationException extends RuntimeException {
 
-    private static final long serialVersionUID = 1L;
-
     private final HttpStatus httpStatus;
 
     public MyAuthenticationException(RuntimeException e, String message, HttpStatus httpStatus) {

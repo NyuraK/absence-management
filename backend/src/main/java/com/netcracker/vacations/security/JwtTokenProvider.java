@@ -2,6 +2,7 @@ package com.netcracker.vacations.security;
 
 import com.netcracker.vacations.config.JwtConfig;
 import com.netcracker.vacations.exception.MyAuthenticationException;
+import com.netcracker.vacations.service.AppUserService;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,6 @@ public class JwtTokenProvider{
 
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = myUserService.loadUserByUsername(getUsername(token));
-        System.out.println(userDetails.getAuthorities());
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
