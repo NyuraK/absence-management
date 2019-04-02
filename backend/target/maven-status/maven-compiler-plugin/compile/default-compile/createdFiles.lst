@@ -1,6 +1,5 @@
 com\netcracker\vacations\UserStorage$AppUser.class
 com\netcracker\vacations\UserStorage.class
-com\netcracker\vacations\controller\UniversalController.class
 com\netcracker\vacations\VacationsApplication.class
 com\netcracker\vacations\controller\TempController.class
 com\netcracker\vacations\config\WebSecurityConfiguration.class
@@ -12,3 +11,4 @@ com\netcracker\vacations\config\JwtConfig.class
 com\netcracker\vacations\exception\MyAuthenticationException.class
 com\netcracker\vacations\security\JwtTokenProvider.class
 com\netcracker\vacations\security\JwtTokenFilter.class
+com\netcracker\vacations\controller\LoginController.class

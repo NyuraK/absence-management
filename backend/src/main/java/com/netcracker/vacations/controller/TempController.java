@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping()
 public class TempController {
 
-    @GetMapping("/calendar")
+    @GetMapping("api/calendar")
     public ResponseEntity getCalendar() {
         return ResponseEntity.ok("calendar!");
     }
