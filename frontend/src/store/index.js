@@ -4,41 +4,32 @@ import {instance} from "../Api";
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
+const store = new Vuex.Store({
 
     state: {
         token: localStorage.getItem('token') || '',
-        status: '',
-        loader: false
+        isAuth: false,
+    //    probably should store a role?
 
     },
 
     mutations: {
         authSuccess(state, token) {
             state.token = token;
-            state.status = 'success';
-        },
-
-        authError(state) {
-            state.token = '';
-            state.status = 'error';
+            state.status = true;
         },
 
         authLogout(state) {
-            state.token = ''
+            state.token = '';
+            state.status= false;
         }
     },
 
     actions: {
         login(context, payload) {
             return new Promise((resolve, reject) => {
-                let data = {
-                    username: payload.username,
-                    password: payload.password
-                };
-                instance.post('/login', data)
+                instance.post('/login', payload)
                     .then((response) => {
-                        console.log(response);
                         let accessToken = response.headers['authorization'];
                         console.log(accessToken);
                         context.commit('authSuccess', accessToken);
@@ -48,31 +39,25 @@ export default new Vuex.Store({
                     })
                     .catch((error) => {
                         localStorage.removeItem('token');
-                        context.commit('authError');
-                        console.log(error);
                         reject(error);
                     })
 
             })
-
         },
+        userLogOut ({commit}) {
+            commit ('authLogout');
+            localStorage.removeItem('token');
+            delete instance.defaults.headers.common['Authorization'] ;
+        }
 
     },
 
 
     getters: {
         isAuthenticated: state => !!state.token,
-        authStatus: state => state.status,
-        menus: (state, getters) => {
-            if (getters.isAuthenticated) {
-                return [{
-                    name: "Logout", route: "Logout"
-                }]
-            }
-            return [
-                {name: "Login", route: "Login"},
-            ];
-        }
+        isToken: state => state.token
     }
 
-})
+});
+
+export default store

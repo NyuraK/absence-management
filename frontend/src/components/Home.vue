@@ -14,12 +14,16 @@
             <h2>Status code: {{responseObj.statusCode}}</h2>
             <h2>Response: {{responseObj.msg}}</h2>
         </v-flex>
+
+        <Logout></Logout>
     </v-layout>
 </template>
 
 <script>
     import {instance} from '../Api'
+    import Logout from "./Logout";
     export default {
+        components: {Logout},
         data () {
             return {
                 responseObj: {

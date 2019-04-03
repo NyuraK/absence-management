@@ -3,6 +3,8 @@ import VueRouter from 'vue-router'
 import Login from '../components/Login'
 import Calendar from '../components/Calendar'
 import Home from "../components/Home";
+import NotFound from "../components/NotFound";
+import store from "../store/index"
 
 Vue.use(VueRouter);
 const router = new VueRouter({
@@ -15,7 +17,7 @@ const router = new VueRouter({
         },
         {
             path: '/calendar',
-            name: 'calendar',
+            name: 'Calendar',
             component: Calendar,
         },
         {
@@ -23,7 +25,25 @@ const router = new VueRouter({
             name: 'home',
             component: Home,
         },
+        {
+            path: "*",
+            component: NotFound
+        }
     ]
+});
+
+const openRoutes = ['Login', 'Calendar'];
+
+router.beforeEach((to, from, next) => {
+
+    console.log("isAuth " + store.getters.isAuthenticated + " " + store.getters.isToken);
+    if (openRoutes.includes(to.name)) {
+        next()
+    } else if (store.getters.isAuthenticated) {
+        next()
+    } else {
+        next('/')
+    }
 });
 
 export default router
