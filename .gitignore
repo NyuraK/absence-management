@@ -27,3 +27,6 @@ HELP.md
 
 ### VS Code ###
 .vscode/
+backend/src/main/resources/public/
+backend/target/
+frontend/target/
