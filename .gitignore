@@ -28,4 +28,4 @@ HELP.md
 ### VS Code ###
 .vscode/
 
-backend/src/main/resources/public/
+/backend/src/main/resources/public/
