@@ -13,37 +13,38 @@ const router = new VueRouter({
         {
             path: '/',
             name: 'Login',
-            component: Login
+            component: Login,
+            meta: {loginPage: true, nonRequiresAuth: true}
         },
         {
             path: '/calendar',
             name: 'Calendar',
             component: Calendar,
+            meta: {nonRequiresAuth: true}
         },
         {
             path: '/home',
             name: 'home',
             component: Home,
+            meta: {nonRequiresAuth: true}
         },
         {
             path: "*",
-            component: NotFound
+            component: NotFound,
         }
     ]
 });
 
-const openRoutes = ['Login', 'Calendar'];
-
 router.beforeEach((to, from, next) => {
-
-    console.log("isAuth " + store.getters.isAuthenticated + " " + store.getters.isToken);
-    if (openRoutes.includes(to.name)) {
-        next()
-    } else if (store.getters.isAuthenticated) {
-        next()
-    } else {
-        next('/')
+    const isLoginPage = to.matched.some(record => record.meta.loginPage);
+    const requiresAuth = !to.matched.some(record => record.meta.nonRequiresAuth)
+    const isAuthenticated = store.getters.isAuthenticated;
+    if (requiresAuth && !isAuthenticated) {
+        next("/")
+    } else if (isLoginPage && isAuthenticated) {
+        router.push('/home')
     }
+    next()
 });
 
 export default router

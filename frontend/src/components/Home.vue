@@ -1,82 +1,48 @@
 <template>
-    <v-layout column m-5>
-        <v-flex xs12 class="text-xs-center" mt-5>
-            <h1>Check area</h1>
-            <v-btn dark color="teal lighten-1" v-on:click="getSecuredUserInformation">Call secured user service</v-btn>
-            <v-btn dark color="teal lighten-1" v-on:click="getSecuredAdminInformation">Call secured admin service</v-btn>
-            <v-btn dark color="teal lighten-1" v-on:click="getSecuredManagerInformation">Call secured manager service</v-btn>
+    <div id="main">
+        <b-navbar toggleable="lg" type="dark" variant="info">
+            <b-navbar-brand href="#">Absence Management</b-navbar-brand>
 
-        </v-flex>
+            <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
-        <v-flex xs8 offset-xs3 class="text-xs-left" mt-5>
-            <h2>Request URL: {{responseObj.url}}</h2>
-            <h2>Request method: {{responseObj.method}}</h2>
-            <h2>Status code: {{responseObj.statusCode}}</h2>
-            <h2>Response: {{responseObj.msg}}</h2>
-        </v-flex>
-
-        <Logout></Logout>
-    </v-layout>
+            <b-collapse id="nav-collapse" is-nav>
+                <b-navbar-nav>
+                    <b-nav-item href="#">Profile</b-nav-item>
+                    <b-nav-item href="#">Timeline</b-nav-item>
+                    <b-nav-item href="#">Requests</b-nav-item>
+                    <b-nav-item href="#">Manage users</b-nav-item>
+                    <b-nav-item href="#">Calendar view</b-nav-item>
+                </b-navbar-nav>
+                <!-- Right aligned nav items -->
+                <b-navbar-nav class="ml-auto">
+                    <b-nav-item v-b-modal="'modal-sm'">Logout</b-nav-item>
+                    <b-modal id="modal-sm" size="sm" @ok="exit">Are you sure?</b-modal>
+                </b-navbar-nav>
+            </b-collapse>
+        </b-navbar>
+        <div class="container">
+            <SecurityTest></SecurityTest>
+        </div>
+    </div>
 </template>
 
 <script>
-    import {instance} from '../Api'
-    import Logout from "./Logout";
+    import SecurityTest from "./SecurityTest";
     export default {
-        components: {Logout},
-        data () {
-            return {
-                responseObj: {
-                    url: '',
-                    statusCode: '',
-                    method: '',
-                    msg: '',
-                }
-            }
-        },
-        created: function () {
-        },
+        name: "Home",
+        components: {SecurityTest},
         methods: {
-            getSecuredUserInformation() {
-                this.responseObj = {};
-                instance.get('http://localhost:8088/user/home')
-                    .then(response => {
-                        console.log("Get response: ", response.data);
-                        this.responseObj = this.parseResponse(response)
-                    })
-                    .catch(error => {
-                        this.responseObj = this.parseResponse(error)
-                    });
-            },
-            getSecuredAdminInformation() {
-                this.responseObj = {};
-                instance.get('http://localhost:8088/admin/home')
-                    .then(response => {
-                        console.log("Get response: ", response.data);
-                        this.responseObj = this.parseResponse(response)
-                    })
-                    .catch(error => {
-                        this.responseObj = this.parseResponse(error)
-                    });
-            },
-            getSecuredManagerInformation() {
-                instance.get('http://localhost:8088/manager/home')
-                    .then(response => {
-                        console.log("Get response: ", response.data);
-                        this.responseObj = this.parseResponse(response)
-                    })
-                    .catch(error => {
-                        this.responseObj = this.parseResponse(error)
-                    });
-            },
-            parseResponse(response) {
-                let respObj = {};
-                respObj.url = response.config.url;
-                respObj.statusCode = response.status;
-                respObj.method = response.config.method;
-                respObj.msg = response.data.message ? response.data.message : response.data;
-                return respObj
+            exit(evt) {
+                evt.preventDefault();
+                this.$store.dispatch('userLogOut').then(()=>{
+                    this.$router.push('/');
+                });
             }
         }
     }
 </script>
+
+<style scoped>
+
+
+</style>
