@@ -14,30 +14,31 @@ const router = new VueRouter({
             path: '/',
             name: 'Login',
             component: Login,
-            meta: {loginPage: true, nonRequiresAuth: true}
+            meta: {loginPage: true, nonRequiresAuth: true, rule: 'isPublic'}
         },
         {
             path: '/calendar',
             name: 'Calendar',
             component: Calendar,
-            meta: {nonRequiresAuth: true}
+            meta: {nonRequiresAuth: true, rule: 'isPublic'}
         },
         {
             path: '/home',
             name: 'home',
             component: Home,
-            meta: {nonRequiresAuth: true}
+            meta: {rule: 'isLoggedUser'}
         },
         {
             path: "*",
             component: NotFound,
+            meta: {rule: '*'}
         }
     ]
 });
 
 router.beforeEach((to, from, next) => {
     const isLoginPage = to.matched.some(record => record.meta.loginPage);
-    const requiresAuth = !to.matched.some(record => record.meta.nonRequiresAuth)
+    const requiresAuth = !to.matched.some(record => record.meta.nonRequiresAuth);
     const isAuthenticated = store.getters.isAuthenticated;
     if (requiresAuth && !isAuthenticated) {
         next("/")

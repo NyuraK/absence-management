@@ -48,12 +48,15 @@
         methods: {
             check: function () {
                 this.$store.dispatch('login',{username:this.username, password:this.password}).then(()=>{
+                    console.log("from login " + localStorage.getItem('user'));
+                    this.$acl.change(localStorage.getItem('user'));
                     this.$router.push('/home');
                 });
+
                 this.username='';
                 this.password='';
             }
-        }
+        },
     }
 </script>
 

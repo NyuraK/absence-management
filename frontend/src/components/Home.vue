@@ -9,8 +9,8 @@
                 <b-navbar-nav>
                     <b-nav-item href="#">Profile</b-nav-item>
                     <b-nav-item href="#">Timeline</b-nav-item>
-                    <b-nav-item href="#">Requests</b-nav-item>
-                    <b-nav-item href="#">Manage users</b-nav-item>
+                    <b-nav-item href="#" v-if="$acl.check('isManager')">Requests</b-nav-item>
+                    <b-nav-item href="#" v-if="$acl.check('isAdmin')">Manage users</b-nav-item>
                     <b-nav-item href="#">Calendar view</b-nav-item>
                 </b-navbar-nav>
                 <!-- Right aligned nav items -->
@@ -28,17 +28,25 @@
 
 <script>
     import SecurityTest from "./SecurityTest";
+
     export default {
         name: "Home",
         components: {SecurityTest},
+        created () {
+            this.$acl.change(localStorage.getItem('user'));
+        },
         methods: {
             exit(evt) {
                 evt.preventDefault();
+                console.log('1get from out: '+ this.$acl.get);
                 this.$store.dispatch('userLogOut').then(()=>{
+                    this.$acl.change(localStorage.getItem('user'));
+                    console.log('2get from out: '+ this.$acl.get);
                     this.$router.push('/');
                 });
             }
-        }
+        },
+
     }
 </script>
 

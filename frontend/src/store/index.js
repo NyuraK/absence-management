@@ -16,12 +16,12 @@ const store = new Vuex.Store({
     mutations: {
         authSuccess(state, token) {
             state.token = token;
-            state.status = true;
+            state.isAuth = true;
         },
 
         authLogout(state) {
             state.token = '';
-            state.status= false;
+            state.isAuth= false;
         }
     },
 
@@ -31,10 +31,11 @@ const store = new Vuex.Store({
                 instance.post('/login', payload)
                     .then((response) => {
                         let accessToken = response.headers['authorization'];
-                        console.log(accessToken);
                         context.commit('authSuccess', accessToken);
                         localStorage.setItem('token', accessToken);
                         instance.defaults.headers.common['Authorization'] = accessToken;
+                        let role = response.headers['role'];
+                        localStorage.setItem('user', role);
                         resolve(response);
                     })
                     .catch((error) => {
@@ -47,7 +48,8 @@ const store = new Vuex.Store({
         userLogOut ({commit}) {
             commit ('authLogout');
             localStorage.removeItem('token');
-            delete instance.defaults.headers.common['Authorization'] ;
+            delete instance.defaults.headers.common['Authorization'];
+            localStorage.setItem('user', 'public');
         }
 
     },
@@ -55,6 +57,7 @@ const store = new Vuex.Store({
 
     getters: {
         isAuthenticated: state => !!state.token,
+            // state.isAuth,
         isToken: state => state.token
     }
 
