@@ -27,7 +27,6 @@
             <artifactId>spring-security-core</artifactId>
             <version>5.1.0.RELEASE</version>
         </dependency>
-
         <!-- DataBase -->
 
         <dependency>
@@ -55,6 +54,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>ejb3-persistence</artifactId>
+            <version>1.0.1.GA</version>
         </dependency>
 
         <!-- WAS <dependency>
