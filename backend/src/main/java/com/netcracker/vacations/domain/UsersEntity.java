@@ -1,6 +1,7 @@
 package com.netcracker.vacations.domain;
 
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -40,14 +41,15 @@ public class UsersEntity {
         private String email;
     @Column(name = "description")
         private String description;
-
+    @Transient
+    private BCryptPasswordEncoder coder;
 
     public UsersEntity() {
     }
 
     public UsersEntity(String login, String password, String role, Integer restDays, Date hireDate, TeamsEntity teamsId, String name, String surname, String familyName, String phoneNumber, String email, String description) {
         this.login = login;
-        this.password = password;
+        this.password = encode(password);
         this.role = role;
         this.restDays = restDays;
         this.hireDate = hireDate;
@@ -62,7 +64,7 @@ public class UsersEntity {
 
     public UsersEntity(String login, String password, String role, Integer restDays, Date hireDate, TeamsEntity teamsId, String name, String surname, String familyName, String phoneNumber, String email) {
         this.login = login;
-        this.password = password;
+        this.password = encode(password);
         this.role = role;
         this.restDays = restDays;
         this.hireDate = hireDate;
@@ -76,7 +78,7 @@ public class UsersEntity {
 
     public UsersEntity(String login, String password, String role, Integer restDays, Date hireDate, TeamsEntity teamsId, String name, String surname, String familyName, String phoneNumber) {
         this.login = login;
-        this.password = password;
+        this.password = encode(password);
         this.role = role;
         this.restDays = restDays;
         this.hireDate = hireDate;
@@ -89,7 +91,7 @@ public class UsersEntity {
 
     public UsersEntity(String login, String password, String role, Integer restDays, Date hireDate, TeamsEntity teamsId, String name, String surname, String familyName) {
         this.login = login;
-        this.password = password;
+        this.password = encode(password);
         this.role = role;
         this.restDays = restDays;
         this.hireDate = hireDate;
@@ -101,7 +103,7 @@ public class UsersEntity {
 
     public UsersEntity(String login, String password, String role, Integer restDays, Date hireDate, TeamsEntity teamsId, String name, String surname) {
         this.login = login;
-        this.password = password;
+        this.password = encode(password);
         this.role = role;
         this.restDays = restDays;
         this.hireDate = hireDate;
@@ -112,7 +114,7 @@ public class UsersEntity {
 
     public UsersEntity(String login, String password, String role, Integer restDays, Date hireDate, TeamsEntity teamsId, String name) {
         this.login = login;
-        this.password = password;
+        this.password = encode(password);
         this.role = role;
         this.restDays = restDays;
         this.hireDate = hireDate;
@@ -122,7 +124,7 @@ public class UsersEntity {
 
     public UsersEntity(String login, String password, String role, Integer restDays, Date hireDate, TeamsEntity teamsId) {
         this.login = login;
-        this.password = password;
+        this.password = encode(password);
         this.role = role;
         this.restDays = restDays;
         this.hireDate = hireDate;
@@ -131,7 +133,7 @@ public class UsersEntity {
 
     public UsersEntity(String login, String password, String role, Integer restDays, Date hireDate) {
         this.login = login;
-        this.password = password;
+        this.password= encode(password);
         this.role = role;
         this.restDays = restDays;
         this.hireDate = hireDate;
@@ -239,5 +241,15 @@ public class UsersEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String encode(String password){
+        coder=new BCryptPasswordEncoder();
+        password=coder.encode(password);
+        return password;
+    }
+    public boolean checkPassword(String inputPassword){
+        Boolean result=coder.matches(inputPassword,this.password);
+        return result;
     }
 }

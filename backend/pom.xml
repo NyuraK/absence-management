@@ -22,6 +22,11 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <version>5.1.0.RELEASE</version>
+        </dependency>
         <!-- DataBase -->
 
         <dependency>
@@ -51,12 +56,13 @@
             <artifactId>ejb3-persistence</artifactId>
             <version>1.0.1.GA</version>
         </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-annotations</artifactId>
-            <version>3.3.1.GA</version>
-        </dependency>
-        <!-- Testing -->
+
+        <!-- WAS <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-annotations</artifactId>
+        <version>3.3.1.GA</version>
+        </dependency> -!>
+        <!- Testing -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
