@@ -1,11 +1,15 @@
-package com.netcracker.vacations.controllers;
+package com.netcracker.vacations.controller;
 
 //import com.netcracker.vacations.domain.UserEntity;
 //import com.netcracker.vacations.repository.EntityRepository;
 //import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/")
