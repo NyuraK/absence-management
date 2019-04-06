@@ -37,12 +37,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         this.jwtConfig = jwtConfig;
     }
 
-    public WebSecurityConfiguration(boolean disableDefaults, JwtTokenProvider jwtTokenProvider, AppUserService appUserService) {
-        super(disableDefaults);
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.appUserService = appUserService;
-    }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
