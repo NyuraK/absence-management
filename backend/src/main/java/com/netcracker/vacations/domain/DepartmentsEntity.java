@@ -13,13 +13,14 @@ public class DepartmentsEntity {
 
     @Column(name = "departments_id")
         private Integer departmentsId;
-    @Column(name = "directors_id")
-        private Integer directorsId;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @JoinColumn(name = "directors_id")
+        private UsersEntity directorsId;
 
     public DepartmentsEntity() {
     }
 
-    public DepartmentsEntity(Integer directorsId) {
+    public DepartmentsEntity(UsersEntity directorsId) {
         this.directorsId=directorsId;
     }
 
@@ -31,11 +32,11 @@ public class DepartmentsEntity {
         this.departmentsId = departmentsId;
     }
 
-    public Integer getDirectorsId() {
+    public UsersEntity getDirectorsId() {
         return directorsId;
     }
 
-    public void setDirectorsId(Integer directorsId) {
+    public void setDirectorsId(UsersEntity directorsId) {
         this.directorsId = directorsId;
     }
 }

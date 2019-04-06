@@ -60,11 +60,11 @@ public class LoginController {
             DepartmentsEntity dep2=new DepartmentsEntity(user2);
             depRepo.save(dep1);
             depRepo.save(dep2);
-            RequestsEntity calendar1 = new RequestsEntity(user2, date1, date2, type1, Statuses.ACCEPTED);
+            RequestsEntity calendar1 = new RequestsEntity(user2, date2, date3, type1, Statuses.ACCEPTED);
             requestRepo.save(calendar1);
-            RequestsEntity calendar2 = new RequestsEntity(user2, date2, date1, type2, Statuses.CONSIDER);
+            RequestsEntity calendar2 = new RequestsEntity(user2, date2, date3, type2, Statuses.CONSIDER);
             requestRepo.save(calendar2);
-            RequestsEntity calendar3 = new RequestsEntity(user3, date1, date2, type3, Statuses.DECLINED);
+            RequestsEntity calendar3 = new RequestsEntity(user3, date2, date3, type3, Statuses.DECLINED);
             requestRepo.save(calendar3);
 
             TeamsEntity team1=new TeamsEntity(6, 2, user2,dep1,"Netcracker");
@@ -102,21 +102,8 @@ public class LoginController {
                 result = true;
             }
         }
-        Methods methods=new Methods();
-        //delete.SafeDeleteType(typeCheck.get(0),requestRepo,typeRepo);
-        try{
-        DateFormat formatter = new SimpleDateFormat("MM/dd/yy");
-        Date date1 = formatter.parse("01/29/02");
-        Date date2 = formatter.parse("05/29/02");
-        ArrayList<RequestsEntity> reqs=methods.findByDates(date1,date2,requestRepo);
-        for (RequestsEntity req:reqs){
-            System.out.println("ID=> "+req.getRequestsId());
-        }
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
+        DeleteMethods delete=new DeleteMethods();
+        delete.SafeDeleteType(typeCheck.get(0),requestRepo,typeRepo);
         System.out.println("Autentification is succesful => "+result);
         return result;
     }
