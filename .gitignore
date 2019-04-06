@@ -30,3 +30,6 @@ frontend/target/
 
 ### VS Code ###
 .vscode/
+backend/src/main/resources/public/
+backend/target/
+frontend/target/
