@@ -1,8 +1,11 @@
 package com.netcracker.vacations.domain;
 
+
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
 
 @Entity
 @Table(name="teams_ent")
@@ -11,20 +14,27 @@ public class TeamsEntity {
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name= "increment", strategy= "increment")
 
+
     @Column(name = "teams_id")
         private Integer teamsId;
+
     @Column(name = "employees_on_red", nullable=false)
         private Integer red;
+
     @Column(name = "employees_on_green", nullable=false)
         private Integer green;
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinColumn(name = "managers_id", nullable = false)
+
+    @JoinColumn(name = "managers_id")
         private UsersEntity managersId;
+
+    @Column(name = "name", nullable = false, unique = true)
+        private String name;
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+
     @JoinColumn(name = "departments_id")
         private DepartmentsEntity departmentsId;
-    @Column(name = "name")
-        private String name;
+
 
     public TeamsEntity() {
     }
@@ -37,17 +47,11 @@ public class TeamsEntity {
         this.name = name;
     }
 
-    public TeamsEntity(Integer red, Integer green, UsersEntity managersId, DepartmentsEntity departmentsId) {
+    public TeamsEntity(Integer red, Integer green, UsersEntity managersId, String name) {
         this.red = 5;
         this.green = 2;
         this.managersId = managersId;
-        this.departmentsId = departmentsId;
-    }
-
-    public TeamsEntity(Integer red, Integer green, UsersEntity managersId) {
-        this.red = 5;
-        this.green = 2;
-        this.managersId = managersId;
+        this.name = name;
     }
 
     public Integer getTeamsId() {
@@ -97,4 +101,5 @@ public class TeamsEntity {
     public void setName(String name) {
         this.name = name;
     }
+
 }
