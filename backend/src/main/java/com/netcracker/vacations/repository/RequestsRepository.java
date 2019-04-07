@@ -15,7 +15,9 @@ public interface RequestsRepository extends CrudRepository<RequestsEntity, Integ
     ArrayList<RequestsEntity> findByRequestsId(Integer requestsId);
     ArrayList<RequestsEntity> findByUsersId(UsersEntity usersId);
     ArrayList<RequestsEntity> findByBeginning(Date beginning);
-    ArrayList<RequestsEntity> findByEnding(Date ending);//Поиск в диапазоне см.
+    ArrayList<RequestsEntity> findAllByBeginning(Date beginning);
+    ArrayList<RequestsEntity> findByEnding(Date ending);
+    ArrayList<RequestsEntity> findAllByEnding(Date ending);//Поиск в диапазоне см.
     ArrayList<RequestsEntity> findByStatus(String status);
     ArrayList<RequestsEntity> findAllByTypeOfRequest(TypeOfRequestsEntity typeOfRequest);
     ArrayList<RequestsEntity> findByDescription(String description);
