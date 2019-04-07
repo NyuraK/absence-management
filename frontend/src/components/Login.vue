@@ -1,4 +1,4 @@
-<template>
+    <template>
     <div id="login-form">
         <b-form>
             <b-form-group

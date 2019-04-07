@@ -1,4 +1,4 @@
-<template>
+    <template>
     <v-layout column m-5>
         <v-flex xs12 class="text-xs-center" mt-5>
             <h1>Check area</h1>
