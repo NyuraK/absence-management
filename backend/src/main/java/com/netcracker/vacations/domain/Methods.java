@@ -4,8 +4,9 @@ import com.netcracker.vacations.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.Date;
 
-public class DeleteMethods {
+public class Methods {
 
     public void SafeDeleteTeam(TeamsEntity team, UsersRepository usersRepo, TeamsRepository teamRepo){
         ArrayList<UsersEntity> teamsUsers=usersRepo.findAllByTeamsId(team);
@@ -37,5 +38,19 @@ public class DeleteMethods {
         for (RequestsEntity request:requests){
             request.setTypeOfRequest(null);}
         typeRepo.deleteById(type.getTypeOfRequest());
+    }
+
+    public ArrayList<RequestsEntity> findByDates(Date begin, Date end, RequestsRepository requestsRepo) {
+        ArrayList<RequestsEntity> requestsBegin = requestsRepo.findAllByBeginning(begin);
+        ArrayList<RequestsEntity> requestsEnd = requestsRepo.findAllByEnding(end);
+        ArrayList<RequestsEntity> result = new ArrayList<RequestsEntity>();
+        for (RequestsEntity requestBegin : requestsBegin) {
+            for (RequestsEntity requestEnd : requestsEnd) {
+                if (requestBegin == requestEnd) {
+                    result.add(requestBegin);
+                }
+            }
+        }
+        return result;
     }
 }
