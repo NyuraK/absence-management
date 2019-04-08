@@ -1,26 +1,23 @@
- .DS_Store
- node_modules
- node
-+<<<<<<< destination:92c2c460394087064ff4a01491acdf077fbc9965
- /dist
-+=======
-+>>>>>>> source:b352f564edaf91e8d8faffb867b5e2caa7c6fb62
- /target/
- 
- # local env files
- .env.local
- .env.*.local
- 
- # Log files
- npm-debug.log*
- yarn-debug.log*
- yarn-error.log*
- 
- # Editor directories and files
- .idea
- .vscode
- *.suo
- *.ntvs*
- *.njsproj
- *.sln
- *.sw*
+.DS_Store
+node_modules
+node
+/dist
+/target/
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw*
