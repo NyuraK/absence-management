@@ -29,7 +29,7 @@ const router = new VueRouter({
             meta: {rule: 'isLoggedUser'}
         },
         {
-            path: "/error",
+            path: "/*",
             component: NotFound,
             meta: {rule: '*'}
         }
