@@ -1,6 +1,6 @@
 <template>
     <div id="login-form">
-        <b-form @submit="check">
+        <b-form>
             <b-form-group
                     id="exampleInputGroup1"
                     label="Username:"
@@ -10,7 +10,7 @@
                 <b-form-input
                         id="exampleInput1"
                         type="text"
-                        v-model="login"
+                        v-model="username"
                         required
                         placeholder="Enter email" />
             </b-form-group>
@@ -24,31 +24,39 @@
                         placeholder="Enter password" />
             </b-form-group>
 
-            <b-button type="submit" variant="primary">Log in</b-button>
         </b-form>
+        <b-button type="submit" variant="primary" v-on:click="check">Log in</b-button>
+
+        <transition>
+            <b-modal id="modal1" title="BootstrapVue" v-if="!success">
+                <p class="my-4">Wrong login or password!</p>
+            </b-modal>
+        </transition>
     </div>
 </template>
 
 <script>
-    import api from '../Api.js'
 
     export default {
         name: "Login",
         data () {
             return {
-                login: '',
-                password: ''
+                username: '',
+                password: '',
             }
         },
         methods: {
             check: function () {
-                let user = {login: this.login, password: this.password};
-                api.login(user);
-                this.login='';
+                this.$store.dispatch('login',{username:this.username, password:this.password}).then(()=>{
+                    console.log("from login " + localStorage.getItem('user'));
+                    this.$acl.change(localStorage.getItem('user'));
+                    this.$router.push('/home');
+                });
+
+                this.username='';
                 this.password='';
-                this.$router.push('/calendar');
             }
-        }
+        },
     }
 </script>
 
