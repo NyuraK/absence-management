@@ -1,8 +1,8 @@
 package com.netcracker.vacations.domain;
 
 import com.netcracker.vacations.domain.enums.Statuses;
-import com.netcracker.vacations.domain.exceptions.BeginningAfterEndingException;
-import com.netcracker.vacations.domain.exceptions.EndingBeforeDateException;
+import com.netcracker.vacations.exception.BeginningAfterEndingException;
+import com.netcracker.vacations.exception.EndingBeforeApiException;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -42,27 +42,13 @@ public class RequestEntity {
     public RequestEntity() {
     }
 
-    public RequestEntity(UserEntity usersId, Date beginning, Date ending, RequestTypeEntity typeOfRequest, Statuses status, String description) throws EndingBeforeDateException{
-        this.usersId = usersId;
-        this.typeOfRequest = typeOfRequest;
-        this.status = status.name;
-        this.description = description;
-
-        if (ending.before(beginning)) {
-            throw new EndingBeforeDateException();
-        } else{
-            this.beginning = beginning;
-            this.ending = ending;
-        }
-    }
-
-    public RequestEntity(UserEntity usersId, Date beginning, Date ending, RequestTypeEntity typeOfRequest, Statuses status) throws EndingBeforeDateException{
+    public RequestEntity(UserEntity usersId, Date beginning, Date ending, RequestTypeEntity typeOfRequest, Statuses status) throws EndingBeforeApiException {
         this.usersId = usersId;
         this.typeOfRequest = typeOfRequest;
         this.status = status.name;
 
         if (ending.before(beginning)) {
-            throw new EndingBeforeDateException();
+            throw new EndingBeforeApiException();
         } else{
             this.beginning = beginning;
             this.ending = ending;
@@ -100,9 +86,9 @@ public class RequestEntity {
         return ending;
     }
 
-    public void setEnding(Date ending) throws EndingBeforeDateException{
+    public void setEnding(Date ending) throws EndingBeforeApiException {
         if ((ending.before(beginning))&&(beginning!=null)){
-            throw new EndingBeforeDateException();
+            throw new EndingBeforeApiException();
         } else{
             this.ending = ending;}
     }

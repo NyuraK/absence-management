@@ -1,5 +1,5 @@
-package com.netcracker.vacations.domain.exceptions;
+package com.netcracker.vacations.exception;
 
-public class EndingBeforeDateException extends Exception {
+public class EndingBeforeApiException extends ApiException {
     public final String message="EXCEPTION: Date of ending of request is incorrect (it is before beginning date)";
 }

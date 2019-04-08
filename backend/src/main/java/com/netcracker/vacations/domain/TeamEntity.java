@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name="teams")
-public class TeamsEntity {
+public class TeamEntity {
     @Id
     @GeneratedValue(generator = "increment")
 
@@ -29,10 +29,10 @@ public class TeamsEntity {
         private DepartmentEntity departmentsId;
 
 
-    public TeamsEntity() {
+    public TeamEntity() {
     }
 
-    public TeamsEntity(Integer quota, UserEntity managersId, String name) {
+    public TeamEntity(Integer quota, UserEntity managersId, String name) {
         this.quota = quota;
         this.managersId = managersId;
         this.name = name;

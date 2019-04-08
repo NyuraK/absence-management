@@ -1,12 +1,10 @@
 package com.netcracker.vacations.domain;
 
 import com.netcracker.vacations.domain.enums.Role;
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
@@ -35,7 +33,7 @@ public class UserEntity {
         private Date hireDate;
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "teams_id")
-        private TeamsEntity teamsId;
+        private TeamEntity teamsId;
     @Column(name = "name")
         private String name;
     @Column(name = "surname")
@@ -52,90 +50,6 @@ public class UserEntity {
     private BCryptPasswordEncoder coder;
 
     public UserEntity() {
-    }
-
-    public UserEntity(String login, String password, Role role, Integer restDays, Date hireDate, TeamsEntity teamsId, String name, String surname, String familyName, String phoneNumber, String email, String description) {
-        this.login = login;
-        this.password = encode(password);
-        this.role = role.name;
-        this.restDays = restDays;
-        this.hireDate = hireDate;
-        this.teamsId = teamsId;
-        this.name = name;
-        this.surname = surname;
-        this.familyName = familyName;
-        this.phoneNumber = phoneNumber;
-        this.email = email;
-        this.description = description;
-    }
-
-    public UserEntity(String login, String password, Role role, Integer restDays, Date hireDate, TeamsEntity teamsId, String name, String surname, String familyName, String phoneNumber, String email) {
-        this.login = login;
-        this.password = encode(password);
-        this.role = role.name;
-        this.restDays = restDays;
-        this.hireDate = hireDate;
-        this.teamsId = teamsId;
-        this.name = name;
-        this.surname = surname;
-        this.familyName = familyName;
-        this.phoneNumber = phoneNumber;
-        this.email = email;
-    }
-
-    public UserEntity(String login, String password, Role role, Integer restDays, Date hireDate, TeamsEntity teamsId, String name, String surname, String familyName, String phoneNumber) {
-        this.login = login;
-        this.password = encode(password);
-        this.role = role.name;
-        this.restDays = restDays;
-        this.hireDate = hireDate;
-        this.teamsId = teamsId;
-        this.name = name;
-        this.surname = surname;
-        this.familyName = familyName;
-        this.phoneNumber = phoneNumber;
-    }
-
-    public UserEntity(String login, String password, Role role, Integer restDays, Date hireDate, TeamsEntity teamsId, String name, String surname, String familyName) {
-        this.login = login;
-        this.password = encode(password);
-        this.role = role.name;
-        this.restDays = restDays;
-        this.hireDate = hireDate;
-        this.teamsId = teamsId;
-        this.name = name;
-        this.surname = surname;
-        this.familyName = familyName;
-    }
-
-    public UserEntity(String login, String password, Role role, Integer restDays, Date hireDate, TeamsEntity teamsId, String name, String surname) {
-        this.login = login;
-        this.password = encode(password);
-        this.role = role.name;
-        this.restDays = restDays;
-        this.hireDate = hireDate;
-        this.teamsId = teamsId;
-        this.name = name;
-        this.surname = surname;
-    }
-
-    public UserEntity(String login, String password, Role role, Integer restDays, Date hireDate, TeamsEntity teamsId, String name) {
-        this.login = login;
-        this.password = encode(password);
-        this.role = role.name;
-        this.restDays = restDays;
-        this.hireDate = hireDate;
-        this.teamsId = teamsId;
-        this.name = name;
-    }
-
-    public UserEntity(String login, String password, Role role, Integer restDays, Date hireDate, TeamsEntity teamsId) {
-        this.login = login;
-        this.password = encode(password);
-        this.role = role.name;
-        this.restDays = restDays;
-        this.hireDate = hireDate;
-        this.teamsId = teamsId;
     }
 
     public UserEntity(String login, String password, Role role, Integer restDays, Date hireDate) {
@@ -194,11 +108,11 @@ public class UserEntity {
         this.hireDate = hireDate;
     }
 
-    public TeamsEntity getTeamsId() {
+    public TeamEntity getTeamsId() {
         return teamsId;
     }
 
-    public void setTeamsId(TeamsEntity teamsId) {
+    public void setTeamsId(TeamEntity teamsId) {
         this.teamsId = teamsId;
     }
 

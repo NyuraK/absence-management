@@ -7,7 +7,7 @@ import java.util.*;
 
 public class Methods {
 
-    public void SafeDeleteTeam(TeamsEntity team, UserRepository usersRepo, TeamRepository teamRepo){
+    public void SafeDeleteTeam(TeamEntity team, UserRepository usersRepo, TeamRepository teamRepo){
         List<UserEntity> teamsUsers=usersRepo.findAllByTeamsId(team);
         for (UserEntity user:teamsUsers){
             user.setTeamsId(null);
@@ -15,19 +15,19 @@ public class Methods {
         teamRepo.deleteByTeamsId(team.getTeamsId());
     }
     public void SafeDeleteDepartment(DepartmentEntity department, TeamRepository teamRepo, DepartmentRepository depRepo){
-        List<TeamsEntity> depTeams=teamRepo.findAllByDepartmentsId(department);
-        for (TeamsEntity team:depTeams){
+        List<TeamEntity> depTeams=teamRepo.findAllByDepartmentsId(department);
+        for (TeamEntity team:depTeams){
             team.setDepartmentsId(null);
         }
         depRepo.deleteByDepartmentsId(department.getDepartmentsId());
     }
     public void SafeDeleteUser(UserEntity user, TeamRepository teamRepo, DepartmentRepository depRepo, UserRepository userRepo){
         List<DepartmentEntity> directors=depRepo.findAllByDirectorsId(user);
-        List<TeamsEntity> managers=teamRepo.findAllByManagersId(user);
+        List<TeamEntity> managers=teamRepo.findAllByManagersId(user);
         for (DepartmentEntity director:directors){
             director.setDirectorsId(null);
         }
-        for (TeamsEntity manager:managers){
+        for (TeamEntity manager:managers){
             manager.setManagersId(null);
         }
         userRepo.deleteById(user.getUsersId());
@@ -49,7 +49,7 @@ public class Methods {
         }
         return result;
     }
-    public void /*Map<Date,String>*/ ColorMonth (int year, int month/*, TeamsEntity team*/){
+    public void /*Map<Date,String>*/ ColorMonth (int year, int month/*, TeamEntity team*/){
         Calendar calendar = new GregorianCalendar(year, month-1, 1);
         int maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
         System.out.println(maxDay);
