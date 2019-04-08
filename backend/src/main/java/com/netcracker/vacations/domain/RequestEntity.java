@@ -2,7 +2,7 @@ package com.netcracker.vacations.domain;
 
 import com.netcracker.vacations.domain.enums.Statuses;
 import com.netcracker.vacations.exception.BeginningAfterEndingException;
-import com.netcracker.vacations.exception.EndingBeforeApiException;
+import com.netcracker.vacations.exception.EndingBeforeBeginningException;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -44,13 +44,13 @@ public class RequestEntity {
     public RequestEntity() {
     }
 
-    public RequestEntity(UserEntity usersId, Date beginning, Date ending, RequestTypeEntity typeOfRequest, Statuses status) throws EndingBeforeApiException {
+    public RequestEntity(UserEntity usersId, Date beginning, Date ending, RequestTypeEntity typeOfRequest, Statuses status) throws EndingBeforeBeginningException {
         this.usersId = usersId;
         this.typeOfRequest = typeOfRequest;
         this.status = status.name;
 
         if (ending.before(beginning)) {
-            throw new EndingBeforeApiException();
+            throw new EndingBeforeBeginningException();
         } else {
             this.beginning = beginning;
             this.ending = ending;
@@ -89,9 +89,9 @@ public class RequestEntity {
         return ending;
     }
 
-    public void setEnding(Date ending) throws EndingBeforeApiException {
+    public void setEnding(Date ending) throws EndingBeforeBeginningException {
         if ((ending.before(beginning)) && (beginning != null)) {
-            throw new EndingBeforeApiException();
+            throw new EndingBeforeBeginningException();
         } else {
             this.ending = ending;
         }
