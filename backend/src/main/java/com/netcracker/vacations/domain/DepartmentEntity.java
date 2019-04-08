@@ -1,26 +1,23 @@
 package com.netcracker.vacations.domain;
 
-import org.hibernate.annotations.GenericGenerator;
-
 import javax.persistence.*;
 
 @Entity
-@Table(name="departments_ent")
-public class DepartmentsEntity {
+@Table(name="departments")
+public class DepartmentEntity {
     @Id
     @GeneratedValue(generator = "increment")
-    @GenericGenerator(name= "increment", strategy= "increment")
 
     @Column(name = "departments_id")
         private Integer departmentsId;
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "directors_id")
-        private UsersEntity directorsId;
+        private UserEntity directorsId;
 
-    public DepartmentsEntity() {
+    public DepartmentEntity() {
     }
 
-    public DepartmentsEntity(UsersEntity directorsId) {
+    public DepartmentEntity(UserEntity directorsId) {
         this.directorsId=directorsId;
     }
 
@@ -32,11 +29,11 @@ public class DepartmentsEntity {
         this.departmentsId = departmentsId;
     }
 
-    public UsersEntity getDirectorsId() {
+    public UserEntity getDirectorsId() {
         return directorsId;
     }
 
-    public void setDirectorsId(UsersEntity directorsId) {
+    public void setDirectorsId(UserEntity directorsId) {
         this.directorsId = directorsId;
     }
 }

@@ -1,27 +1,26 @@
 package com.netcracker.vacations.domain;
 
 import com.netcracker.vacations.domain.enums.Statuses;
-import org.hibernate.annotations.GenericGenerator;
+import com.netcracker.vacations.domain.exceptions.BeginningAfterEndingException;
+import com.netcracker.vacations.domain.exceptions.EndingBeforeDateException;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
-@Table(name="requests_ent")
-public class RequestsEntity {
+@Table(name="requests")
+public class RequestEntity {
     @Id
     @GeneratedValue(generator = "increment")
-    @GenericGenerator(name= "increment", strategy= "increment")
 
     @Column(name = "requests_id")
         private Integer requestsId;
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "users_id", nullable = false)
-        private UsersEntity usersId;
+        private UserEntity usersId;
 
     @Column(name = "beginning_ov_vacation", nullable=false)
     @Temporal(TemporalType.DATE)
@@ -32,7 +31,7 @@ public class RequestsEntity {
         private Date ending;
     @ManyToOne (cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "type_of_request_id", referencedColumnName = "type_of_requests_id")
-        private TypeOfRequestsEntity typeOfRequest;
+        private RequestTypeEntity typeOfRequest;
 
     @Column(name = "status", nullable=false)
         private String status;
@@ -40,24 +39,34 @@ public class RequestsEntity {
     @Column(name = "description")
         private String description;
 
-    public RequestsEntity() {
+    public RequestEntity() {
     }
 
-    public RequestsEntity(UsersEntity usersId, Date beginning, Date ending, TypeOfRequestsEntity typeOfRequest, Statuses status, String description) {
+    public RequestEntity(UserEntity usersId, Date beginning, Date ending, RequestTypeEntity typeOfRequest, Statuses status, String description) throws EndingBeforeDateException{
         this.usersId = usersId;
-        this.beginning = beginning;
-        this.ending = ending;
         this.typeOfRequest = typeOfRequest;
         this.status = status.name;
         this.description = description;
+
+        if (ending.before(beginning)) {
+            throw new EndingBeforeDateException();
+        } else{
+            this.beginning = beginning;
+            this.ending = ending;
+        }
     }
 
-    public RequestsEntity(UsersEntity usersId, Date beginning, Date ending, TypeOfRequestsEntity typeOfRequest, Statuses status) {
+    public RequestEntity(UserEntity usersId, Date beginning, Date ending, RequestTypeEntity typeOfRequest, Statuses status) throws EndingBeforeDateException{
         this.usersId = usersId;
-        this.beginning = beginning;
-        this.ending = ending;
         this.typeOfRequest = typeOfRequest;
         this.status = status.name;
+
+        if (ending.before(beginning)) {
+            throw new EndingBeforeDateException();
+        } else{
+            this.beginning = beginning;
+            this.ending = ending;
+        }
     }
 
     public Integer getRequestsId() {
@@ -68,11 +77,11 @@ public class RequestsEntity {
         this.requestsId = requestsId;
     }
 
-    public UsersEntity getUsersId() {
+    public UserEntity getUsersId() {
         return usersId;
     }
 
-    public void setUsersId(UsersEntity usersId) {
+    public void setUsersId(UserEntity usersId) {
         this.usersId = usersId;
     }
 
@@ -80,23 +89,29 @@ public class RequestsEntity {
         return beginning;
     }
 
-    public void setBeginning(Date beginning) {
-        this.beginning = beginning;
+    public void setBeginning(Date beginning) throws BeginningAfterEndingException{
+        if ((beginning.after(ending))&&(ending!=null)){
+            throw new BeginningAfterEndingException();
+        } else{
+        this.beginning = beginning;}
     }
 
     public Date getEnding() {
         return ending;
     }
 
-    public void setEnding(Date ending) {
-        this.ending = ending;
+    public void setEnding(Date ending) throws EndingBeforeDateException{
+        if ((ending.before(beginning))&&(beginning!=null)){
+            throw new EndingBeforeDateException();
+        } else{
+            this.ending = ending;}
     }
 
-    public TypeOfRequestsEntity getTypeOfRequest() {
+    public RequestTypeEntity getTypeOfRequest() {
         return typeOfRequest;
     }
 
-    public void setTypeOfRequest(TypeOfRequestsEntity typeOfRequest) {
+    public void setTypeOfRequest(RequestTypeEntity typeOfRequest) {
         this.typeOfRequest = typeOfRequest;
     }
 

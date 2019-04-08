@@ -1,31 +1,30 @@
 package com.netcracker.vacations.domain;
 
+import com.netcracker.vacations.domain.enums.Statuses;
 import com.netcracker.vacations.repository.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 
 public class Methods {
 
-    public void SafeDeleteTeam(TeamsEntity team, UsersRepository usersRepo, TeamsRepository teamRepo){
-        ArrayList<UsersEntity> teamsUsers=usersRepo.findAllByTeamsId(team);
-        for (UsersEntity user:teamsUsers){
+    public void SafeDeleteTeam(TeamsEntity team, UserRepository usersRepo, TeamRepository teamRepo){
+        List<UserEntity> teamsUsers=usersRepo.findAllByTeamsId(team);
+        for (UserEntity user:teamsUsers){
             user.setTeamsId(null);
         }
         teamRepo.deleteByTeamsId(team.getTeamsId());
     }
-    public void SafeDeleteDepartment(DepartmentsEntity department,TeamsRepository teamRepo, DepartmentsRepository depRepo){
-        ArrayList<TeamsEntity> depTeams=teamRepo.findAllByDepartmentsId(department);
+    public void SafeDeleteDepartment(DepartmentEntity department, TeamRepository teamRepo, DepartmentRepository depRepo){
+        List<TeamsEntity> depTeams=teamRepo.findAllByDepartmentsId(department);
         for (TeamsEntity team:depTeams){
             team.setDepartmentsId(null);
         }
         depRepo.deleteByDepartmentsId(department.getDepartmentsId());
     }
-    public void SafeDeleteUser(UsersEntity user,TeamsRepository teamRepo, DepartmentsRepository depRepo, UsersRepository userRepo){
-        ArrayList<DepartmentsEntity> directors=depRepo.findAllByDirectorsId(user);
-        ArrayList<TeamsEntity> managers=teamRepo.findAllByManagersId(user);
-        for (DepartmentsEntity director:directors){
+    public void SafeDeleteUser(UserEntity user, TeamRepository teamRepo, DepartmentRepository depRepo, UserRepository userRepo){
+        List<DepartmentEntity> directors=depRepo.findAllByDirectorsId(user);
+        List<TeamsEntity> managers=teamRepo.findAllByManagersId(user);
+        for (DepartmentEntity director:directors){
             director.setDirectorsId(null);
         }
         for (TeamsEntity manager:managers){
@@ -33,24 +32,26 @@ public class Methods {
         }
         userRepo.deleteById(user.getUsersId());
     }
-    public void SafeDeleteType(TypeOfRequestsEntity type,RequestsRepository requestsRepo, TypeOfRequestsRepository typeRepo){
-        ArrayList<RequestsEntity> requests=requestsRepo.findAllByTypeOfRequest(type);
-        for (RequestsEntity request:requests){
+    public void SafeDeleteType(RequestTypeEntity type, RequestRepository requestsRepo, RequestTypeRepository typeRepo){
+        List<RequestEntity> requests=requestsRepo.findAllByTypeOfRequest(type);
+        for (RequestEntity request:requests){
             request.setTypeOfRequest(null);}
         typeRepo.deleteById(type.getTypeOfRequest());
     }
 
-    public ArrayList<RequestsEntity> findByDates(Date begin, Date end, RequestsRepository requestsRepo) {
-        ArrayList<RequestsEntity> requestsBegin = requestsRepo.findAllByBeginning(begin);
-        ArrayList<RequestsEntity> requestsEnd = requestsRepo.findAllByEnding(end);
-        ArrayList<RequestsEntity> result = new ArrayList<RequestsEntity>();
-        for (RequestsEntity requestBegin : requestsBegin) {
-            for (RequestsEntity requestEnd : requestsEnd) {
-                if (requestBegin == requestEnd) {
-                    result.add(requestBegin);
-                }
+    public List<RequestEntity> findByDates(Date begin, Date end, RequestRepository requestsRepo) {
+        List<RequestEntity> requests = requestsRepo.findAllByStatus(Statuses.ACCEPTED.name);
+        List<RequestEntity> result = new ArrayList<RequestEntity>();
+        for (RequestEntity request : requests) {
+            if( (((request.getBeginning()).after(begin))||(request.getBeginning().equals(begin))) && ((((request.getEnding()).before(end))||(request.getEnding().equals(end))))){
+                result.add(request);
             }
         }
         return result;
+    }
+    public void /*Map<Date,String>*/ ColorMonth (int year, int month/*, TeamsEntity team*/){
+        Calendar calendar = new GregorianCalendar(year, month-1, 1);
+        int maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        System.out.println(maxDay);
     }
 }

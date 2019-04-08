@@ -8,11 +8,10 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name="type_of_requests__ent")
-public class TypeOfRequestsEntity {
+@Table(name="type_of_requests")
+public class RequestTypeEntity {
     @Id
     @GeneratedValue(generator = "increment")
-    @GenericGenerator(name= "increment", strategy= "increment")
 
     @Column(name = "type_of_requests_id")
         private Integer typeOfRequest;
@@ -26,10 +25,10 @@ public class TypeOfRequestsEntity {
     @Column(name = "name", nullable=false, unique=true)
         private String name;
 
-    public TypeOfRequestsEntity() {
+    public RequestTypeEntity() {
     }
 
-    public TypeOfRequestsEntity(Boolean influenceOnVr, Boolean needApproval, RequestsTypes name) {
+    public RequestTypeEntity(Boolean influenceOnVr, Boolean needApproval, RequestsTypes name) {
         this.influenceOnVr = influenceOnVr;
         this.needApproval = needApproval;
         this.name = name.name;

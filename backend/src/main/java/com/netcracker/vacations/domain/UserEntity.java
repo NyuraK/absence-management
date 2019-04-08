@@ -10,11 +10,10 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
-@Table(name="users_ent")
-public class UsersEntity {
+@Table(name="users")
+public class UserEntity {
     @Id
     @GeneratedValue(generator = "increment")
-    @GenericGenerator(name= "increment", strategy= "increment")
 
     @Column(name = "users_id")
         private Integer usersId;
@@ -52,10 +51,10 @@ public class UsersEntity {
     @Transient
     private BCryptPasswordEncoder coder;
 
-    public UsersEntity() {
+    public UserEntity() {
     }
 
-    public UsersEntity(String login, String password, Role role, Integer restDays, Date hireDate, TeamsEntity teamsId, String name, String surname, String familyName, String phoneNumber, String email, String description) {
+    public UserEntity(String login, String password, Role role, Integer restDays, Date hireDate, TeamsEntity teamsId, String name, String surname, String familyName, String phoneNumber, String email, String description) {
         this.login = login;
         this.password = encode(password);
         this.role = role.name;
@@ -70,7 +69,7 @@ public class UsersEntity {
         this.description = description;
     }
 
-    public UsersEntity(String login, String password, Role role, Integer restDays, Date hireDate, TeamsEntity teamsId, String name, String surname, String familyName, String phoneNumber, String email) {
+    public UserEntity(String login, String password, Role role, Integer restDays, Date hireDate, TeamsEntity teamsId, String name, String surname, String familyName, String phoneNumber, String email) {
         this.login = login;
         this.password = encode(password);
         this.role = role.name;
@@ -84,7 +83,7 @@ public class UsersEntity {
         this.email = email;
     }
 
-    public UsersEntity(String login, String password, Role role, Integer restDays, Date hireDate, TeamsEntity teamsId, String name, String surname, String familyName, String phoneNumber) {
+    public UserEntity(String login, String password, Role role, Integer restDays, Date hireDate, TeamsEntity teamsId, String name, String surname, String familyName, String phoneNumber) {
         this.login = login;
         this.password = encode(password);
         this.role = role.name;
@@ -97,7 +96,7 @@ public class UsersEntity {
         this.phoneNumber = phoneNumber;
     }
 
-    public UsersEntity(String login, String password, Role role, Integer restDays, Date hireDate, TeamsEntity teamsId, String name, String surname, String familyName) {
+    public UserEntity(String login, String password, Role role, Integer restDays, Date hireDate, TeamsEntity teamsId, String name, String surname, String familyName) {
         this.login = login;
         this.password = encode(password);
         this.role = role.name;
@@ -109,7 +108,7 @@ public class UsersEntity {
         this.familyName = familyName;
     }
 
-    public UsersEntity(String login, String password, Role role, Integer restDays, Date hireDate, TeamsEntity teamsId, String name, String surname) {
+    public UserEntity(String login, String password, Role role, Integer restDays, Date hireDate, TeamsEntity teamsId, String name, String surname) {
         this.login = login;
         this.password = encode(password);
         this.role = role.name;
@@ -120,7 +119,7 @@ public class UsersEntity {
         this.surname = surname;
     }
 
-    public UsersEntity(String login, String password, Role role, Integer restDays, Date hireDate, TeamsEntity teamsId, String name) {
+    public UserEntity(String login, String password, Role role, Integer restDays, Date hireDate, TeamsEntity teamsId, String name) {
         this.login = login;
         this.password = encode(password);
         this.role = role.name;
@@ -130,7 +129,7 @@ public class UsersEntity {
         this.name = name;
     }
 
-    public UsersEntity(String login, String password, Role role, Integer restDays, Date hireDate, TeamsEntity teamsId) {
+    public UserEntity(String login, String password, Role role, Integer restDays, Date hireDate, TeamsEntity teamsId) {
         this.login = login;
         this.password = encode(password);
         this.role = role.name;
@@ -139,7 +138,7 @@ public class UsersEntity {
         this.teamsId = teamsId;
     }
 
-    public UsersEntity(String login, String password, Role role, Integer restDays, Date hireDate) {
+    public UserEntity(String login, String password, Role role, Integer restDays, Date hireDate) {
         this.login = login;
         this.password= encode(password);
         this.role = role.name;
