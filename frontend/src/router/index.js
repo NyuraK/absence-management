@@ -4,6 +4,7 @@ import Login from '../components/Login'
 import Calendar from '../components/Calendar'
 import Home from "../components/Home";
 import NotFound from "../components/NotFound";
+import Requests from "../components/Requests"
 import store from "../store/index"
 
 Vue.use(VueRouter);
@@ -27,6 +28,12 @@ const router = new VueRouter({
             name: 'home',
             component: Home,
             meta: {rule: 'isLoggedUser'}
+        },
+        {
+            path: '/requests',
+            name: 'requests',
+            component: Requests,
+            meta: {rule: 'isManager'}
         },
         {
             path: "/*",
