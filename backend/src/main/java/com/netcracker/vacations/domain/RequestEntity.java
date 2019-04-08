@@ -3,6 +3,7 @@ package com.netcracker.vacations.domain;
 import com.netcracker.vacations.domain.enums.Statuses;
 import com.netcracker.vacations.exception.BeginningAfterEndingException;
 import com.netcracker.vacations.exception.EndingBeforeApiException;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -10,34 +11,35 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name="requests")
+@Table(name = "requests")
 public class RequestEntity {
     @Id
     @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
 
     @Column(name = "requests_id")
-        private Integer requestsId;
+    private Integer requestsId;
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "users_id", nullable = false)
-        private UserEntity usersId;
+    private UserEntity usersId;
 
-    @Column(name = "beginning_ov_vacation", nullable=false)
+    @Column(name = "beginning_ov_vacation", nullable = false)
     @Temporal(TemporalType.DATE)
-        private Date beginning;
+    private Date beginning;
 
-    @Column(name = "enging_ov_vacation", nullable=false)
+    @Column(name = "enging_ov_vacation", nullable = false)
     @Temporal(TemporalType.DATE)
-        private Date ending;
-    @ManyToOne (cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    private Date ending;
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "type_of_request_id", referencedColumnName = "type_of_requests_id")
-        private RequestTypeEntity typeOfRequest;
+    private RequestTypeEntity typeOfRequest;
 
-    @Column(name = "status", nullable=false)
-        private String status;
+    @Column(name = "status", nullable = false)
+    private String status;
 
     @Column(name = "description")
-        private String description;
+    private String description;
 
     public RequestEntity() {
     }
@@ -49,7 +51,7 @@ public class RequestEntity {
 
         if (ending.before(beginning)) {
             throw new EndingBeforeApiException();
-        } else{
+        } else {
             this.beginning = beginning;
             this.ending = ending;
         }
@@ -75,11 +77,12 @@ public class RequestEntity {
         return beginning;
     }
 
-    public void setBeginning(Date beginning) throws BeginningAfterEndingException{
-        if ((beginning.after(ending))&&(ending!=null)){
+    public void setBeginning(Date beginning) throws BeginningAfterEndingException {
+        if ((beginning.after(ending)) && (ending != null)) {
             throw new BeginningAfterEndingException();
-        } else{
-        this.beginning = beginning;}
+        } else {
+            this.beginning = beginning;
+        }
     }
 
     public Date getEnding() {
@@ -87,10 +90,11 @@ public class RequestEntity {
     }
 
     public void setEnding(Date ending) throws EndingBeforeApiException {
-        if ((ending.before(beginning))&&(beginning!=null)){
+        if ((ending.before(beginning)) && (beginning != null)) {
             throw new EndingBeforeApiException();
-        } else{
-            this.ending = ending;}
+        } else {
+            this.ending = ending;
+        }
     }
 
     public RequestTypeEntity getTypeOfRequest() {

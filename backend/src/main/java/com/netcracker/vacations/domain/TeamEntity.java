@@ -1,32 +1,35 @@
 package com.netcracker.vacations.domain;
 
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 
 
 @Entity
-@Table(name="teams")
+@Table(name = "teams")
 public class TeamEntity {
     @Id
     @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
 
     @Column(name = "teams_id")
-        private Integer teamsId;
+    private Integer teamsId;
 
-    @Column(name = "abscense_quota", nullable=false)
-        private Integer quota;
+    @Column(name = "abscense_quota", nullable = false)
+    private Integer quota;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
 
     @JoinColumn(name = "managers_id")
-        private UserEntity managersId;
+    private UserEntity managersId;
 
     @Column(name = "name", nullable = false, unique = true)
-        private String name;
+    private String name;
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
 
     @JoinColumn(name = "departments_id")
-        private DepartmentEntity departmentsId;
+    private DepartmentEntity departmentsId;
 
 
     public TeamEntity() {

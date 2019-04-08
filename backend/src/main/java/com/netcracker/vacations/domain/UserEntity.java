@@ -1,6 +1,7 @@
 package com.netcracker.vacations.domain;
 
 import com.netcracker.vacations.domain.enums.Role;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
@@ -8,44 +9,45 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name="users")
+@Table(name = "users")
 public class UserEntity {
     @Id
     @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
 
     @Column(name = "users_id")
-        private Integer usersId;
+    private Integer usersId;
 
     @Column(name = "login", nullable = false, unique = true)
-        private String login;
+    private String login;
 
     @Column(name = "password", nullable = false)
-        private String password;
+    private String password;
 
     @Column(name = "role", nullable = false)
-        private String role;
+    private String role;
 
     @Column(name = "rest_days", nullable = false)
-        private Integer restDays;
+    private Integer restDays;
 
     @Column(name = "hire_date", nullable = false)
     @Temporal(TemporalType.DATE)
-        private Date hireDate;
+    private Date hireDate;
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "teams_id")
-        private TeamEntity teamsId;
+    private TeamEntity teamsId;
     @Column(name = "name")
-        private String name;
+    private String name;
     @Column(name = "surname")
-        private String surname;
+    private String surname;
     @Column(name = "family_name")
-        private String familyName;
+    private String familyName;
     @Column(name = "phone_number")
-        private String phoneNumber;
+    private String phoneNumber;
     @Column(name = "email")
-        private String email;
+    private String email;
     @Column(name = "description")
-        private String description;
+    private String description;
     @Transient
     private BCryptPasswordEncoder coder;
 
@@ -54,7 +56,7 @@ public class UserEntity {
 
     public UserEntity(String login, String password, Role role, Integer restDays, Date hireDate) {
         this.login = login;
-        this.password= encode(password);
+        this.password = encode(password);
         this.role = role.name;
         this.restDays = restDays;
         this.hireDate = hireDate;
@@ -164,14 +166,15 @@ public class UserEntity {
         this.description = description;
     }
 
-    public String encode(String password){
-        coder=new BCryptPasswordEncoder();
-        password=coder.encode(password);
+    public String encode(String password) {
+        coder = new BCryptPasswordEncoder();
+        password = coder.encode(password);
         return password;
     }
-    public boolean checkPassword(String inputPassword){
-        coder=new BCryptPasswordEncoder();
-        Boolean result=coder.matches(inputPassword,this.password);
+
+    public boolean checkPassword(String inputPassword) {
+        coder = new BCryptPasswordEncoder();
+        Boolean result = coder.matches(inputPassword, this.password);
         return result;
     }
 }

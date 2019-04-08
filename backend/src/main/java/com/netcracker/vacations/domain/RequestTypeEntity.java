@@ -5,25 +5,25 @@ import com.netcracker.vacations.domain.enums.RequestsTypes;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name="type_of_requests")
+@Table(name = "types_of_request")
 public class RequestTypeEntity {
     @Id
     @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
 
     @Column(name = "type_of_requests_id")
-        private Integer typeOfRequest;
+    private Integer typeOfRequest;
 
-    @Column(name = "is_influencing_on_vr", nullable=false)
-        private Boolean influenceOnVr;
+    @Column(name = "is_influencing_on_vr", nullable = false)
+    private Boolean influenceOnVr;
 
-    @Column(name = "does_need_approval", nullable=false)
-        private Boolean needApproval;
+    @Column(name = "does_need_approval", nullable = false)
+    private Boolean needApproval;
 
-    @Column(name = "name", nullable=false, unique=true)
-        private String name;
+    @Column(name = "name", nullable = false, unique = true)
+    private String name;
 
     public RequestTypeEntity() {
     }
