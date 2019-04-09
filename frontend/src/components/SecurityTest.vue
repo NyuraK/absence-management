@@ -19,6 +19,7 @@
 
 <script>
     import {instance} from '../Api'
+
     export default {
         data () {
             return {
@@ -35,7 +36,7 @@
         methods: {
             getSecuredUserInformation() {
                 this.responseObj = {};
-                instance.get('http://localhost:8088/user/home')
+                instance.get('/user/home')
                     .then(response => {
                         console.log("Get response: ", response.data);
                         this.responseObj = this.parseResponse(response)
@@ -46,7 +47,7 @@
             },
             getSecuredAdminInformation() {
                 this.responseObj = {};
-                instance.get('http://localhost:8088/admin/home')
+                instance.get('/admin/home')
                     .then(response => {
                         console.log("Get response: ", response.data);
                         this.responseObj = this.parseResponse(response)
@@ -56,7 +57,7 @@
                     });
             },
             getSecuredManagerInformation() {
-                instance.get('http://localhost:8088/manager/home')
+                instance.get('/manager/home')
                     .then(response => {
                         console.log("Get response: ", response.data);
                         this.responseObj = this.parseResponse(response)

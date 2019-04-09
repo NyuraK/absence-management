@@ -1,9 +1,9 @@
 package com.netcracker.vacations.config;
 
-import com.netcracker.vacations.service.AppUserService;
 import com.netcracker.vacations.security.JwtLoginTokenFilter;
 import com.netcracker.vacations.security.JwtTokenFilter;
 import com.netcracker.vacations.security.JwtTokenProvider;
+import com.netcracker.vacations.service.AppUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,11 +15,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.Arrays;
 
 @EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -47,20 +42,13 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         // Entry points
         http.authorizeRequests()
-                .antMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
-                .antMatchers("/user/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN", "ROLE_MANAGER")
-                .antMatchers("/manager/**").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN")
+//                .antMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
+                .antMatchers("/api/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN", "ROLE_MANAGER")
+//                .antMatchers("/manager/**").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN")
                 .antMatchers("/**").permitAll()
-                // Disallow everything else..
-//                .anyRequest().denyAll()
                 .and()
                 .addFilterBefore(new JwtLoginTokenFilter("/login", authenticationManagerBean(), jwtConfig), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
-        // If a user try to access a resource without having enough permissions
-        http.exceptionHandling().accessDeniedPage("/calendar");
-
-        // Optional, if you want to test the API from a browser
-         http.httpBasic();
     }
 
 
