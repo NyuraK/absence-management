@@ -8,8 +8,9 @@ const store = new Vuex.Store({
 
     state: {
         token: localStorage.getItem('token') || '',
-        isAuth: false,
+        isAuth: false
     //    probably should store a role?
+
 
     },
 

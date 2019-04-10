@@ -59,7 +59,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.exceptionHandling().accessDeniedPage("/calendar");
 
         // Optional, if you want to test the API from a browser
-         http.httpBasic();
+        http.httpBasic();
     }
 
 
@@ -79,17 +79,4 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder(12);
     }
 
-//    @Bean
-//    public FilterRegistrationBean<CorsFilter> corsFilter() {
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        CorsConfiguration config = new CorsConfiguration();
-//        config.setAllowCredentials(true);
-//        config.addAllowedOrigin("*");
-//        config.addAllowedHeader("*");
-//        config.addAllowedMethod("*");
-//        source.registerCorsConfiguration("/**", config);
-//        FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(source));
-//        bean.setOrder(0);
-//        return bean;
-//    }
 }
