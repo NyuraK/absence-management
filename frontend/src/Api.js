@@ -3,11 +3,11 @@ import axios from 'axios'
 // const SERVER_URL = 'http://localhost:8080';
 
 export const instance = axios.create({
-    baseURL: '/api',
+    // baseURL: '/api',
     timeout: 1000,
     headers:  {
             'Content-Type': 'application/json',
-            // 'Authorization': 'Bearer ' + localStorage.getItem('token')
+            'Authorization': localStorage.getItem('token')
     }
 });
 

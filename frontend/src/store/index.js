@@ -34,7 +34,7 @@ const store = new Vuex.Store({
                         let accessToken = response.headers['authorization'];
                         context.commit('authSuccess', accessToken);
                         localStorage.setItem('token', accessToken);
-                        instance.defaults.headers.common['Authorization'] = accessToken;
+                        // instance.defaults.headers.common['Authorization'] = accessToken;
                         let role = response.headers['role'];
                         localStorage.setItem('user', role);
                         resolve(response);
