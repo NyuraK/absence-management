@@ -3,22 +3,30 @@ package com.netcracker.vacations.dto;
 import com.netcracker.vacations.domain.enums.RequestType;
 import com.netcracker.vacations.domain.enums.Status;
 
-import java.sql.Date;
+import java.util.Date;
 
 public class RequestDTO {
 
-    private Integer userID;
+    private String username;
     private Date start, end;
     private RequestType type;
-    private Status status;
     private String description;
+    private Status status;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public RequestType getType() {
         return type;
     }
 
-    public void setType(RequestType type) {
-        this.type = type;
+    public void setType(String type) {
+        this.type = RequestType.findByName(type);
     }
 
     public Status getStatus() {

@@ -22,7 +22,7 @@
                     <AbsRequest></AbsRequest>
                 </b-col>
             </b-row>
-        </b-container>>
+        </b-container>
     </div>
 </template>
 

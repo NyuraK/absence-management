@@ -1,6 +1,7 @@
 import Vuex from 'vuex'
 import Vue from 'vue'
 import axios from 'axios'
+import {instance} from "../Api";
 
 Vue.use(Vuex);
 
@@ -9,8 +10,6 @@ const store = new Vuex.Store({
     state: {
         token: localStorage.getItem('token') || '',
         isAuth: false,
-    //    probably should store a role?
-
     },
 
     mutations: {
@@ -33,9 +32,11 @@ const store = new Vuex.Store({
                         let accessToken = response.headers['authorization'];
                         context.commit('authSuccess', accessToken);
                         localStorage.setItem('token', accessToken);
-                        // instance.defaults.headers.common['Authorization'] = accessToken;
+                        instance.defaults.headers.common['Authorization'] = accessToken;
                         let role = response.headers['role'];
+                        let username = response.headers['username'];
                         localStorage.setItem('user', role);
+                        localStorage.setItem('username', username);
                         resolve(response);
                     })
                     .catch((error) => {
@@ -48,8 +49,9 @@ const store = new Vuex.Store({
         userLogOut ({commit}) {
             commit ('authLogout');
             localStorage.removeItem('token');
-            // delete instance.defaults.headers.common['Authorization'];
+            delete instance.defaults.headers.common['Authorization'];
             localStorage.setItem('user', 'public');
+            localStorage.removeItem('username');
         }
 
     },
@@ -57,7 +59,6 @@ const store = new Vuex.Store({
 
     getters: {
         isAuthenticated: state => !!state.token,
-            // state.isAuth,
         isToken: state => state.token
     }
 

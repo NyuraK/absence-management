@@ -12,4 +12,13 @@ public enum RequestType {
     RequestType(String name){
         this.name=name;
     }
+
+    public static RequestType findByName(String name) {
+        RequestType[] types = RequestType.values();
+        for (RequestType type : types) {
+            if (type.name.equals(name))
+                return type;
+        }
+        return null;
+    }
 }

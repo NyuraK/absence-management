@@ -46,7 +46,7 @@
                 absType: null,
                 text: ''
             },
-            absTypes: [{ text: 'Select One', value: null }, 'Sickness', 'Business trip', 'Maternity/Paternity', 'Vacations', 'At home'],
+            absTypes: [{ text: 'Select One', value: null }, 'Sick leave', 'Business trip', 'Child care', 'Vacation', 'Remote work'],
             show: true,
             range: {
                 start: new Date(2018, 3, 16),
@@ -56,23 +56,21 @@
         },
         methods: {
         onSubmit(evt) {
-            //TODO: complete task -> appearance in list of request from manage requests
             evt.preventDefault();
-            // let req_st = extractStart();
-            // let req_en = extractEnd();
-            alert(JSON.stringify(this.range));
             let msg = {
-                type: this.type,
-                description: "Test request",
-                start: "2018-04-01",
-                end: "2018-04-10"
+                username: localStorage.getItem('username'),
+                start: this.range.start,
+                end: this.range.end,
+                type: this.form.absType,
+                description: this.form.text,
             };
             instance.post("/request/add", msg).then(res => {
 
             }).catch(err=> {
                 console.log(err);
-            })
-
+            });
+            this.form.absType = null;
+            this.form.text = '';
         },
         onReset(evt) {
             evt.preventDefault();

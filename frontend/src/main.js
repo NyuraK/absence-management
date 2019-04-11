@@ -13,10 +13,11 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 window.user = localStorage.getItem('user');
+window.username = localStorage.getItem('username');
 
 // Use v-calendar, v-date-picker & v-popover components
 Vue.use(VCalendar, {
-  firstDayOfWeek: 2,  // Monday
+  firstDayOfWeek: 2, // Monday
 });
 
 Vue.use(Vuetify);

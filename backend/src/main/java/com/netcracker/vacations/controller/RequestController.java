@@ -25,13 +25,6 @@ public class RequestController {
 
     @GetMapping("/admin/home")
     public ResponseEntity getPersonalView() {
-        RequestDTO request = new RequestDTO();
-//        request.setDescription("Test");
-//        request.setStart(Date.valueOf("2018-04-01"));
-//        request.setEnd(Date.valueOf("2018-04-21"));
-//        request.setType(RequestType.BUSINESSTRIP);
-//        service.saveRequest(request);
-//        service.saveUser();
         return ResponseEntity.ok("Welcome, Admin!!");
     }
 
@@ -47,6 +40,9 @@ public class RequestController {
 
     @PostMapping("/request/add")
     public void addRequest(@RequestBody RequestDTO request) {
+//        System.out.println(request.getDescription() + " " + request.getStart() + " " +
+//                " " + request.getEnd() + " "
+//                + request.getType()) ;
         service.saveRequest(request);
     }
 

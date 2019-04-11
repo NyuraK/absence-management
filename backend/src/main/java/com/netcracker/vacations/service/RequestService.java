@@ -9,8 +9,6 @@ import com.netcracker.vacations.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
-
 @Service
 public class RequestService {
 
@@ -27,21 +25,13 @@ public class RequestService {
 
     public void saveRequest(RequestDTO request) {
         RequestEntity requestEntity = new RequestEntity(
-                userRepository.findByLogin("Denis").get(0),
-                Date.valueOf("2019-04-09"),
-                Date.valueOf("2019-04-18"),
+                userRepository.findByLogin(request.getUsername()).get(0),
+                request.getStart(),
+                request.getEnd(),
                 requestTypeRepository.findByName(request.getType().name).get(0),
                 Status.CONSIDER
-
         );
-//        requestEntity.setUsersId(userRepository.findById(1).get());
-//        requestEntity.setBeginning(Date.valueOf("2019-04-01"));
-//        requestEntity.setEnding(Date.valueOf("2019-04-21"));
-//        requestEntity.setTypeOfRequest(requestTypeRepository.findByName(request.getType().name).get(0));
-//        requestEntity.setStatus(Status.CONSIDER);
-        requestEntity.setDescription("Off to Moscow");
-
-//        request.setStatus(Status.CONSIDER);
+        requestEntity.setDescription(request.getDescription());
 //        BeanUtils.copyProperties(request, requestEntity);
         requestRepository.save(requestEntity);
     }
