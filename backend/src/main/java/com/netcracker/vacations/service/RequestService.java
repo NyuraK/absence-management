@@ -3,11 +3,15 @@ package com.netcracker.vacations.service;
 import com.netcracker.vacations.domain.RequestEntity;
 import com.netcracker.vacations.domain.enums.Status;
 import com.netcracker.vacations.dto.RequestDTO;
+import com.netcracker.vacations.dto.RestRequestDTO;
 import com.netcracker.vacations.repository.RequestRepository;
 import com.netcracker.vacations.repository.RequestTypeRepository;
 import com.netcracker.vacations.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class RequestService {
@@ -36,5 +40,19 @@ public class RequestService {
         requestRepository.save(requestEntity);
     }
 
+
+    public List<RestRequestDTO> getRequests() {
+        List<RestRequestDTO> response = new ArrayList();
+        for (RequestEntity entity : requestRepository.findAll()) {
+            RestRequestDTO requestDTO = new RestRequestDTO();
+            requestDTO.setName(entity.getUsersId().getName() + " " + entity.getUsersId().getFamilyName());
+            requestDTO.setDescription(entity.getDescription());
+            requestDTO.setStart(entity.getBeginning());
+            requestDTO.setEnd(entity.getEnding());
+            requestDTO.setType(entity.getTypeOfRequest().getName());
+            response.add(requestDTO);
+        }
+        return response;
+    }
 
 }
