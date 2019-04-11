@@ -3,11 +3,12 @@
         <Nav></Nav>
         <b-container>
             <div>
+                <h3>Active requests</h3>
                 <b-form-group label="Selection mode:" label-cols-md="4">
                     <b-form-select v-model="selectMode" :options="modes" class="mb-3"></b-form-select>
                 </b-form-group>
 
-                <b-table
+                <b-table id="table"
                         selectable
                         :select-mode="selectMode"
                         selectedVariant="success"
@@ -52,5 +53,8 @@
 </script>
 
 <style scoped>
+    #table {
+        border: #009999;
+    }
 
 </style>
