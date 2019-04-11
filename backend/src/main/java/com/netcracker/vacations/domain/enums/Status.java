@@ -1,13 +1,13 @@
 package com.netcracker.vacations.domain.enums;
 
-public enum Statuses {
+public enum Status {
     ACCEPTED("Accepted"),
     DECLINED("Declined"),
     CONSIDER("Under consideration");
 
     public final String name;
 
-    Statuses (String name){
+    Status(String name){
         this.name=name;
     }
 }

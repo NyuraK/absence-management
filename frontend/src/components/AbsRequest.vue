@@ -36,6 +36,8 @@
 </template>
 
 <script>
+    import {instance} from "../Api"
+
     export default {
         name: "AbsRequest",
         data() {
@@ -56,7 +58,21 @@
         onSubmit(evt) {
             //TODO: complete task -> appearance in list of request from manage requests
             evt.preventDefault();
-            alert(JSON.stringify(this.form))
+            // let req_st = extractStart();
+            // let req_en = extractEnd();
+            alert(JSON.stringify(this.range));
+            let msg = {
+                type: this.type,
+                description: "Test request",
+                start: "2018-04-01",
+                end: "2018-04-10"
+            };
+            instance.post("/request/add", msg).then(res => {
+
+            }).catch(err=> {
+                console.log(err);
+            })
+
         },
         onReset(evt) {
             evt.preventDefault();

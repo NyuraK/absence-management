@@ -31,6 +31,15 @@
         created () {
             this.$acl.change(localStorage.getItem('user'));
         },
+        methods: {
+            exit(evt) {
+                evt.preventDefault();
+                this.$store.dispatch('userLogOut').then(()=>{
+                    this.$acl.change(localStorage.getItem('user'));
+                    this.$router.push('/');
+                });
+            }
+        },
     }
 </script>
 

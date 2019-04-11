@@ -43,7 +43,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // Entry points
         http.authorizeRequests()
 //                .antMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
-                .antMatchers("/api/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN", "ROLE_MANAGER")
+                .antMatchers("/api/**").hasAnyAuthority("ROLE_Employee", "ROLE_Administrator", "ROLE_Manager", "ROLE_Director")
 //                .antMatchers("/manager/**").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN")
                 .antMatchers("/**").permitAll()
                 .and()
@@ -65,6 +65,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(12);
+        return new BCryptPasswordEncoder();
     }
 }

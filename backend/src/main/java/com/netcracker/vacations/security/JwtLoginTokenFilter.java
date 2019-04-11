@@ -27,6 +27,7 @@ public class JwtLoginTokenFilter extends AbstractAuthenticationProcessingFilter 
 
     private final JwtConfig jwtConfig;
 
+
     public JwtLoginTokenFilter(String url, AuthenticationManager authManager, JwtConfig jwtConfig) {
         super(new AntPathRequestMatcher(url));
         this.authManager = authManager;

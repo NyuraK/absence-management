@@ -16,7 +16,7 @@ public class TeamEntity {
     @Column(name = "teams_id")
     private Integer teamsId;
 
-    @Column(name = "abscense_quota", nullable = false)
+    @Column(name = "absence_quota", nullable = false)
     private Integer quota;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})

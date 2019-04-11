@@ -1,6 +1,6 @@
 import Vuex from 'vuex'
 import Vue from 'vue'
-import {instance} from "../Api";
+import axios from 'axios'
 
 Vue.use(Vuex);
 
@@ -28,12 +28,12 @@ const store = new Vuex.Store({
     actions: {
         login(context, payload) {
             return new Promise((resolve, reject) => {
-                instance.post('/login', payload)
+                axios.post('/login', payload)
                     .then((response) => {
                         let accessToken = response.headers['authorization'];
                         context.commit('authSuccess', accessToken);
                         localStorage.setItem('token', accessToken);
-                        instance.defaults.headers.common['Authorization'] = accessToken;
+                        // instance.defaults.headers.common['Authorization'] = accessToken;
                         let role = response.headers['role'];
                         localStorage.setItem('user', role);
                         resolve(response);
@@ -48,7 +48,7 @@ const store = new Vuex.Store({
         userLogOut ({commit}) {
             commit ('authLogout');
             localStorage.removeItem('token');
-            delete instance.defaults.headers.common['Authorization'];
+            // delete instance.defaults.headers.common['Authorization'];
             localStorage.setItem('user', 'public');
         }
 

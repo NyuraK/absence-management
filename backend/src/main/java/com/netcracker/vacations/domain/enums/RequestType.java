@@ -1,15 +1,15 @@
 package com.netcracker.vacations.domain.enums;
 
-public enum RequestsTypes {
+public enum RequestType {
     SICKNESS("Sick leave"),
     VACATION("Vacation"),
     CHILDCARE("Child care"),
-    BUISNESSTRIP("Buisness trip"),
+    BUSINESSTRIP("Business trip"),
     REMOTE("Remote work");
 
     public final String name;
 
-    RequestsTypes(String name){
+    RequestType(String name){
         this.name=name;
     }
 }

@@ -1,6 +1,6 @@
 package com.netcracker.vacations.domain;
 
-import com.netcracker.vacations.domain.enums.Statuses;
+import com.netcracker.vacations.domain.enums.Status;
 import com.netcracker.vacations.exception.BeginningAfterEndingException;
 import com.netcracker.vacations.exception.EndingBeforeBeginningException;
 import org.hibernate.annotations.GenericGenerator;
@@ -13,24 +13,26 @@ import java.util.Date;
 @Entity
 @Table(name = "requests")
 public class RequestEntity {
+
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
-
-    @Column(name = "requests_id")
+    @Column(name = "request_id")
     private Integer requestsId;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "users_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private UserEntity usersId;
 
-    @Column(name = "beginning_ov_vacation", nullable = false)
+    @Column(name = "beginning_of_vacation", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date beginning;
 
-    @Column(name = "enging_ov_vacation", nullable = false)
+    @Column(name = "ending_of_vacation", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date ending;
+
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "type_of_request_id", referencedColumnName = "type_of_requests_id")
     private RequestTypeEntity typeOfRequest;
@@ -44,7 +46,7 @@ public class RequestEntity {
     public RequestEntity() {
     }
 
-    public RequestEntity(UserEntity usersId, Date beginning, Date ending, RequestTypeEntity typeOfRequest, Statuses status) throws EndingBeforeBeginningException {
+    public RequestEntity(UserEntity usersId, Date beginning, Date ending, RequestTypeEntity typeOfRequest, Status status) throws EndingBeforeBeginningException {
         this.usersId = usersId;
         this.typeOfRequest = typeOfRequest;
         this.status = status.name;
@@ -109,7 +111,7 @@ public class RequestEntity {
         return status;
     }
 
-    public void setStatus(Statuses status) {
+    public void setStatus(Status status) {
         this.status = status.name;
     }
 
