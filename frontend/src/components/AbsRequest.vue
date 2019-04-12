@@ -41,18 +41,23 @@
     export default {
         name: "AbsRequest",
         data() {
-        return {
-            form: {
-                absType: null,
-                text: ''
-            },
-            absTypes: [{ text: 'Select One', value: null }, 'Sick leave', 'Business trip', 'Child care', 'Vacation', 'Remote work'],
-            show: true,
-            range: {
-                start: new Date(2018, 3, 16),
-                end: new Date(2018, 3, 19)
+            return {
+                form: {
+                    absType: null,
+                    text: ''
+                },
+                absTypes: [],
+                show: true,
+                range: {
+                    start: new Date(2019, 3, 16),
+                    end: new Date(2019, 3, 19)
+                }
             }
-        }
+        },
+        created() {
+            instance.get('/requests/types').then((resp)=> {
+                this.absTypes = resp.data;
+            })
         },
         methods: {
         onSubmit(evt) {
@@ -64,7 +69,7 @@
                 type: this.form.absType,
                 description: this.form.text,
             };
-            instance.post("/request/add", msg).then(res => {
+            instance.post("/requests", msg).then(res => {
 
             }).catch(err=> {
                 console.log(err);

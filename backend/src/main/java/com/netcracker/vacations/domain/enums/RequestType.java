@@ -9,8 +9,8 @@ public enum RequestType {
 
     public final String name;
 
-    RequestType(String name){
-        this.name=name;
+    RequestType(String name) {
+        this.name = name;
     }
 
     public static RequestType findByName(String name) {
@@ -20,5 +20,14 @@ public enum RequestType {
                 return type;
         }
         return null;
+    }
+
+    public static String[] getNames() {
+        RequestType[] types = RequestType.values();
+        String[] names = new String[types.length];
+        for (int i = 0; i < types.length; i++) {
+            names[i] = types[i].name;
+        }
+        return names;
     }
 }

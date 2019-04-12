@@ -41,8 +41,7 @@
             instance.get("/requests").then((resp)=> {
                 this.items = resp.data;
                 console.log(resp.data);
-            }).catch(err => {
-            });
+            })
         },
         methods: {
             rowSelected(items) {

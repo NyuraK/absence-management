@@ -1,5 +1,6 @@
 package com.netcracker.vacations.controller;
 
+import com.netcracker.vacations.domain.enums.RequestType;
 import com.netcracker.vacations.dto.RequestDTO;
 import com.netcracker.vacations.dto.RestRequestDTO;
 import com.netcracker.vacations.service.RequestService;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/requests")
 public class RequestController {
 
     private RequestService service;
@@ -19,14 +20,19 @@ public class RequestController {
         this.service = service;
     }
 
-    @PostMapping("/request/add")
+    @PostMapping
     public void addRequest(@RequestBody RequestDTO request) {
         service.saveRequest(request);
     }
 
-    @GetMapping("/requests")
+    @GetMapping
     public List<RestRequestDTO> getRequests() {
         return service.getRequests();
+    }
+
+    @GetMapping("/types")
+    public String[] getTypes() {
+        return RequestType.getNames();
     }
 
 }

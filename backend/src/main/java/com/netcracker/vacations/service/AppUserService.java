@@ -25,13 +25,11 @@ public class AppUserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        for (UserEntity user : repository.findAll()) {
-            if (user.getLogin().equals(username)) {
-                List<GrantedAuthority> grantedAuthorities = AuthorityUtils
-                        .commaSeparatedStringToAuthorityList("ROLE_" + user.getRole());
-                return new User(user.getLogin(), user.getPassword(), grantedAuthorities);
-            }
+        UserEntity user = repository.findByLogin(username).get(0);
+        if (user != null) {
+            List<GrantedAuthority> grantedAuthorities = AuthorityUtils
+                    .commaSeparatedStringToAuthorityList("ROLE_" + user.getRole());
+            return new User(user.getLogin(), user.getPassword(), grantedAuthorities);
         }
         throw new UsernameNotFoundException("Username: " + username + " not found");
     }

@@ -2,6 +2,7 @@ import Vuex from 'vuex'
 import Vue from 'vue'
 import axios from 'axios'
 import {instance} from "../Api";
+import jwt from 'jsonwebtoken'
 
 Vue.use(Vuex);
 
@@ -33,10 +34,10 @@ const store = new Vuex.Store({
                         context.commit('authSuccess', accessToken);
                         localStorage.setItem('token', accessToken);
                         instance.defaults.headers.common['Authorization'] = accessToken;
-                        let role = response.headers['role'];
-                        let username = response.headers['username'];
-                        localStorage.setItem('user', role);
-                        localStorage.setItem('username', username);
+                        let ca = accessToken.substring(7);
+                        let decodedValue = jwt.decode(ca, {algorithm : 'HS512'});
+                        localStorage.setItem('user', decodedValue.authorities);
+                        localStorage.setItem('username', decodedValue.sub);
                         resolve(response);
                     })
                     .catch((error) => {
@@ -52,16 +53,14 @@ const store = new Vuex.Store({
             delete instance.defaults.headers.common['Authorization'];
             localStorage.setItem('user', 'public');
             localStorage.removeItem('username');
-        }
+        },
 
     },
-
 
     getters: {
         isAuthenticated: state => !!state.token,
         isToken: state => state.token
-    }
-
+    },
 });
 
 export default store
