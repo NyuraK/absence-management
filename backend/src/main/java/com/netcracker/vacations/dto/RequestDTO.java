@@ -13,7 +13,7 @@ public class RequestDTO {
     private Date start, end;
     private String type;
     private String description;
-    private Status status;
+    private String status;
 
     public Integer getId() {
         return id;
@@ -47,11 +47,11 @@ public class RequestDTO {
         this.type = type;
     }
 
-    public Status getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

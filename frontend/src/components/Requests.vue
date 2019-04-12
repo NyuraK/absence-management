@@ -22,8 +22,8 @@
                         </template>
                         <template slot="thead-top" slot-scope="data"></template>
                     </b-table>
-                    <b-button type="submit" variant="primary">Approve</b-button>
-                    <b-button type="reset" variant="danger">Decline</b-button>
+                    <b-button variant="primary" v-on:click="approve">Approve</b-button>
+                    <b-button variant="danger" v-on:click="decline">Decline</b-button>
                 </b-tab>
                 <b-tab title="Resolved requests">
                     <b-form-group label="Selection mode:" label-cols-md="4">
@@ -34,7 +34,7 @@
                              selectable
                              :select-mode="selectMode"
                              selectedVariant="success"
-                             :fields="fields"
+                             :fields="resolvedFields"
                              :items="itemsResolved"
                              @row-selected="rowSelected"
                              show-empty
@@ -70,24 +70,56 @@
                     { key: "end", label: "End" },
                     { key: "type", label: "Type"},
                     { key: "description", label: "Description"},
+                ],
+                resolvedFields: [
+                    { key: "name", label: "Name" },
+                    { key: "start", label: "Beginning" },
+                    { key: "end", label: "End" },
+                    { key: "type", label: "Type"},
+                    { key: "description", label: "Description"},
+                    { key: "status", label: "Status"}
                 ]
             }
         },
         mounted() {
             instance.get("/requests").then((resp) => {
-                this.items = resp.data;
-            })
+                this.items = resp.data.filter(function (el) {
+                    return el.status === 'Under consideration'
+                });
+                this.itemsResolved = resp.data.filter(function (el) {
+                    return el.status !== 'Under consideration'
+                });
+            });
         },
         methods: {
             rowSelected(items) {
                 this.selected = items
             },
-            onSubmit(evt) {
-                evt.preventDefault();
 
+            approve() {
+                instance.put("/requests/approve", this.selected).then(()=>{
+                    instance.get("/requests").then((resp) => {
+                        this.items = resp.data.filter(function (el) {
+                            return el.status === 'Under consideration'
+                        });
+                        this.itemsResolved = resp.data.filter(function (el) {
+                            return el.status !== 'Under consideration'
+                        });
+                    });
+                });
             },
-            onReset(evt) {
-                evt.preventDefault();
+
+            decline() {
+                instance.put("/requests/decline", this.selected).then(()=>{
+                    instance.get("/requests").then((resp) => {
+                        this.items = resp.data.filter(function (el) {
+                            return el.status === 'Under consideration'
+                        });
+                        this.itemsResolved = resp.data.filter(function (el) {
+                            return el.status !== 'Under consideration'
+                        });
+                    });
+                });
             }
         }
     }

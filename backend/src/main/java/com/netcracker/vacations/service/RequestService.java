@@ -44,12 +44,13 @@ public class RequestService {
         List<RequestDTO> response = new ArrayList();
         for (RequestEntity entity : requestRepository.findAll()) {
             RequestDTO requestDTO = new RequestDTO();
-            requestDTO.setId(entity.getUsersId().getUsersId());
+            requestDTO.setId(entity.getRequestsId());
             requestDTO.setName(entity.getUsersId().getName() + " " + entity.getUsersId().getFamilyName());
             requestDTO.setDescription(entity.getDescription());
             requestDTO.setStart(entity.getBeginning());
             requestDTO.setEnd(entity.getEnding());
             requestDTO.setType(entity.getTypeOfRequest().getName());
+            requestDTO.setStatus(entity.getStatus());
             response.add(requestDTO);
         }
         return response;
@@ -58,8 +59,10 @@ public class RequestService {
     public void updateRequest(Status status, List<RequestDTO> requests) {
         for (RequestEntity entity: requestRepository.findAll()) {
             for (RequestDTO request : requests) {
-                if (entity.getRequestsId().equals(request.getId()))
+                if (entity.getRequestsId().equals(request.getId())) {
                     entity.setStatus(status);
+                    requestRepository.save(entity);
+                }
             }
         }
     }
