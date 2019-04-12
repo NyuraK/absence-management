@@ -2,22 +2,44 @@
     <div>
         <Nav></Nav>
         <b-container>
-            <div>
-                <h3>Active requests</h3>
-                <b-form-group label="Selection mode:" label-cols-md="4">
-                    <b-form-select v-model="selectMode" :options="modes" class="mb-3"></b-form-select>
-                </b-form-group>
+            <b-tabs content-class="mt-3">
+                <b-tab title="Active requests" active>
+                    <b-form-group label="Selection mode:" label-cols-md="4">
+                        <b-form-select v-model="selectMode" :options="modes" class="mb-3"></b-form-select>
+                    </b-form-group>
 
-                <b-table id="table"
-                        selectable
-                        :select-mode="selectMode"
-                        selectedVariant="success"
-                        :items="items"
-                        @row-selected="rowSelected"
-                ></b-table>
+                    <b-table id="table"
+                             selectable
+                             :select-mode="selectMode"
+                             selectedVariant="success"
+                             :items="items"
+                             @row-selected="rowSelected"
+                             show-empty
+                    >
+                        <template slot="empty" slot-scope="scope">
+                            <h4>No requests</h4>
+                        </template>
+                    </b-table>
+                </b-tab>
+                <b-tab title="Resolved requests">
+                    <b-form-group label="Selection mode:" label-cols-md="4">
+                        <b-form-select v-model="selectMode" :options="modes" class="mb-3"></b-form-select>
+                    </b-form-group>
 
-                {{ selected }}
-            </div>
+                    <b-table id="tableResolved"
+                             selectable
+                             :select-mode="selectMode"
+                             selectedVariant="success"
+                             :items="itemsResolved"
+                             @row-selected="rowSelected"
+                             show-empty
+                    >
+                        <template slot="empty" slot-scope="scope">
+                            <h4>No requests</h4>
+                        </template>
+                    </b-table>
+                </b-tab>
+            </b-tabs>
         </b-container>
     </div>
 </template>
@@ -33,14 +55,14 @@
             return {
                 modes: ['multi', 'single'],
                 items: [],
+                itemsResolved: [],
                 selectMode: 'multi',
                 selected: []
             }
         },
-        mounted () {
-            instance.get("/requests").then((resp)=> {
+        mounted() {
+            instance.get("/requests").then((resp) => {
                 this.items = resp.data;
-                console.log(resp.data);
             })
         },
         methods: {
