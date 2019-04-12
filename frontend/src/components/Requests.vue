@@ -8,14 +8,14 @@
                         <b-form-select v-model="selectMode" :options="modes" class="mb-3"></b-form-select>
                     </b-form-group>
 
-                    <b-table id="table"
-                             selectable
-                             :select-mode="selectMode"
-                             selectedVariant="success"
-                             :fields="fields"
-                             :items="items"
-                             @row-selected="rowSelected"
-                             show-empty
+                    <b-table
+                            selectable
+                            :select-mode="selectMode"
+                            selectedVariant="success"
+                            :fields="fields"
+                            :items="items"
+                            @row-selected="rowSelected"
+                            show-empty
                     >
                         <template slot="empty" slot-scope="scope">
                             <h4>No requests</h4>
@@ -65,60 +65,56 @@
                 selectMode: 'multi',
                 selected: [],
                 fields: [
-                    { key: "name", label: "Name" },
-                    { key: "start", label: "Beginning" },
-                    { key: "end", label: "End" },
-                    { key: "type", label: "Type"},
-                    { key: "description", label: "Description"},
+                    {key: "name", label: "Name"},
+                    {key: "start", label: "Beginning"},
+                    {key: "end", label: "End"},
+                    {key: "type", label: "Type"},
+                    {key: "description", label: "Description"},
                 ],
                 resolvedFields: [
-                    { key: "name", label: "Name" },
-                    { key: "start", label: "Beginning" },
-                    { key: "end", label: "End" },
-                    { key: "type", label: "Type"},
-                    { key: "description", label: "Description"},
-                    { key: "status", label: "Status"}
+                    {key: "name", label: "Name"},
+                    {key: "start", label: "Beginning"},
+                    {key: "end", label: "End"},
+                    {key: "type", label: "Type"},
+                    {key: "description", label: "Description"},
+                    {key: "status", label: "Status"}
                 ]
             }
         },
         mounted() {
-            instance.get("/requests").then((resp) => {
-                this.items = resp.data.filter(function (el) {
-                    return el.status === 'Under consideration'
-                });
-                this.itemsResolved = resp.data.filter(function (el) {
-                    return el.status !== 'Under consideration'
-                });
+            instance.get("/requests/active").then((resp) => {
+                this.items = resp.data;
             });
+            instance.get("/requests/resolved").then((resp)=> {
+                this.itemsResolved = resp.data;
+            })
         },
         methods: {
             rowSelected(items) {
-                this.selected = items
+                this.selected = items.map(function (el) {
+                    return el.id;
+                })
             },
 
             approve() {
-                instance.put("/requests/approve", this.selected).then(()=>{
-                    instance.get("/requests").then((resp) => {
-                        this.items = resp.data.filter(function (el) {
-                            return el.status === 'Under consideration'
-                        });
-                        this.itemsResolved = resp.data.filter(function (el) {
-                            return el.status !== 'Under consideration'
-                        });
+                instance.patch("/requests/approve", this.selected).then(() => {
+                    instance.get("/requests/active").then((resp) => {
+                        this.items = resp.data;
                     });
+                    instance.get("/requests/resolved").then((resp)=> {
+                        this.itemsResolved = resp.data;
+                    })
                 });
             },
 
             decline() {
-                instance.put("/requests/decline", this.selected).then(()=>{
-                    instance.get("/requests").then((resp) => {
-                        this.items = resp.data.filter(function (el) {
-                            return el.status === 'Under consideration'
-                        });
-                        this.itemsResolved = resp.data.filter(function (el) {
-                            return el.status !== 'Under consideration'
-                        });
+                instance.patch("/requests/decline", this.selected).then(() => {
+                    instance.get("/active").then((resp) => {
+                        this.items = resp.data;
                     });
+                    instance.get("/resolved").then((resp)=> {
+                        this.itemsResolved = resp.data;
+                    })
                 });
             }
         }
@@ -126,8 +122,5 @@
 </script>
 
 <style scoped>
-    #table {
-        border: #009999;
-    }
 
 </style>

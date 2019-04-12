@@ -12,7 +12,6 @@ public class TeamEntity {
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
-
     @Column(name = "teams_id")
     private Integer teamsId;
 

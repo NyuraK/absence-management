@@ -10,7 +10,7 @@ public class RequestDTO {
     private Integer id;
     private String username;
     private String name;
-    private Date start, end;
+    private Date start, end, creation;
     private String type;
     private String description;
     private String status;
@@ -77,5 +77,13 @@ public class RequestDTO {
 
     public void setEnd(Date end) {
         this.end = end;
+    }
+
+    public Date getCreation() {
+        return creation;
+    }
+
+    public void setCreation(Date creation) {
+        this.creation = creation;
     }
 }

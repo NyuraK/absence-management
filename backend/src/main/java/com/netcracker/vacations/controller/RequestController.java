@@ -25,9 +25,14 @@ public class RequestController {
         service.saveRequest(request);
     }
 
-    @GetMapping
-    public List<RequestDTO> getRequests() {
-        return service.getRequests();
+    @GetMapping("/active")
+    public List<RequestDTO> getActiveRequests() {
+        return service.getActiveRequests();
+    }
+
+    @GetMapping("/resolved")
+    public List<RequestDTO> getResolvedRequests() {
+        return service.getResolvedRequests();
     }
 
     @GetMapping("/types")
@@ -35,13 +40,13 @@ public class RequestController {
         return RequestType.getNames();
     }
 
-    @PutMapping("/decline")
-    public void declineRequest(@RequestBody List<RequestDTO> requests) {
+    @PatchMapping("/decline")
+    public void declineRequest(@RequestBody List<Integer> requests) {
         service.updateRequest(Status.DECLINED, requests);
     }
 
-    @PutMapping("/approve")
-    public void approveRequest(@RequestBody List<RequestDTO> requests) {
+    @PatchMapping("/approve")
+    public void approveRequest(@RequestBody List<Integer> requests) {
         service.updateRequest(Status.ACCEPTED, requests);
     }
 
