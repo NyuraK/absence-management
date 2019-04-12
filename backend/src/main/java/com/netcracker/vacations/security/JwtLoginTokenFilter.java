@@ -27,6 +27,7 @@ public class JwtLoginTokenFilter extends AbstractAuthenticationProcessingFilter 
 
     private final JwtConfig jwtConfig;
 
+
     public JwtLoginTokenFilter(String url, AuthenticationManager authManager, JwtConfig jwtConfig) {
         super(new AntPathRequestMatcher(url));
         this.authManager = authManager;
@@ -69,10 +70,8 @@ public class JwtLoginTokenFilter extends AbstractAuthenticationProcessingFilter 
                 .setExpiration(new Date(now + jwtConfig.getExpiration() * 1000))  // jwtConfig.getExpiration() = 86400
                 .signWith(SignatureAlgorithm.HS512, jwtConfig.getSecret())
                 .compact();
-
         // Add token to header
         response.addHeader(jwtConfig.getHeader(), jwtConfig.getPrefix() + token);
-        response.addHeader("role", authorities);
     }
 
     // A (temporary) class just to represent the user credentials

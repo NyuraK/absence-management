@@ -4,17 +4,16 @@ import com.netcracker.vacations.domain.enums.Role;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "users")
 public class UserEntity {
+
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
-
     @Column(name = "users_id")
     private Integer usersId;
 
@@ -33,21 +32,29 @@ public class UserEntity {
     @Column(name = "hire_date", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date hireDate;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "teams_id")
     private TeamEntity teamsId;
+
     @Column(name = "name")
     private String name;
+
     @Column(name = "surname")
     private String surname;
+
     @Column(name = "family_name")
     private String familyName;
+
     @Column(name = "phone_number")
     private String phoneNumber;
+
     @Column(name = "email")
     private String email;
+
     @Column(name = "description")
     private String description;
+
     @Transient
     private BCryptPasswordEncoder coder;
 
@@ -83,7 +90,7 @@ public class UserEntity {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = new BCryptPasswordEncoder().encode(password);
     }
 
     public String getRole() {

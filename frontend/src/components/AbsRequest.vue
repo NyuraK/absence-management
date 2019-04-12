@@ -36,27 +36,46 @@
 </template>
 
 <script>
+    import {instance} from "../Api"
+
     export default {
         name: "AbsRequest",
         data() {
-        return {
-            form: {
-                absType: null,
-                text: ''
-            },
-            absTypes: [{ text: 'Select One', value: null }, 'Sickness', 'Business trip', 'Maternity/Paternity', 'Vacations', 'At home'],
-            show: true,
-            range: {
-                start: new Date(2018, 3, 16),
-                end: new Date(2018, 3, 19)
+            return {
+                form: {
+                    absType: null,
+                    text: ''
+                },
+                absTypes: [],
+                show: true,
+                range: {
+                    start: new Date(2019, 3, 16),
+                    end: new Date(2019, 3, 19)
+                }
             }
-        }
+        },
+        created() {
+            instance.get('/requests/types').then((resp)=> {
+                this.absTypes = resp.data;
+            })
         },
         methods: {
         onSubmit(evt) {
-            //TODO: complete task -> appearance in list of request from manage requests
             evt.preventDefault();
-            alert(JSON.stringify(this.form))
+            let msg = {
+                username: localStorage.getItem('username'),
+                start: this.range.start,
+                end: this.range.end,
+                type: this.form.absType,
+                description: this.form.text,
+            };
+            instance.post("/requests", msg).then(res => {
+
+            }).catch(err=> {
+                console.log(err);
+            });
+            this.form.absType = null;
+            this.form.text = '';
         },
         onReset(evt) {
             evt.preventDefault();

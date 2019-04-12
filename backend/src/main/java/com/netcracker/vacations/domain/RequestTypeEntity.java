@@ -1,7 +1,7 @@
 package com.netcracker.vacations.domain;
 
 
-import com.netcracker.vacations.domain.enums.RequestsTypes;
+import com.netcracker.vacations.domain.enums.RequestType;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -12,7 +12,6 @@ public class RequestTypeEntity {
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
-
     @Column(name = "type_of_requests_id")
     private Integer typeOfRequest;
 
@@ -28,7 +27,7 @@ public class RequestTypeEntity {
     public RequestTypeEntity() {
     }
 
-    public RequestTypeEntity(Boolean influenceOnVr, Boolean needApproval, RequestsTypes name) {
+    public RequestTypeEntity(Boolean influenceOnVr, Boolean needApproval, RequestType name) {
         this.influenceOnVr = influenceOnVr;
         this.needApproval = needApproval;
         this.name = name.name;
@@ -62,7 +61,7 @@ public class RequestTypeEntity {
         return name;
     }
 
-    public void setName(RequestsTypes name) {
+    public void setName(RequestType name) {
         this.name = name.name;
     }
 }

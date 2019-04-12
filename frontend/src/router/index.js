@@ -47,12 +47,17 @@ router.beforeEach((to, from, next) => {
     const isLoginPage = to.matched.some(record => record.meta.loginPage);
     const requiresAuth = !to.matched.some(record => record.meta.nonRequiresAuth);
     const isAuthenticated = store.getters.isAuthenticated;
+    const isAllowed = to.matched.some(record => record.meta.rule);
     if (requiresAuth && !isAuthenticated) {
         next("/")
     } else if (isLoginPage && isAuthenticated) {
         router.push('/home')
     }
-    next()
+    else if (isAllowed) {
+        next()
+    }
+
 });
+
 
 export default router

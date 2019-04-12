@@ -1,6 +1,6 @@
 package com.netcracker.vacations.domain;
 
-import com.netcracker.vacations.domain.enums.Statuses;
+import com.netcracker.vacations.domain.enums.Status;
 import com.netcracker.vacations.repository.*;
 
 import java.util.*;
@@ -44,7 +44,7 @@ public class Methods {
     }
 
     public List<RequestEntity> findByDates(Date begin, Date end, RequestRepository requestsRepo) {
-        List<RequestEntity> requests = requestsRepo.findAllByStatus(Statuses.ACCEPTED.name);
+        List<RequestEntity> requests = requestsRepo.findAllByStatus(Status.ACCEPTED.name);
         List<RequestEntity> result = new ArrayList<RequestEntity>();
         for (RequestEntity request : requests) {
             if ((((request.getBeginning()).after(begin)) || (request.getBeginning().equals(begin))) && ((((request.getEnding()).before(end)) || (request.getEnding().equals(end))))) {
