@@ -12,6 +12,7 @@
                              selectable
                              :select-mode="selectMode"
                              selectedVariant="success"
+                             :fields="fields"
                              :items="items"
                              @row-selected="rowSelected"
                              show-empty
@@ -19,7 +20,10 @@
                         <template slot="empty" slot-scope="scope">
                             <h4>No requests</h4>
                         </template>
+                        <template slot="thead-top" slot-scope="data"></template>
                     </b-table>
+                    <b-button type="submit" variant="primary">Approve</b-button>
+                    <b-button type="reset" variant="danger">Decline</b-button>
                 </b-tab>
                 <b-tab title="Resolved requests">
                     <b-form-group label="Selection mode:" label-cols-md="4">
@@ -30,6 +34,7 @@
                              selectable
                              :select-mode="selectMode"
                              selectedVariant="success"
+                             :fields="fields"
                              :items="itemsResolved"
                              @row-selected="rowSelected"
                              show-empty
@@ -37,6 +42,7 @@
                         <template slot="empty" slot-scope="scope">
                             <h4>No requests</h4>
                         </template>
+                        <template slot="thead-top" slot-scope="data"></template>
                     </b-table>
                 </b-tab>
             </b-tabs>
@@ -57,7 +63,14 @@
                 items: [],
                 itemsResolved: [],
                 selectMode: 'multi',
-                selected: []
+                selected: [],
+                fields: [
+                    { key: "name", label: "Name" },
+                    { key: "start", label: "Beginning" },
+                    { key: "end", label: "End" },
+                    { key: "type", label: "Type"},
+                    { key: "description", label: "Description"},
+                ]
             }
         },
         mounted() {
@@ -68,6 +81,13 @@
         methods: {
             rowSelected(items) {
                 this.selected = items
+            },
+            onSubmit(evt) {
+                evt.preventDefault();
+
+            },
+            onReset(evt) {
+                evt.preventDefault();
             }
         }
     }

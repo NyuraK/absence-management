@@ -3,7 +3,6 @@ package com.netcracker.vacations.service;
 import com.netcracker.vacations.domain.RequestEntity;
 import com.netcracker.vacations.domain.enums.Status;
 import com.netcracker.vacations.dto.RequestDTO;
-import com.netcracker.vacations.dto.RestRequestDTO;
 import com.netcracker.vacations.repository.RequestRepository;
 import com.netcracker.vacations.repository.RequestTypeRepository;
 import com.netcracker.vacations.repository.UserRepository;
@@ -32,7 +31,7 @@ public class RequestService {
                 userRepository.findByLogin(request.getUsername()).get(0),
                 request.getStart(),
                 request.getEnd(),
-                requestTypeRepository.findByName(request.getType().name).get(0),
+                requestTypeRepository.findByName(request.getType()).get(0),
                 Status.CONSIDER
         );
         requestEntity.setDescription(request.getDescription());
@@ -41,10 +40,11 @@ public class RequestService {
     }
 
 
-    public List<RestRequestDTO> getRequests() {
-        List<RestRequestDTO> response = new ArrayList();
+    public List<RequestDTO> getRequests() {
+        List<RequestDTO> response = new ArrayList();
         for (RequestEntity entity : requestRepository.findAll()) {
-            RestRequestDTO requestDTO = new RestRequestDTO();
+            RequestDTO requestDTO = new RequestDTO();
+            requestDTO.setId(entity.getUsersId().getUsersId());
             requestDTO.setName(entity.getUsersId().getName() + " " + entity.getUsersId().getFamilyName());
             requestDTO.setDescription(entity.getDescription());
             requestDTO.setStart(entity.getBeginning());
@@ -55,4 +55,12 @@ public class RequestService {
         return response;
     }
 
+    public void updateRequest(Status status, List<RequestDTO> requests) {
+        for (RequestEntity entity: requestRepository.findAll()) {
+            for (RequestDTO request : requests) {
+                if (entity.getRequestsId().equals(request.getId()))
+                    entity.setStatus(status);
+            }
+        }
+    }
 }

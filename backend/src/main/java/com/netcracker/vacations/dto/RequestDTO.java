@@ -7,11 +7,29 @@ import java.util.Date;
 
 public class RequestDTO {
 
+    private Integer id;
     private String username;
+    private String name;
     private Date start, end;
-    private RequestType type;
+    private String type;
     private String description;
     private Status status;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getUsername() {
         return username;
@@ -21,12 +39,12 @@ public class RequestDTO {
         this.username = username;
     }
 
-    public RequestType getType() {
+    public String getType() {
         return type;
     }
 
     public void setType(String type) {
-        this.type = RequestType.findByName(type);
+        this.type = type;
     }
 
     public Status getStatus() {
