@@ -27,6 +27,7 @@ public class JwtLoginTokenFilter extends AbstractAuthenticationProcessingFilter 
 
     private final JwtConfig jwtConfig;
 
+
     public JwtLoginTokenFilter(String url, AuthenticationManager authManager, JwtConfig jwtConfig) {
         super(new AntPathRequestMatcher(url));
         this.authManager = authManager;
@@ -72,7 +73,6 @@ public class JwtLoginTokenFilter extends AbstractAuthenticationProcessingFilter 
 
         // Add token to header
         response.addHeader(jwtConfig.getHeader(), jwtConfig.getPrefix() + token);
-        response.addHeader("role", authorities);
     }
 
     // A (temporary) class just to represent the user credentials

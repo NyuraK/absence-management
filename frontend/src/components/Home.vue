@@ -22,7 +22,7 @@
                     <AbsRequest></AbsRequest>
                 </b-col>
             </b-row>
-        </b-container>>
+        </b-container>
     </div>
 </template>
 
@@ -30,7 +30,6 @@
     import SecurityTest from "./SecurityTest";
     import AbsRequest from "./AbsRequest";
     import Nav from "./Nav";
-    import {instance} from "../Api";
 
     export default {
         name: "Home",
@@ -42,16 +41,7 @@
         components: {AbsRequest, SecurityTest, Nav},
         created () {
             this.$acl.change(localStorage.getItem('user'));
-            this.vacantDays = instance.get('/user/rest_days');
-        },
-        methods: {
-            exit(evt) {
-                evt.preventDefault();
-                this.$store.dispatch('userLogOut').then(()=>{
-                    this.$acl.change(localStorage.getItem('user'));
-                    this.$router.push('/');
-                });
-            }
+            // this.vacantDays = instance.get('/user/rest_days');
         },
 
     }

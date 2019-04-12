@@ -3,10 +3,10 @@ import axios from 'axios'
 
 export const instance = axios.create({
     baseURL: '/api',
-    timeout: 1000,
+    timeout: 10000,
     headers:  {
             'Content-Type': 'application/json',
-            // 'Authorization': 'Bearer ' + localStorage.getItem('token')
+            'Authorization': localStorage.getItem('token')
     }
 });
 
