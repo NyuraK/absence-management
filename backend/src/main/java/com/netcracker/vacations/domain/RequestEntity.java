@@ -22,7 +22,7 @@ public class RequestEntity {
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "users_id", nullable = false)
-    private UserEntity usersId;
+    private UserEntity user;
 
     @Column(name = "beginning_ov_vacation", nullable = false)
     @Temporal(TemporalType.DATE)
@@ -44,8 +44,8 @@ public class RequestEntity {
     public RequestEntity() {
     }
 
-    public RequestEntity(UserEntity usersId, Date beginning, Date ending, RequestTypeEntity typeOfRequest, Statuses status) throws EndingBeforeBeginningException {
-        this.usersId = usersId;
+    public RequestEntity(UserEntity user, Date beginning, Date ending, RequestTypeEntity typeOfRequest, Statuses status) throws EndingBeforeBeginningException {
+        this.user = user;
         this.typeOfRequest = typeOfRequest;
         this.status = status.name;
 
@@ -65,12 +65,12 @@ public class RequestEntity {
         this.requestsId = requestsId;
     }
 
-    public UserEntity getUsersId() {
-        return usersId;
+    public UserEntity getUser() {
+        return user;
     }
 
-    public void setUsersId(UserEntity usersId) {
-        this.usersId = usersId;
+    public void setUser(UserEntity user) {
+        this.user = user;
     }
 
     public Date getBeginning() {

@@ -6,11 +6,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
 @Table(name = "users")
-public class UserEntity {
+public class UserEntity implements Serializable {
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
@@ -24,8 +25,9 @@ public class UserEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    private String role;
+    private Role role;
 
     @Column(name = "rest_days", nullable = false)
     private Integer restDays;
@@ -33,9 +35,11 @@ public class UserEntity {
     @Column(name = "hire_date", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date hireDate;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teams_id")
-    private TeamEntity teamsId;
+    private TeamEntity team;
+
     @Column(name = "name")
     private String name;
     @Column(name = "surname")
@@ -57,7 +61,7 @@ public class UserEntity {
     public UserEntity(String login, String password, Role role, Integer restDays, Date hireDate) {
         this.login = login;
         this.password = encode(password);
-        this.role = role.name;
+        this.role = role;
         this.restDays = restDays;
         this.hireDate = hireDate;
     }
@@ -86,12 +90,12 @@ public class UserEntity {
         this.password = password;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
     public void setRole(Role role) {
-        this.role = role.name;
+        this.role = role;
     }
 
     public Integer getRestDays() {
@@ -110,12 +114,12 @@ public class UserEntity {
         this.hireDate = hireDate;
     }
 
-    public TeamEntity getTeamsId() {
-        return teamsId;
+    public TeamEntity getTeam() {
+        return team;
     }
 
-    public void setTeamsId(TeamEntity teamsId) {
-        this.teamsId = teamsId;
+    public void setTeam(TeamEntity team) {
+        this.team = team;
     }
 
     public String getName() {

@@ -9,22 +9,32 @@
             <v-container>
                 <v-layout align-space-between justify-start column>
                     <NewUser></NewUser>
-                    <input v-model="search" class="form-control" placeholder="Search">
-                    <ul class="list-group mt-1" v-for="user of findUsers" :key="user.users_id">
+                    <input v-model="search" class="form-control" placeholder="Search by name or role...">
+                    <ul class="list-group mt-1" v-for="user of findUsers" :key="user.user">
                         <li class="list-group-item">
                             <v-layout align-center justify-space-between row fill-height>
                                 <div>
-                                    <strong> {{ user.users_id }} {{ user.name }} {{ user.surname }}</strong>
+                                    <strong class="ml-2"> {{ user.name }} {{ user.surname }}</strong>
+                                    <v-chip color="primary" text-color="white" v-if="user.role === 'Employee'" small>
+                                        {{user.role}}
+                                    </v-chip>
+                                    <v-chip color="secondary" text-color="white"
+                                            v-else-if="user.role === 'Administrator'" small>{{user.role}}
+                                    </v-chip>
+                                    <v-chip color="red" text-color="white" v-else-if="user.role === 'Director'" small>
+                                        {{user.role}}
+                                    </v-chip>
+                                    <v-chip color="green" text-color="white" v-else small>{{user.role}}</v-chip>
                                 </div>
                                 <div>
                                     <v-layout align-center>
-                                        <router-link :to="'/users/' + user.users_id">
+                                        <router-link :to="'/users/' + user.userId">
                                             <v-btn color="primary" fab small dark>
                                                 <v-icon>edit</v-icon>
                                             </v-btn>
                                         </router-link>
                                         <v-btn depressed small color="error"
-                                               @click="clickDelete(user.users_id, user.name, user.surname)">Delete
+                                               @click="clickDelete(user.userId, user.name, user.surname)">Delete
                                         </v-btn>
                                     </v-layout>
                                 </div>
@@ -55,7 +65,7 @@
 
 <script>
 
-    import {instance} from '../Api.js';
+    import {instance} from '../../Api.js';
     import NewUser from "./NewUser";
 
 
@@ -72,21 +82,21 @@
             }
         },
         created: function () {
-            instance.get('/api/user')
+            instance.get('users')
                 .then(response => {
                     this.users = response.data;
                     console.log(response)
                 })
         },
         methods: {
-            clickDelete(id, name, surname){
+            clickDelete(id, name, surname) {
                 this.deleteDialog = true;
                 this.deleteId = id;
                 this.deleteName = name;
                 this.deleteSurname = surname;
             },
             deleteUser(id) {
-                instance.delete('/api/user/' + id,
+                instance.delete('users/' + id,
                 )
                     .then(function (response) {
                         console.log(response);
@@ -99,7 +109,7 @@
             findUsers() {
                 return this.users.filter(item => ''.concat(item.name.toLowerCase(), ' ',
                     item.surname.toLowerCase(), ' ',
-                    item.family_name.toLowerCase()).indexOf(this.search.toLowerCase()) !== -1)
+                    item.familyName.toLowerCase(), item.role.toLowerCase()).indexOf(this.search.toLowerCase()) !== -1)
             },
         }
 

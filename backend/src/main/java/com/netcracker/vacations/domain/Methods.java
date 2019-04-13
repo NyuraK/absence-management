@@ -8,29 +8,29 @@ import java.util.*;
 public class Methods {
 
     public void SafeDeleteTeam(TeamEntity team, UserRepository usersRepo, TeamRepository teamRepo) {
-        List<UserEntity> teamsUsers = usersRepo.findAllByTeamsId(team);
+        List<UserEntity> teamsUsers = usersRepo.findAllByTeam(team);
         for (UserEntity user : teamsUsers) {
-            user.setTeamsId(null);
+            user.setTeam(null);
         }
         teamRepo.deleteByTeamsId(team.getTeamsId());
     }
 
     public void SafeDeleteDepartment(DepartmentEntity department, TeamRepository teamRepo, DepartmentRepository depRepo) {
-        List<TeamEntity> depTeams = teamRepo.findAllByDepartmentsId(department);
+        List<TeamEntity> depTeams = teamRepo.findAllByDepartment(department);
         for (TeamEntity team : depTeams) {
-            team.setDepartmentsId(null);
+            team.setDepartment(null);
         }
         depRepo.deleteByDepartmentsId(department.getDepartmentsId());
     }
 
     public void SafeDeleteUser(UserEntity user, TeamRepository teamRepo, DepartmentRepository depRepo, UserRepository userRepo) {
-        List<DepartmentEntity> directors = depRepo.findAllByDirectorsId(user);
-        List<TeamEntity> managers = teamRepo.findAllByManagersId(user);
+        List<DepartmentEntity> directors = depRepo.findAllByDirector(user);
+        List<TeamEntity> managers = teamRepo.findAllByManager(user);
         for (DepartmentEntity director : directors) {
-            director.setDirectorsId(null);
+            director.setDirector(null);
         }
         for (TeamEntity manager : managers) {
-            manager.setManagersId(null);
+            manager.setManager(null);
         }
         userRepo.deleteById(user.getUsersId());
     }

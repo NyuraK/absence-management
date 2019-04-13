@@ -15,13 +15,13 @@ public class DepartmentEntity {
     private Integer departmentsId;
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "directors_id")
-    private UserEntity directorsId;
+    private UserEntity director;
 
     public DepartmentEntity() {
     }
 
     public DepartmentEntity(UserEntity directorsId) {
-        this.directorsId = directorsId;
+        this.director = directorsId;
     }
 
     public Integer getDepartmentsId() {
@@ -32,12 +32,12 @@ public class DepartmentEntity {
         this.departmentsId = departmentsId;
     }
 
-    public UserEntity getDirectorsId() {
-        return directorsId;
+    public UserEntity getDirector() {
+        return director;
     }
 
-    public void setDirectorsId(UserEntity directorsId) {
-        this.directorsId = directorsId;
+    public void setDirector(UserEntity director) {
+        this.director = director;
     }
 }
 

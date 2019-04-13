@@ -7,8 +7,8 @@ import NotFound from "../components/NotFound";
 import Requests from "../components/Requests"
 import store from "../store/index"
 
-import Users from "../components/Users";
-import UserEdit from "../components/UserEdit";
+import Users from "../components/usersControl/Users";
+import UserEdit from "../components/usersControl/UserEdit";
 
 
 
