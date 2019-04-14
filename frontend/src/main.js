@@ -12,6 +12,8 @@ import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
+
+
 window.user = localStorage.getItem('user');
 window.username = localStorage.getItem('username');
 

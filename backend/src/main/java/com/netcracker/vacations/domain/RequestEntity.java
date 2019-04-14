@@ -67,12 +67,12 @@ public class RequestEntity {
         this.requestsId = requestsId;
     }
 
-    public UserEntity getUsersId() {
+    public UserEntity getUser() {
         return usersId;
     }
 
-    public void setUsersId(UserEntity usersId) {
-        this.usersId = usersId;
+    public void setUser(UserEntity user) {
+        this.usersId = user;
     }
 
     public Date getBeginning() {
