@@ -20,10 +20,7 @@ public class UserDTO {
     private String description;
     private Integer teamId;
     private String teamName;
-
-//    private Integer managerId;
-//    private Integer absenceQuota;
-//    private Integer departmentId;
+    
 
     public Integer getUserId() {
         return userId;

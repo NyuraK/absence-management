@@ -9,7 +9,7 @@ public enum Role {
     MANAGER("Manager"),
     EMPLOYEE("Employee");
 
-    private String name;
+    private final String name;
 
 
     Role(String name) {

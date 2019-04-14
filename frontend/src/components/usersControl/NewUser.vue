@@ -14,7 +14,7 @@
                     <v-text-field label="Team id" v-model="teamId"></v-text-field>
                     <v-text-field label="Rest Days" v-model="restDays"></v-text-field>
                     <v-text-field label="Hire date" type="date" v-model="hireDate"></v-text-field>
-                    <v-text-field label="Phone number" v-model="phoneNumber" mask="+# (###) ### - ##-##"></v-text-field>
+                    <v-text-field label="Phone number" v-model="phoneNumber" mask="+# (###) ###-##-##"></v-text-field>
                     <v-text-field label="Description" v-model="description"></v-text-field>
                     <!--<small class="grey&#45;&#45;text">* This doesn't actually save.</small>-->
                     <v-card-actions>

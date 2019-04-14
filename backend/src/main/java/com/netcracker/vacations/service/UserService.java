@@ -31,10 +31,6 @@ public class UserService {
     }
 
     public UserDTO getUser(Integer id) {
-//        for (UserEntity entity : userRepository.findByUsersId(id)) {
-//            return toDTO(entity);
-//        }
-//        return null;
         return toDTO(userRepository.findById(id).get());
     }
 
