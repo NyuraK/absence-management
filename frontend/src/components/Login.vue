@@ -1,4 +1,4 @@
-<template>
+    <template>
     <div id="login-form">
         <b-form>
             <b-form-group
@@ -27,11 +27,11 @@
         </b-form>
         <b-button type="submit" variant="primary" v-on:click="check">Log in</b-button>
 
-        <transition>
+        <!--<transition>
             <b-modal id="modal1" title="BootstrapVue" v-if="!success">
                 <p class="my-4">Wrong login or password!</p>
             </b-modal>
-        </transition>
+        </transition>-->
     </div>
 </template>
 

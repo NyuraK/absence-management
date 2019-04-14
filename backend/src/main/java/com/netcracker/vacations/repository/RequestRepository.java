@@ -15,7 +15,7 @@ import java.util.Date;
 public interface RequestRepository extends CrudRepository<RequestEntity, Integer> {
     List<RequestEntity> findByRequestsId(Integer requestsId);
 
-    List<RequestEntity> findByUsersId(UserEntity usersId);
+    List<RequestEntity> findByUser(UserEntity user);
 
     List<RequestEntity> findByBeginning(Date beginning);
 

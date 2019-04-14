@@ -14,9 +14,9 @@ import java.util.List;
 public interface DepartmentRepository extends CrudRepository<DepartmentEntity, Integer> {
     List<DepartmentEntity> findByDepartmentsId(Integer departmentsId);
 
-    List<DepartmentEntity> findByDirectorsId(UserEntity directorsId);
+    List<DepartmentEntity> findByDirector(UserEntity director);
 
-    List<DepartmentEntity> findAllByDirectorsId(UserEntity directorsId);
+    List<DepartmentEntity> findAllByDirector(UserEntity director);
 
     void deleteByDepartmentsId(Integer departmentsId);
 }

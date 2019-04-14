@@ -1,5 +1,6 @@
 package com.netcracker.vacations.config;
 
+import com.netcracker.vacations.service.AppUserService;
 import com.netcracker.vacations.security.JwtLoginTokenFilter;
 import com.netcracker.vacations.security.JwtTokenFilter;
 import com.netcracker.vacations.security.JwtTokenProvider;
