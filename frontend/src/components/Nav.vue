@@ -11,7 +11,7 @@
                 <b-nav-item href="/requests" v-if="$acl.check('isManager')">
                     Requests
                 </b-nav-item>
-                <b-nav-item href="#" v-if="$acl.check('isAdmin')">Manage users</b-nav-item>
+                <b-nav-item href="/users" v-if="$acl.check('isAdmin')">Manage users</b-nav-item>
                 <b-nav-item href="#">Calendar view</b-nav-item>
             </b-navbar-nav>
             <b-navbar-nav class="ml-auto">

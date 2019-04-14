@@ -79,7 +79,7 @@ public class RequestService {
     private RequestDTO toDTO(RequestEntity entity) {
         RequestDTO requestDTO = new RequestDTO();
         requestDTO.setId(entity.getRequestsId());
-        requestDTO.setName(entity.getUsersId().getName() + " " + entity.getUsersId().getFamilyName());
+        requestDTO.setName(entity.getUser().getName() + " " + entity.getUser().getFamilyName());
         requestDTO.setDescription(entity.getDescription());
         requestDTO.setStart(entity.getBeginning());
         requestDTO.setEnd(entity.getEnding());

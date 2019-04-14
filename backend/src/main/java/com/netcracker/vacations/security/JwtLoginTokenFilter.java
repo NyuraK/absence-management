@@ -56,9 +56,6 @@ public class JwtLoginTokenFilter extends AbstractAuthenticationProcessingFilter 
 
         Long now = System.currentTimeMillis();
 
-        // Convert to list of strings.
-
-        // This is important because it affects the way we get them back in the Gateway.
         String authorities = auth.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
@@ -70,7 +67,6 @@ public class JwtLoginTokenFilter extends AbstractAuthenticationProcessingFilter 
                 .setExpiration(new Date(now + jwtConfig.getExpiration() * 1000))  // jwtConfig.getExpiration() = 86400
                 .signWith(SignatureAlgorithm.HS512, jwtConfig.getSecret())
                 .compact();
-        // Add token to header
         response.addHeader(jwtConfig.getHeader(), jwtConfig.getPrefix() + token);
     }
 
