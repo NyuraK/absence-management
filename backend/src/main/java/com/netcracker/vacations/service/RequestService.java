@@ -87,4 +87,12 @@ public class RequestService {
         requestDTO.setStatus(entity.getStatus());
         return requestDTO;
     }
+
+    public List<RequestDTO> getRequests() {
+        List<RequestDTO> response = new ArrayList<>();
+        for (RequestEntity entity : requestRepository.findAll()) {
+                response.add(toDTO(entity));
+        }
+        return response;
+    }
 }

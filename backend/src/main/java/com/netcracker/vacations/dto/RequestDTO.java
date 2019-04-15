@@ -1,12 +1,10 @@
 package com.netcracker.vacations.dto;
 
-import com.netcracker.vacations.domain.enums.RequestType;
-import com.netcracker.vacations.domain.enums.Status;
-
 import java.util.Date;
 
 public class RequestDTO {
 
+    //TODO make status enum
     private Integer id;
     private String username;
     private String name;
