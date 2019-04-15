@@ -5,10 +5,14 @@ import java.util.Date;
 public class RequestDTO {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     //TODO make status enum and type
 =======
     //TODO make status enum
 >>>>>>> before google chart
+=======
+    //TODO make status enum and type
+>>>>>>> added google chart
     private Integer id;
     private String username;
     private String name;

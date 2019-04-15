@@ -6,6 +6,7 @@ import com.netcracker.vacations.domain.TeamEntity;
 import com.netcracker.vacations.domain.UserEntity;
 import com.netcracker.vacations.domain.enums.Status;
 import com.netcracker.vacations.dto.RequestDTO;
+import com.netcracker.vacations.dto.TimelineRequestDTO;
 import com.netcracker.vacations.repository.RequestRepository;
 import com.netcracker.vacations.repository.RequestTypeRepository;
 import com.netcracker.vacations.repository.TeamRepository;
@@ -127,6 +128,7 @@ public class RequestService {
         return requestDTO;
     }
 
+<<<<<<< HEAD
 
     private List<String> toTimelineDTO(RequestEntity entity) {
         List<String> res = new ArrayList<>();
@@ -141,7 +143,22 @@ public class RequestService {
         List<RequestDTO> response = new ArrayList<>();
         for (RequestEntity entity : requestRepository.findAll()) {
             response.add(toDTO(entity));
+=======
+    public List<TimelineRequestDTO> getRequests() {
+        List<TimelineRequestDTO> response = new ArrayList<>();
+        for (RequestEntity entity : requestRepository.findAll()) {
+                response.add(toTimelineDTO(entity));
+>>>>>>> added google chart
         }
         return response;
+    }
+
+    private TimelineRequestDTO toTimelineDTO(RequestEntity entity) {
+        TimelineRequestDTO dto = new TimelineRequestDTO();
+        dto.setUsername(entity.getUser().getName() + " " + entity.getUser().getFamilyName());
+        dto.setStart(entity.getBeginning());
+        dto.setEnd(entity.getEnding());
+        dto.setType(entity.getTypeOfRequest().getName());
+        return dto;
     }
 }
