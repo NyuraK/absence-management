@@ -3,7 +3,7 @@
         <Nav></Nav>
         <b-container>
             <gantt-elastic :tasks="tasks" :options="options">
-                <!--<gantt-elastic-header slot="header"></gantt-elastic-header>-->
+                <gantt-elastic-header slot="header"></gantt-elastic-header>
             </gantt-elastic>
         </b-container>
     </div>

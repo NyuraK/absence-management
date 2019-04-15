@@ -4,6 +4,7 @@ import com.netcracker.vacations.domain.RequestEntity;
 import com.netcracker.vacations.domain.RequestTypeEntity;
 import com.netcracker.vacations.domain.enums.Status;
 import com.netcracker.vacations.dto.RequestDTO;
+import com.netcracker.vacations.dto.TimelineRequestDTO;
 import com.netcracker.vacations.repository.RequestRepository;
 import com.netcracker.vacations.repository.RequestTypeRepository;
 import com.netcracker.vacations.repository.UserRepository;
@@ -88,11 +89,20 @@ public class RequestService {
         return requestDTO;
     }
 
-    public List<RequestDTO> getRequests() {
-        List<RequestDTO> response = new ArrayList<>();
+    public List<TimelineRequestDTO> getRequests() {
+        List<TimelineRequestDTO> response = new ArrayList<>();
         for (RequestEntity entity : requestRepository.findAll()) {
-                response.add(toDTO(entity));
+                response.add(toTimelineDTO(entity));
         }
         return response;
+    }
+
+    private TimelineRequestDTO toTimelineDTO(RequestEntity entity) {
+        TimelineRequestDTO dto = new TimelineRequestDTO();
+        dto.setUsername(entity.getUser().getName() + " " + entity.getUser().getFamilyName());
+        dto.setStart(entity.getBeginning());
+        dto.setEnd(entity.getEnding());
+        dto.setType(entity.getTypeOfRequest().getName());
+        return dto;
     }
 }
