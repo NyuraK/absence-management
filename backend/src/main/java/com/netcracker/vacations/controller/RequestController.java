@@ -52,15 +52,10 @@ public class RequestController {
         service.updateRequest(Status.ACCEPTED, requests);
     }
 
-<<<<<<< HEAD
     //TODO implement weeks counting
     @GetMapping
     @ResponseBody
     public List<RequestDTO> getRequests() {
-=======
-    @GetMapping
-    public List<RequestDTO> getRequests(){
->>>>>>> before google chart
         return service.getRequests();
     }
 
