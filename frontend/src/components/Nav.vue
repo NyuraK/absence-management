@@ -7,7 +7,7 @@
         <b-collapse id="nav-collapse" is-nav>
             <b-navbar-nav>
                 <b-nav-item href="/home">Profile</b-nav-item>
-                <b-nav-item href="#">Timeline</b-nav-item>
+                <b-nav-item href="/timeline">Timeline</b-nav-item>
                 <b-nav-item href="/requests" v-if="$acl.check('isManager')">
                     Requests
                 </b-nav-item>

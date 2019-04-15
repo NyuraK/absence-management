@@ -54,7 +54,7 @@ public class RequestController {
     //TODO implement weeks counting
     @GetMapping
     @ResponseBody
-    public List<List<String>> getRequests() {
+    public List<RequestDTO> getRequests(){
         return service.getRequests();
     }
 

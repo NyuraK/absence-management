@@ -1,10 +1,6 @@
 package com.netcracker.vacations.config;
 
-<<<<<<< HEAD
-=======
 import com.netcracker.vacations.domain.enums.Role;
-import com.netcracker.vacations.service.AppUserService;
->>>>>>> resolved exceptions
 import com.netcracker.vacations.security.JwtLoginTokenFilter;
 import com.netcracker.vacations.security.JwtTokenFilter;
 import com.netcracker.vacations.security.JwtTokenProvider;
@@ -20,6 +16,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 
 @EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -44,7 +41,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authorizeRequests()
-                .antMatchers("/api/**").hasAnyAuthority("ROLE_"+ Role.EMPLOYEE, "ROLE_" + Role.ADMIN, "ROLE_" + Role.MANAGER, "ROLE_" + Role.DIRECTOR)
+                .antMatchers("/api/**").hasAnyAuthority("ROLE_" + Role.EMPLOYEE, "ROLE_" + Role.ADMIN, "ROLE_" + Role.MANAGER, "ROLE_" + Role.DIRECTOR)
                 .antMatchers("/**").permitAll()
                 .and()
                 .addFilterBefore(new JwtLoginTokenFilter("/login", authenticationManagerBean(), jwtConfig), UsernamePasswordAuthenticationFilter.class)
