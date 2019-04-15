@@ -9,9 +9,10 @@ import store from "../store/index"
 
 import Users from "../components/usersControl/Users";
 import UserEdit from "../components/usersControl/UserEdit";
+
 import Teams from "../components/teamsControl/Teams";
 import TeamEdit from "../components/teamsControl/TeamEdit";
-
+import Timeline from "../components/Timeline";
 
 
 Vue.use(VueRouter);
@@ -68,10 +69,17 @@ const router = new VueRouter({
             meta: {rule: 'isManager'}
         },
         {
+            path: '/timeline',
+            name: 'timeline',
+            component: Timeline,
+            meta: {rule: 'isLoggedUser'}
+        },
+        {
             path: "/*",
             component: NotFound,
             meta: {rule: '*'}
-        }
+        },
+
     ]
 });
 

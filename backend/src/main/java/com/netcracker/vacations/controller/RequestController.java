@@ -50,4 +50,9 @@ public class RequestController {
         service.updateRequest(Status.ACCEPTED, requests);
     }
 
+    @GetMapping
+    public List<RequestDTO> getRequests(){
+        return service.getRequests();
+    }
+
 }
