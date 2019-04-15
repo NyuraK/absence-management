@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class RequestDTO {
 
-    //TODO make status enum
+    //TODO make status enum and type
     private Integer id;
     private String username;
     private String name;
