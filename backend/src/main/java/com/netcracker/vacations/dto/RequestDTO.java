@@ -6,6 +6,7 @@ public class RequestDTO {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     //TODO make status enum and type
 =======
     //TODO make status enum
@@ -13,6 +14,9 @@ public class RequestDTO {
 =======
     //TODO make status enum and type
 >>>>>>> added google chart
+=======
+    //TODO make status enum
+>>>>>>> before google chart
     private Integer id;
     private String username;
     private String name;
