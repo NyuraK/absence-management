@@ -42,7 +42,7 @@
                     id: 2,
                     label: 'Reason to leave',
                     user: 'Anna',
-                    start: getDate(-24 * 4),
+                    start: getDate(-24),
                     duration: 4 * 24 * 60 * 60,
                     type: 'task',
                     style: {
