@@ -129,6 +129,7 @@ public class RequestService {
         List<String> res = new ArrayList<>();
         res.add(entity.getUser().getName() + " " + entity.getUser().getFamilyName());
         res.add(entity.getTypeOfRequest().getName());
+//        res.add("");
         res.add(entity.getBeginning().toString());
 //        String ending = getEnd(entity.getEnding(), until);
         res.add(entity.getEnding().toString());
