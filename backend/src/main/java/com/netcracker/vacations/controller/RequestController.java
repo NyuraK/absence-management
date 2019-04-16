@@ -3,7 +3,6 @@ package com.netcracker.vacations.controller;
 import com.netcracker.vacations.domain.enums.RequestType;
 import com.netcracker.vacations.domain.enums.Status;
 import com.netcracker.vacations.dto.RequestDTO;
-import com.netcracker.vacations.dto.TimelineRequestDTO;
 import com.netcracker.vacations.service.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -52,7 +51,7 @@ public class RequestController {
     }
 
     @GetMapping
-    public List<TimelineRequestDTO> getRequests(){
+    public List<List<String>> getRequests(){
         return service.getRequests();
     }
 

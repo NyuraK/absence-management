@@ -4,7 +4,6 @@ import com.netcracker.vacations.domain.RequestEntity;
 import com.netcracker.vacations.domain.RequestTypeEntity;
 import com.netcracker.vacations.domain.enums.Status;
 import com.netcracker.vacations.dto.RequestDTO;
-import com.netcracker.vacations.dto.TimelineRequestDTO;
 import com.netcracker.vacations.repository.RequestRepository;
 import com.netcracker.vacations.repository.RequestTypeRepository;
 import com.netcracker.vacations.repository.UserRepository;
@@ -49,6 +48,7 @@ public class RequestService {
 
 
     public void updateRequest(Status status, List<Integer> requests) {
+        //TODO add logic to decrement aount of vacant days left
         for (Integer id : requests) {
             RequestEntity entity = requestRepository.findById(id).get();
             entity.setStatus(status);
@@ -89,20 +89,21 @@ public class RequestService {
         return requestDTO;
     }
 
-    public List<TimelineRequestDTO> getRequests() {
-        List<TimelineRequestDTO> response = new ArrayList<>();
+    public List<List<String>> getRequests() {
+        List<List<String>> response = new ArrayList<>();
         for (RequestEntity entity : requestRepository.findAll()) {
+            if (entity.getStatus().equals(Status.ACCEPTED.getName()))
                 response.add(toTimelineDTO(entity));
         }
         return response;
     }
 
-    private TimelineRequestDTO toTimelineDTO(RequestEntity entity) {
-        TimelineRequestDTO dto = new TimelineRequestDTO();
-        dto.setUsername(entity.getUser().getName() + " " + entity.getUser().getFamilyName());
-        dto.setStart(entity.getBeginning());
-        dto.setEnd(entity.getEnding());
-        dto.setType(entity.getTypeOfRequest().getName());
-        return dto;
+    private List<String> toTimelineDTO(RequestEntity entity) {
+        List<String> res = new ArrayList<>();
+        res.add(entity.getUser().getName() + " " + entity.getUser().getFamilyName());
+        res.add(entity.getTypeOfRequest().getName());
+        res.add(entity.getBeginning().toString());
+        res.add(entity.getEnding().toString());
+        return res;
     }
 }

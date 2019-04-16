@@ -2,12 +2,14 @@
     <div>
         <Nav></Nav>
         <b-container>
-            <GChart
-                    :settings="{ packages: ['timeline'] }"
-                    type="Timeline"
-                    :data='days'
-                    :options='options'>
-            </GChart>
+            <div id="chart_wrapper">
+                <GChart
+                        :settings="{ packages: ['timeline'] }"
+                        type="Timeline"
+                        :data='days'
+                        :options='options'>
+                </GChart>
+            </div>
         </b-container>
     </div>
 </template>
@@ -29,27 +31,32 @@
             }
         },
         created() {
-            instance.get('/requests').then((res)=>{
-                console.log(res.data);
-                this.days = res.data;
-            }).catch((err)=>{
+            instance.get('/requests').then((res) => {
+                this.days = parseStringToDate(res.data);
+            }).catch((err) => {
                 console.log(err);
             });
-            // this.days = [
-            //     [ 'President', 'John Adams', new Date(2017, 2, 4), new Date(2017, 2, 14) ],
-            //     [ 'Vice President', 'John Adams', new Date(2017, 3, 21), new Date(2017, 4, 4)],
-            //     [ 'Vice President', 'George Clinton', new Date(2017, 2, 4), new Date(2017, 3, 20)],
-            //     [ 'Secretary of State', 'John Jay', new Date(2017, 1, 25), new Date(2017, 2, 22)],
-            //     [ 'Secretary of State', 'James Madison', new Date(2017, 2, 2), new Date(2017, 3, 3)],
-            //     [ 'Secretary', 'Anna', new Date(2017, 2, 2), new Date(2017, 3, 3)]
-            // ];
             this.options = {
-
+                width: 4000,
             };
-        }
+        },
     }
+
+    function parseStringToDate(data) {
+        for (let i = 0; i < data.length; i++) {
+            data[i][2] = new Date(data[i][2]+'T00:00:00');
+            data[i][3] = new Date(data[i][3]+'T00:00:00');
+        }
+        return data;
+    }
+
 </script>
 
 <style scoped>
+    #chart_wrapper {
+        overflow-x: scroll;
+        overflow-y: hidden;
+        /*width: 1200px;*/
+    }
 
 </style>
