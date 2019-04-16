@@ -2,7 +2,6 @@
     <div>
         <Nav></Nav>
         <b-container>
-<<<<<<< HEAD
             <v-flex>
                 <v-slider id="slider"
                           v-model="zoom"
@@ -21,17 +20,11 @@
                         :options="options">
                 </GChart>
             </div>
-=======
-            <gantt-elastic :tasks="tasks" :options="options">
-                <gantt-elastic-header slot="header"></gantt-elastic-header>
-            </gantt-elastic>
->>>>>>> before google chart
         </b-container>
     </div>
 </template>
 
 <script>
-<<<<<<< HEAD
     import Nav from "./Nav";
     import {GChart} from 'vue-google-charts'
     import {instance} from "../Api";
@@ -51,10 +44,6 @@
             }
         },
         created() {
-            instance.get('/teams/timeline').then((res) => {
-                this.members = renderMembers(res.data, this.members);
-            });
-
             instance.get('/requests').then((res) => {
                 this.absences = parseStringToDate(res.data);
                 Array.prototype.push.apply(this.absences, this.members);
@@ -106,7 +95,7 @@
     }
 
     #timeline {
-    min-height: 400px;
+        min-height: 400px;
     }
 
 </style>
