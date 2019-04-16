@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -53,7 +55,7 @@ public class RequestService {
 
 
     public void updateRequest(Status status, List<Integer> requests) {
-        //TODO add logic to decrement aount of vacant days left
+        //TODO add logic to decrement amount of vacant days left
         for (Integer id : requests) {
             RequestEntity entity = requestRepository.findById(id).get();
             entity.setStatus(status);
@@ -128,15 +130,6 @@ public class RequestService {
     }
 
 
-    private List<String> toTimelineDTO(RequestEntity entity) {
-        List<String> res = new ArrayList<>();
-        res.add(entity.getUser().getName() + " " + entity.getUser().getFamilyName());
-        res.add(entity.getTypeOfRequest().getName());
-        res.add(entity.getBeginning().toString());
-        res.add(entity.getEnding().toString());
-        return res;
-    }
-
     public List<RequestDTO> getRequests() {
         List<RequestDTO> response = new ArrayList<>();
         for (RequestEntity entity : requestRepository.findAll()) {
@@ -145,5 +138,4 @@ public class RequestService {
         }
         return response;
     }
-
 }
