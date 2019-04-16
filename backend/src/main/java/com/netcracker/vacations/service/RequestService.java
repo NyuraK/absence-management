@@ -53,7 +53,7 @@ public class RequestService {
 
 
     public void updateRequest(Status status, List<Integer> requests) {
-        //TODO add logic to decrement aount of vacant days left
+        //TODO add logic to decrement amount of vacant days left
         for (Integer id : requests) {
             RequestEntity entity = requestRepository.findById(id).get();
             entity.setStatus(status);
