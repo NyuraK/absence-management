@@ -5,10 +5,8 @@ import com.netcracker.vacations.domain.enums.Status;
 import com.netcracker.vacations.dto.RequestDTO;
 import com.netcracker.vacations.service.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -55,7 +53,7 @@ public class RequestController {
     //TODO implement weeks counting
     @GetMapping
     @ResponseBody
-    public List<List<String>> getRequests(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date){
+    public List<List<String>> getRequests(){
         return service.getRequests();
     }
 

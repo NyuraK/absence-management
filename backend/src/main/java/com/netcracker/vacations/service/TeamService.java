@@ -5,11 +5,13 @@ import com.netcracker.vacations.domain.TeamEntity;
 import com.netcracker.vacations.domain.UserEntity;
 import com.netcracker.vacations.dto.TeamDTO;
 import com.netcracker.vacations.repository.TeamRepository;
+import com.netcracker.vacations.repository.UserRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -17,9 +19,12 @@ import java.util.List;
 public class TeamService {
 
     private TeamRepository teamRepository;
+    private UserRepository userRepository;
 
-    public TeamService(TeamRepository teamRepository) {
+    public TeamService(TeamRepository teamRepository, UserRepository userRepository) {
+
         this.teamRepository = teamRepository;
+        this.userRepository = userRepository;
     }
 
     public List<TeamDTO> getTeams() {
@@ -85,5 +90,18 @@ public class TeamService {
         teamDTO.setManagerName(teamEntity.getManager() == null ? null : teamEntity.getManager().getName());
         teamDTO.setManagerSurname(teamEntity.getManager() == null ? null : teamEntity.getManager().getSurname());
         return teamDTO;
+    }
+
+    public List<List<String>> getMembers() {
+        List<List<String>> res = new ArrayList<>();
+        for (UserEntity user: userRepository.findAll()) {
+            List<String> row = new ArrayList<>();
+            row.add(user.getName() + " " + user.getFamilyName());
+            row.add("");
+            row.add(new Date().toString());
+            row.add(new Date().toString());
+            res.add(row);
+        }
+        return res;
     }
 }

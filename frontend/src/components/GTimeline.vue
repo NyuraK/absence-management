@@ -4,16 +4,16 @@
         <b-container>
             <v-flex>
                 <v-slider id="slider"
-                        v-model="zoom"
-                        :min="4000"
-                        :max="7000"
-                        label="Zoom"
-                        v-on:change="zoomChart"
+                          v-model="zoom"
+                          :min="1200"
+                          :max="7000"
+                          label="Zoom"
+                          v-on:change="zoomChart"
                 ></v-slider>
             </v-flex>
 
             <div id="chart_wrapper">
-                <GChart
+                <GChart id="timeline"
                         :settings="{ packages: ['timeline'] }"
                         type="Timeline"
                         :data='days'
@@ -35,23 +35,23 @@
         data() {
             return {
                 days: [],
+                members: [],
                 options: {
-                    backgroundColor: '',
-                    // width: 2500
+                    backgroundColor: ''
                 },
                 day: Date,
                 zoom: 0
             }
         },
         created() {
-            this.day = new Date();
-            instance.get('/requests', {
-                    params: {
-                        date: this.day
-                    }
-                }
-            ).then((res) => {
+            instance.get('/team').then((res) => {
+                this.members = parseStringToDate(res.data);
+            });
+
+            instance.get('/requests').then((res) => {
                 this.days = parseStringToDate(res.data);
+                Array.prototype.push.apply(this.days, this.members);
+                console.log(this.days);
             }).catch((err) => {
                 console.log(err);
             });
@@ -64,6 +64,7 @@
             }
         },
     }
+
 
     function parseStringToDate(data) {
         for (let i = 0; i < data.length; i++) {
@@ -84,6 +85,10 @@
 
     #slider {
         max-width: 300px;
+    }
+
+    #timeline {
+        min-height: 400px;
     }
 
 </style>
