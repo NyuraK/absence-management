@@ -6,7 +6,6 @@ import com.netcracker.vacations.domain.TeamEntity;
 import com.netcracker.vacations.domain.UserEntity;
 import com.netcracker.vacations.domain.enums.Status;
 import com.netcracker.vacations.dto.RequestDTO;
-import com.netcracker.vacations.dto.TimelineRequestDTO;
 import com.netcracker.vacations.repository.RequestRepository;
 import com.netcracker.vacations.repository.RequestTypeRepository;
 import com.netcracker.vacations.repository.TeamRepository;
@@ -54,7 +53,7 @@ public class RequestService {
 
 
     public void updateRequest(Status status, List<Integer> requests) {
-        //TODO add logic to decrement amount of vacant days left
+        //TODO add logic to decrement aount of vacant days left
         for (Integer id : requests) {
             RequestEntity entity = requestRepository.findById(id).get();
             entity.setStatus(status);
@@ -128,7 +127,6 @@ public class RequestService {
         return requestDTO;
     }
 
-<<<<<<< HEAD
 
     private List<String> toTimelineDTO(RequestEntity entity) {
         List<String> res = new ArrayList<>();
@@ -142,23 +140,10 @@ public class RequestService {
     public List<RequestDTO> getRequests() {
         List<RequestDTO> response = new ArrayList<>();
         for (RequestEntity entity : requestRepository.findAll()) {
-            response.add(toDTO(entity));
-=======
-    public List<TimelineRequestDTO> getRequests() {
-        List<TimelineRequestDTO> response = new ArrayList<>();
-        for (RequestEntity entity : requestRepository.findAll()) {
-                response.add(toTimelineDTO(entity));
->>>>>>> added google chart
+            if (entity.getStatus().equals(Status.ACCEPTED.getName()))
+                response.add(toDTO(entity));
         }
         return response;
     }
 
-    private TimelineRequestDTO toTimelineDTO(RequestEntity entity) {
-        TimelineRequestDTO dto = new TimelineRequestDTO();
-        dto.setUsername(entity.getUser().getName() + " " + entity.getUser().getFamilyName());
-        dto.setStart(entity.getBeginning());
-        dto.setEnd(entity.getEnding());
-        dto.setType(entity.getTypeOfRequest().getName());
-        return dto;
-    }
 }
