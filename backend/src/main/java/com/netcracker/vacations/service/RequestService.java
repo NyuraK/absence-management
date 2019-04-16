@@ -91,34 +91,32 @@ public class RequestService {
         return requestDTO;
     }
 
-//    public List<List<String>> getRequests() {
-//        List<List<String>> response = new ArrayList<>();
-//        for (RequestEntity entity : requestRepository.findAll()) {
-//            if (entity.getStatus().equals(Status.ACCEPTED.getName()))
-//                response.add(toTimelineDTO(entity));
-//        }
-//        return response;
-//    }
-
-    //!(testDate.before(startDate) || testDate.after(endDate))
-
-    public List<List<String>> getRequests(Date now) {
-        Date until = increment(now, 14);
+    public List<List<String>> getRequests() {
         List<List<String>> response = new ArrayList<>();
         for (RequestEntity entity : requestRepository.findAll()) {
-            if (entity.getStatus().equals(Status.ACCEPTED.getName())
-                    && (
-                        !(entity.getBeginning().before(now) || entity.getBeginning().after(until))
-                    ||
-                        !(entity.getEnding().before(now) || entity.getEnding().after(until))
-                    ||
-                        (entity.getBeginning().before(now) && entity.getEnding().after(until))
-                    )
-            )
-                response.add(toTimelineDTO(entity, until));
+            if (entity.getStatus().equals(Status.ACCEPTED.getName()))
+                response.add(toTimelineDTO(entity));
         }
         return response;
     }
+
+//    public List<List<String>> getRequests(Date now) {
+//        Date until = increment(now, 14);
+//        List<List<String>> response = new ArrayList<>();
+//        for (RequestEntity entity : requestRepository.findAll()) {
+//            if (entity.getStatus().equals(Status.ACCEPTED.getName())
+//                    && (
+//                        !(entity.getBeginning().before(now) || entity.getBeginning().after(until))
+//                    ||
+//                        !(entity.getEnding().before(now) || entity.getEnding().after(until))
+//                    ||
+//                        (entity.getBeginning().before(now) && entity.getEnding().after(until))
+//                    )
+//            )
+//                response.add(toTimelineDTO(entity, until));
+//        }
+//        return response;
+//    }
 
     private Date increment(Date now, int i) {
         Calendar cal = Calendar.getInstance();
@@ -127,13 +125,13 @@ public class RequestService {
         return cal.getTime();
     }
 
-    private List<String> toTimelineDTO(RequestEntity entity, Date until) {
+    private List<String> toTimelineDTO(RequestEntity entity) {
         List<String> res = new ArrayList<>();
         res.add(entity.getUser().getName() + " " + entity.getUser().getFamilyName());
         res.add(entity.getTypeOfRequest().getName());
         res.add(entity.getBeginning().toString());
-        String ending = getEnd(entity.getEnding(), until);
-        res.add(ending);
+//        String ending = getEnd(entity.getEnding(), until);
+        res.add(entity.getEnding().toString());
         return res;
     }
 

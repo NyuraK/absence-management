@@ -2,16 +2,24 @@
     <div>
         <Nav></Nav>
         <b-container>
-            <!--<div id="chart_wrapper">-->
+            <v-flex>
+                <v-slider id="slider"
+                        v-model="zoom"
+                        :min="4000"
+                        :max="7000"
+                        label="Zoom"
+                        v-on:change="zoomChart"
+                ></v-slider>
+            </v-flex>
+
+            <div id="chart_wrapper">
                 <GChart
                         :settings="{ packages: ['timeline'] }"
                         type="Timeline"
                         :data='days'
                         :options='options'>
                 </GChart>
-                <b-button variant="primary" v-on:click="nextTwoWeek">Next</b-button>
-                <b-button variant="primary" v-on:click="prevTwoWeek">Prev</b-button>
-            <!--</div>-->
+            </div>
         </b-container>
     </div>
 </template>
@@ -28,59 +36,33 @@
             return {
                 days: [],
                 options: {
-                    backgroundColor: ''
+                    backgroundColor: '',
+                    // width: 2500
                 },
                 day: Date,
+                zoom: 0
             }
         },
         created() {
             this.day = new Date();
             instance.get('/requests', {
-                    params : {
+                    params: {
                         date: this.day
                     }
-            }
+                }
             ).then((res) => {
                 this.days = parseStringToDate(res.data);
             }).catch((err) => {
                 console.log(err);
             });
-            this.options = {
-                // width: 4000,
-            };
         },
         methods: {
-            nextTwoWeek() {
-                this.day.setDate(this.day.getDate() + 14);
-                let temp = new Date(this.day);
-                let str = temp.toISOString().slice(0, 10);
-                this.day = new Date(str + 'T00:00:00');
-                instance.get('/requests',
-                    {params : {
-                            date: this.day
-                        }}
-                ).then((res) => {
-                    this.days = parseStringToDate(res.data);
-                }).catch((err) => {
-                    console.log(err);
-                });
-            },
-            prevTwoWeek() {
-                this.day.setDate(this.day.getDate() - 14);
-                let temp = new Date(this.day);
-                let str = temp.toISOString().slice(0, 10);
-                this.day = new Date(str + 'T00:00:00');
-                instance.get('/requests',
-                    {params : {
-                            date: this.day
-                        }}
-                ).then((res) => {
-                    this.days = parseStringToDate(res.data);
-                }).catch((err) => {
-                    console.log(err);
-                });
+            zoomChart() {
+                this.options = {
+                    width: this.zoom
+                }
             }
-        }
+        },
     }
 
     function parseStringToDate(data) {
@@ -98,7 +80,10 @@
     #chart_wrapper {
         overflow-x: scroll;
         overflow-y: hidden;
-        /*width: 1200px;*/
+    }
+
+    #slider {
+        max-width: 300px;
     }
 
 </style>
