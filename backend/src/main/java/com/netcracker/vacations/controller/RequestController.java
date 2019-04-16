@@ -56,7 +56,7 @@ public class RequestController {
     @GetMapping
     @ResponseBody
     public List<List<String>> getRequests(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date date){
-        return service.getRequests(date);
+        return service.getRequests();
     }
 
 }
