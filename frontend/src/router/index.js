@@ -10,10 +10,9 @@ import store from "../store/index"
 
 import Users from "../components/usersControl/Users";
 import UserEdit from "../components/usersControl/UserEdit";
-
 import Teams from "../components/teamsControl/Teams";
 import TeamEdit from "../components/teamsControl/TeamEdit";
-import GTimeline from "../components/GTimeline"
+import Timeline from "../components/Timeline"
 
 
 Vue.use(VueRouter);
@@ -77,8 +76,8 @@ const router = new VueRouter({
         },
         {
             path: '/timeline',
-            name: 'GTimeline',
-            component: GTimeline,
+            name: 'Timeline',
+            component: Timeline,
             meta: {rule: 'isLoggedUser'}
         },
         {

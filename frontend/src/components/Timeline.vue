@@ -2,130 +2,88 @@
     <div>
         <Nav></Nav>
         <b-container>
-            <gantt-elastic :tasks="tasks" :options="options">
-                <gantt-elastic-header slot="header"></gantt-elastic-header>
-            </gantt-elastic>
+            <v-flex>
+                <v-slider id="slider"
+                          v-model="zoom"
+                          :min="1200"
+                          :max="7000"
+                          label="Zoom"
+                          v-on:change="zoomChart"
+                ></v-slider>
+            </v-flex>
+
+            <div id="chart_wrapper">
+                <GChart id="timeline"
+                        :settings="{ packages: ['timeline'] }"
+                        type="Timeline"
+                        :data='absences'>
+                </GChart>
+            </div>
         </b-container>
     </div>
 </template>
 
 <script>
-
-    import GanttElastic from "gantt-elastic/src/GanttElastic.vue";
-    import Header from "gantt-elastic/src/components/Header.vue";
     import Nav from "./Nav";
+    import {GChart} from 'vue-google-charts'
+    import {instance} from "../Api";
 
     export default {
+        components: {Nav, GChart},
         name: "Timeline",
-        components: {
-            Nav,
-            ganttElasticHeader: Header,// or Header
-            ganttElastic: GanttElastic
-        },
         data() {
             return {
-                tasks: [],
-                options: []
-            };
+                absences: [],
+                members: [],
+                day: Date,
+                zoom: 0
+            }
         },
         created() {
-            this.tasks = [
-                {
-                    id: 1,
-                    label: 'Reason to leave',
-                    user: 'Denis',
-                    start: getDate(-24 * 5),
-                    duration: 15 * 24 * 60 * 60,
-                    type: 'task'
-                },
-                {
-                    id: 2,
-                    label: 'Reason to leave',
-                    user: 'Anna',
-                    start: getDate(-24),
-                    duration: 4 * 24 * 60 * 60,
-                    type: 'task',
-                    style: {
-                        base: {
-                            fill: '#1EBC61',
-                            stroke: '#0EAC51'
-                        },
-                    }
-                },
-                {
-                    id: 3,
-                    label: 'Reason to leave',
-                    user: 'Denis',
-                    start: getDate(-24 * 5),
-                    duration: 4 * 24 * 60 * 60,
-                    type: 'task',
-                    style: {
-                        base: {
-                            fill: '#a028cc',
-                            stroke: '#205aac'
-                        },
-                    }
-                },
-            ];
-            this.options = {
-                maxRows: 100,
-                maxHeight: 300,
-                title: {
-                    label: 'Dream team',
-                    html: false
-                },
-                row: {
-                    height: 24
-                },
-                calendar: {
-                    hour: {
-                        display: false
-                    }
-                },
-                taskList: {
-                    expander: {
-                        straight: false
-                    },
-                    columns: [
-                        {
-                            id: 1,
-                            label: 'Employee',
-                            value: 'user',
-                            width: 200,
-                            html: true,
-                            events: {
-                                click({data, column}) {
-                                    alert('description clicked!\n' + data.label);
-                                }
-                            }
-                        },
+            instance.get('/team').then((res) => {
+                this.members = parseStringToDate(res.data);
+            });
 
-                    ]
+            instance.get('/requests').then((res) => {
+                this.absences = parseStringToDate(res.data);
+                Array.prototype.push.apply(this.absences, this.members);
+            }).catch((err) => {
+                console.log(err);
+            });
+        },
+        methods: {
+            zoomChart() {
+                this.options = {
+                    width: this.zoom
                 }
             }
         },
-        locale: {
-            name: 'ru',
-            Now: 'Now',
-            'X-Scale': 'Zoom-X',
-            'Y-Scale': 'Zoom-Y',
-            'Task list width': 'Task list',
-            'Before/After': 'Expand',
-            'Display task list': 'Task list'
-        }
     }
 
-    function getDate(hours) {
-        const currentDate = new Date();
-        const currentYear = currentDate.getFullYear();
-        const currentMonth = currentDate.getMonth() + 1;
-        const currentDay = currentDate.getDate();
-        const timeStamp = new Date(`${currentYear}-${currentMonth}-${currentDay} 00:00:00`).getTime();
-        return new Date(timeStamp + hours * 60 * 60 * 1000).getTime();
+
+    function parseStringToDate(data) {
+        for (let i = 0; i < data.length; i++) {
+            data[i][2] = new Date(data[i][2] + 'T00:00:00');
+            data[i][3] = new Date(data[i][3] + 'T00:00:00');
+        }
+        return data;
     }
+
 
 </script>
 
 <style scoped>
+    #chart_wrapper {
+        overflow-x: scroll;
+        overflow-y: hidden;
+    }
+
+    #slider {
+        max-width: 300px;
+    }
+
+    #timeline {
+        min-height: 400px;
+    }
 
 </style>
