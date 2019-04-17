@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 public class TeamService {
 
-    //temporary field, as we don;t have teams now
+    //temporary field, as we don't have teams now
     private UserRepository repository;
 
     @Autowired
@@ -28,7 +28,6 @@ public class TeamService {
             List<String> row = new ArrayList<>();
             row.add(user.getName() + " " + user.getFamilyName());
             row.add("");
-//            row.add("opacity: 0");
             row.add(new Date().toString());
             row.add(new Date().toString());
             res.add(row);

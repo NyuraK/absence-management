@@ -12,8 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -100,44 +98,13 @@ public class RequestService {
         return response;
     }
 
-//    public List<List<String>> getRequests(Date now) {
-//        Date until = increment(now, 14);
-//        List<List<String>> response = new ArrayList<>();
-//        for (RequestEntity entity : requestRepository.findAll()) {
-//            if (entity.getStatus().equals(Status.ACCEPTED.getName())
-//                    && (
-//                        !(entity.getBeginning().before(now) || entity.getBeginning().after(until))
-//                    ||
-//                        !(entity.getEnding().before(now) || entity.getEnding().after(until))
-//                    ||
-//                        (entity.getBeginning().before(now) && entity.getEnding().after(until))
-//                    )
-//            )
-//                response.add(toTimelineDTO(entity, until));
-//        }
-//        return response;
-//    }
-
-    private Date increment(Date now, int i) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(now);
-        cal.add(Calendar.DAY_OF_MONTH, i);
-        return cal.getTime();
-    }
-
     private List<String> toTimelineDTO(RequestEntity entity) {
         List<String> res = new ArrayList<>();
         res.add(entity.getUser().getName() + " " + entity.getUser().getFamilyName());
         res.add(entity.getTypeOfRequest().getName());
-//        res.add("");
         res.add(entity.getBeginning().toString());
-//        String ending = getEnd(entity.getEnding(), until);
         res.add(entity.getEnding().toString());
         return res;
     }
 
-    private String getEnd(Date ending, Date until) {
-        if (ending.before(until)) return ending.toString();
-        else return until.toString();
-    }
 }
