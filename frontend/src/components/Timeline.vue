@@ -16,8 +16,12 @@
                 <GChart id="timeline"
                         :settings="{ packages: ['timeline'] }"
                         type="Timeline"
-                        :data='absences'
-                        :options="options">
+                <<<<<<< HEAD
+                :data='absences'
+                :options="options">
+                =======
+                :data='absences'>
+                >>>>>>> removed comments
                 </GChart>
             </div>
         </b-container>
@@ -34,30 +38,55 @@
         name: "Timeline",
         data() {
             return {
-                absences: [],
-                members: [],
-                day: Date,
-                zoom: 0,
-                options: {
-                    backgroundColor: ''
-                }
+                    absences: [],
+                    members: [],
+                    day: Date,
+                < < < < < < < HEAD
+            zoom: 0,
+                options
+        :
+            {
+                backgroundColor: ''
             }
+        }
         },
         created() {
-            instance.get('/requests').then((res) => {
-                this.absences = parseStringToDate(res.data);
-                Array.prototype.push.apply(this.absences, this.members);
-            }).catch((err) => {
-                console.log(err);
-            });
-        },
-        methods: {
-            zoomChart() {
-                this.options = {
-                    width: this.zoom
-                }
+        ======
+            =
+                zoom
+        :
+            0
+        }
+    }
+    ,
+    created()
+    {
+        instance.get('/team').then((res) => {
+            this.members = parseStringToDate(res.data);
+        });
+
+    >>>>>>>
+        removed
+        comments
+        instance.get('/requests').then((res) => {
+            this.absences = parseStringToDate(res.data);
+            Array.prototype.push.apply(this.absences, this.members);
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
+    ,
+    methods: {
+        zoomChart()
+        {
+            this.options = {
+                width: this.zoom
             }
-        },
+        }
+    }
+    ,
+    <<<<<<<
+    HEAD
     }
 
     function renderMembers(names, members) {
