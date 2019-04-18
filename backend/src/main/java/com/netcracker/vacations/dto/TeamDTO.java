@@ -2,18 +2,18 @@ package com.netcracker.vacations.dto;
 
 public class TeamDTO {
 
-    private Integer id;
+    private Integer teamId;
     private Integer quota;
     private Integer managerId;
     private String name;
     private Integer departmentId;
 
-    public Integer getId() {
-        return id;
+    public Integer getTeamId() {
+        return teamId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setTeamId(Integer teamId) {
+        this.teamId = teamId;
     }
 
     public Integer getQuota() {

@@ -53,7 +53,7 @@ public class UserService {
     private UserEntity toEntity(UserDTO userDTO) {
         UserEntity userEntity = new UserEntity();
         TeamEntity teamEntity = new TeamEntity();
-        if (userDTO.getTeamId() == null) {
+        if (userDTO.getTeamId() == null || userDTO.getTeamId() == -1) {
             teamEntity = null;
         } else {
             teamEntity.setTeamsId(userDTO.getTeamId());

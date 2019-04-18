@@ -107,9 +107,9 @@
         },
         computed: {
             findUsers() {
-                return this.users.filter(item => ''.concat(item.name.toLowerCase(), ' ',
-                    item.surname.toLowerCase(), ' ',
-                    item.familyName.toLowerCase(), item.role.toLowerCase()).indexOf(this.search.toLowerCase()) !== -1)
+                return this.users.filter(item => ''.concat(item.name.toLocaleLowerCase(), ' ',
+                    item.surname.toLocaleLowerCase(), ' ',
+                    item.role.toLocaleLowerCase()).indexOf(this.search.toLowerCase()) !== -1)
             },
         }
 
@@ -117,5 +117,4 @@
 </script>
 
 <style scoped>
-
 </style>

@@ -44,7 +44,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         // Entry points
         http.authorizeRequests()
 //                .antMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
-                .antMatchers("/api/**").hasAnyAuthority("ROLE_Employee", "ROLE_Administrator", "ROLE_Manager", "ROLE_Director")
+                .antMatchers("/api/**").hasAnyAuthority("ROLE_EMPLOYEE", "ROLE_ADMIN", "ROLE_MANAGER", "ROLE_DIRECTOR")
 //                .antMatchers("/manager/**").hasAnyAuthority("ROLE_MANAGER", "ROLE_ADMIN")
                 .antMatchers("/**").permitAll()
                 .and()
