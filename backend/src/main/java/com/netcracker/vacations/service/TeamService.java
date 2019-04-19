@@ -92,15 +92,10 @@ public class TeamService {
         return teamDTO;
     }
 
-    public List<List<String>> getMembers() {
-        List<List<String>> res = new ArrayList<>();
-        for (UserEntity user: userRepository.findAll()) {
-            List<String> row = new ArrayList<>();
-            row.add(user.getName() + " " + user.getFamilyName());
-            row.add("");
-            row.add(new Date().toString());
-            row.add(new Date().toString());
-            res.add(row);
+    public List<String> getMembers() {
+        List<String> res = new ArrayList<>();
+        for (UserEntity user : userRepository.findAll()) {
+            res.add(user.getName() + " " + user.getFamilyName());
         }
         return res;
     }
