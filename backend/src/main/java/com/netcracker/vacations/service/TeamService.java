@@ -30,6 +30,7 @@ public class TeamService {
         return response;
     }
 
+
     public TeamDTO getTeam(Integer id) {
         return toDTO(teamRepository.findById(id).get());
     }
@@ -85,4 +86,5 @@ public class TeamService {
         teamDTO.setManagerSurname(teamEntity.getManager() == null ? null : teamEntity.getManager().getSurname());
         return teamDTO;
     }
+
 }
