@@ -1,7 +1,7 @@
 import Vuex from 'vuex'
 import Vue from 'vue'
 import axios from 'axios'
-import {instance} from "../Api";
+import {instance} from '../Api'
 import jwt from 'jsonwebtoken'
 
 Vue.use(Vuex);

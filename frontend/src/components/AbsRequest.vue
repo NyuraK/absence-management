@@ -13,8 +13,10 @@
 
             <b-form-group id="input-group-dates" label="Select date:" label-for="input-date">
                 <v-date-picker
+                        v-model="date1"
+                        :events="vacDates"
+                        event-color="red"
                         mode='range'
-                        v-model='range'
                         show-caps>
                 </v-date-picker>
             </b-form-group>
@@ -47,6 +49,7 @@
                     text: ''
                 },
                 absTypes: [],
+                vacDates: null,
                 show: true,
                 range: {
                     start: new Date(2019, 3, 16),
@@ -55,8 +58,23 @@
             }
         },
         created() {
-            instance.get('/requests/types').then((resp)=> {
-                this.absTypes = resp.data;
+            let msg = {
+                username: localStorage.getItem('username'),
+                start: this.range.start,
+                end: this.range.end,
+                type: this.form.absType,
+                description: this.form.text,
+            };
+            let user= localStorage.getItem('username').toString();
+            instance.post("/calendar", user).then(res => {
+            }).catch(err=> {
+                console.log(err);
+            });
+            instance.get("/requests/types").then((response)=> {
+                this.absTypes = response.data;
+            })
+            instance.get("/calendar/occupied").then((resp)=> {
+                this.vacDates = parseStringToDate(resp.data).toISOString().substr(0, 10);
             })
         },
         methods: {
@@ -87,6 +105,13 @@
             }
         }
     }
+    function parseStringToDate(data) {
+        for (let i = 0; i < data.length; i++) {
+            data[i] = new Date(data[i] + 'T00:00:00');
+        }
+        return data;
+    }
+
 </script>
 
 <style scoped>

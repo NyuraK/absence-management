@@ -1,7 +1,7 @@
 package com.netcracker.vacations.domain.enums;
 
 public enum Role {
-    ADMIN("Administrator"),
+    ADMIN("Admin"),
     DIRECTOR("Director"),
     MANAGER("Manager"),
     EMPLOYEE("Employee");
@@ -10,5 +10,9 @@ public enum Role {
 
     Role(String name){
         this.name=name;
+    }
+
+    public String getName(){
+        return name;
     }
 }

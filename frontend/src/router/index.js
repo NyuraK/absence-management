@@ -2,7 +2,9 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '../components/Login'
 import Calendar from '../components/Calendar'
+import VacCalendar from '../components/VacCalendar'
 import Home from "../components/Home";
+import Vacations from "../components/Vacations";
 import NotFound from "../components/NotFound";
 import Requests from "../components/Requests"
 import store from "../store/index"
@@ -24,9 +26,21 @@ const router = new VueRouter({
             meta: {nonRequiresAuth: true, rule: 'isPublic'}
         },
         {
+            path: '/vaccalendar',
+            name: 'VacCalendar',
+            component: Calendar,
+            meta: {nonRequiresAuth: true, rule: 'isPublic'}
+        },
+        {
             path: '/home',
             name: 'home',
             component: Home,
+            meta: {rule: 'isLoggedUser'}
+        },
+        {
+            path: '/vacations',
+            name: 'vacations',
+            component: Vacations,
             meta: {rule: 'isLoggedUser'}
         },
         {

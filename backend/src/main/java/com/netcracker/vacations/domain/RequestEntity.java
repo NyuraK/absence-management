@@ -67,11 +67,11 @@ public class RequestEntity {
         this.requestsId = requestsId;
     }
 
-    public UserEntity getUsersId() {
+    public UserEntity getUser() {
         return usersId;
     }
 
-    public void setUsersId(UserEntity usersId) {
+    public void setUser(UserEntity usersId) {
         this.usersId = usersId;
     }
 

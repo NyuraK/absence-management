@@ -14,7 +14,7 @@
                     <!--</router-link>-->
                 </b-nav-item>
                 <b-nav-item href="#" v-if="$acl.check('isAdmin')">Manage users</b-nav-item>
-                <b-nav-item href="#">Calendar view</b-nav-item>
+                <b-nav-item href="/vacations">Calendar view</b-nav-item>
             </b-navbar-nav>
             <!-- Right aligned nav items -->
             <b-navbar-nav class="ml-auto">

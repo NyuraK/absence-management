@@ -32,7 +32,7 @@ public class RequestService {
                 userRepository.findByLogin(request.getUsername()).get(0),
                 request.getStart(),
                 request.getEnd(),
-                requestTypeRepository.findByName(request.getType().name).get(0),
+                requestTypeRepository.findByName(request.getType()).get(0),
                 Status.CONSIDER
         );
         requestEntity.setDescription(request.getDescription());
@@ -45,7 +45,16 @@ public class RequestService {
         List<RestRequestDTO> response = new ArrayList();
         for (RequestEntity entity : requestRepository.findAll()) {
             RestRequestDTO requestDTO = new RestRequestDTO();
-            requestDTO.setName(entity.getUsersId().getName() + " " + entity.getUsersId().getFamilyName());
+            /*if((entity.getUsersId().getName().isEmpty())&&((entity.getUsersId().getFamilyName().isEmpty()))){
+                requestDTO.setName("-");
+            } else if (entity.getUsersId().getName().equals(null)){
+                requestDTO.setName(entity.getUsersId().getFamilyName());
+            } else if (entity.getUsersId().getFamilyName().equals(null)){
+                requestDTO.setName(entity.getUsersId().getName());
+            } else {
+                requestDTO.setName(entity.getUsersId().getName() + " " + entity.getUsersId().getFamilyName());
+            }*/
+            requestDTO.setName(entity.getUser().getName() + " " + entity.getUser().getFamilyName());
             requestDTO.setDescription(entity.getDescription());
             requestDTO.setStart(entity.getBeginning());
             requestDTO.setEnd(entity.getEnding());

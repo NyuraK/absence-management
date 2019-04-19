@@ -10,4 +10,16 @@ public enum Status {
     Status(String name){
         this.name=name;
     }
+
+    public static String[] getNames() {
+        Status[] statuses = Status.values();
+        String[] names = new String[statuses.length];
+        for (int i = 0; i < statuses.length; i++) {
+            names[i] = statuses[i].name;
+        }
+        return names;
+    }
+    public String getName() {
+        return name;
+    }
 }
