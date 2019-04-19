@@ -16,13 +16,6 @@
                 <GChart id="timeline"
                         :settings="{ packages: ['timeline'] }"
                         type="Timeline"
-                <<<<<<< HEAD
-                :data='absences'
-                :options="options">
-                =======
-                :data='absences'>
-                >>>>>>> removed comments
-                </GChart>
             </div>
         </b-container>
     </div>
@@ -38,55 +31,39 @@
         name: "Timeline",
         data() {
             return {
-                    absences: [],
-                    members: [],
-                    day: Date,
-                < < < < < < < HEAD
-            zoom: 0,
-                options
-        :
-            {
-                backgroundColor: ''
+                absences: [],
+                members: [],
+                day: Date,
+                zoom: 0,
+                options:
+                    {
+                        backgroundColor: ''
+
+                    }
             }
-        }
         },
         created() {
-        ======
-            =
-                zoom
-        :
-            0
+            instance.get('/team').then((res) => {
+                this.members = parseStringToDate(res.data);
+            });
+            instance.get('/teams/timeline').then((res) => {
+                this.members = renderMembers(res.data, this.members);
+            });
+            instance.get('/requests').then((res) => {
+                this.absences = parseStringToDate(res.data);
+                Array.prototype.push.apply(this.absences, this.members);
+            }).catch((err) => {
+                console.log(err);
+            });
         }
-    }
-    ,
-    created()
-    {
-        instance.get('/team').then((res) => {
-            this.members = parseStringToDate(res.data);
-        });
-
-    >>>>>>>
-        removed
-        comments
-        instance.get('/requests').then((res) => {
-            this.absences = parseStringToDate(res.data);
-            Array.prototype.push.apply(this.absences, this.members);
-        }).catch((err) => {
-            console.log(err);
-        });
-    }
-    ,
-    methods: {
-        zoomChart()
-        {
-            this.options = {
-                width: this.zoom
+        ,
+        methods: {
+            zoomChart() {
+                this.options = {
+                    width: this.zoom
+                }
             }
         }
-    }
-    ,
-    <<<<<<<
-    HEAD
     }
 
     function renderMembers(names, members) {

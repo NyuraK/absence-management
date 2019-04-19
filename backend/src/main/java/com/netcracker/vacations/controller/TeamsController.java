@@ -49,5 +49,10 @@ public class TeamsController {
         teamService.deleteTeam(id);
     }
 
+
+    @GetMapping("/timeline")
+    public List<String> getTeamMembers(){
+        return teamService.getMembers();
+    }
 }
 
