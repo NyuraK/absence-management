@@ -3,16 +3,22 @@ package com.netcracker.vacations.controller;
 
 import com.netcracker.vacations.domain.TeamEntity;
 import com.netcracker.vacations.repository.TeamRepository;
+import com.netcracker.vacations.service.TeamService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/teams")
 public class TeamsController {
 
     private final TeamRepository teamRepository;
-    public TeamsController(TeamRepository teamRepository) {
+    private TeamService service;
+
+    public TeamsController(TeamRepository teamRepository, TeamService service) {
         this.teamRepository = teamRepository;
+        this.service = service;
     }
 
     //    @Secured("ROLE_ADMIN")
@@ -51,6 +57,10 @@ public class TeamsController {
         teamRepository.delete(team);
     }
 
-
+    @GetMapping("/timeline")
+    public List<String> getTeamMembers(){
+        return service.getMembers();
+    }
 
 }
+

@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 //Class is temporary, as I'm not sure yet where better get team members
@@ -22,16 +21,12 @@ public class TeamService {
         this.repository = repository;
     }
 
-    public List<List<String>> getMembers() {
-        List<List<String>> res = new ArrayList<>();
-        for (UserEntity user: repository.findAll()) {
-            List<String> row = new ArrayList<>();
-            row.add(user.getName() + " " + user.getFamilyName());
-            row.add("");
-            row.add(new Date().toString());
-            row.add(new Date().toString());
-            res.add(row);
+        public List<String> getMembers() {
+        List<String> res = new ArrayList<>();
+        for (UserEntity user : repository.findAll()) {
+            res.add(user.getName() + " " + user.getFamilyName());
         }
         return res;
     }
+
 }
