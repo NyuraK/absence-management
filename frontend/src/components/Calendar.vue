@@ -20,10 +20,8 @@
                             color: 'white',                 // White text
                         },
                         dates: [
-                            {
-                                start: new Date(2019, 2, 19),
-                                end: new Date(2019, 2, 25),
-                            },
+                                {start: new Date(2019, 3, 20), end: new Date(2019, 3, 26)},
+                                {start: new Date(2019, 3, 24), end: new Date(2019, 3, 26)},
 
                         ],
                     }

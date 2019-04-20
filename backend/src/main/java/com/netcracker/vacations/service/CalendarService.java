@@ -30,8 +30,11 @@ public class CalendarService {
         this.typeRepo = typeRepo;
     }
 
-    public List<String> getVacationsPerDay(String mode, UserEntity user) {
+    public List<String> getVacationsPerDay(String mode, String name) {
+        UserEntity user = userRepo.findByLogin(name).get(0);
         TeamEntity team = user.getTeamsId();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH);
+
         if (!(team == null)) {
             try {
                 int year = Calendar.getInstance().get(Calendar.YEAR);
@@ -69,9 +72,9 @@ public class CalendarService {
                         }
                     }
                     if (counter >= quota) {
-                        occupied.add(date.toString());
+                        occupied.add(formatter.format(date));
                     } else if (counter >= quota / 2) {
-                        busy.add(date.toString());
+                        busy.add(formatter.format(date));
                     }
                 }
                 if (mode.equals("Occupied")) {
@@ -93,7 +96,7 @@ public class CalendarService {
         return null;
     }
 
-    public static List<Date> getDatesBetween(Date startDate, Date endDate) {
+    public List<Date> getDatesBetween(Date startDate, Date endDate) {
         List<Date> datesInRange = new ArrayList<>();
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(startDate);
@@ -133,4 +136,89 @@ public class CalendarService {
         userDTO.setTeamName(entity.getTeamsId() == null ? "User without team" : entity.getTeamsId().getName());
         return userDTO;
     }
+
+    public List<String> getVacations(String status, String name) {
+        UserEntity user = userRepo.findByLogin(name).get(0);
+        List<RequestEntity> reqs = reqRepo.findAllByUsersId(user);
+        List<RequestEntity> business = new ArrayList<RequestEntity>();
+        List<RequestEntity> child = new ArrayList<RequestEntity>();
+        List<RequestEntity> vacation = new ArrayList<RequestEntity>();
+        List<RequestEntity> sick = new ArrayList<RequestEntity>();
+        List<RequestEntity> remote = new ArrayList<RequestEntity>();
+
+        List<String> dates = new ArrayList<String>();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH);
+        String begin;
+        String end;
+        for (RequestEntity req : reqs) {
+            if (status.equals("Accepted")) {
+                if (req.getTypeOfRequest().getName().equals("Business trip") && req.getStatus().equals("Accepted")) {
+                    business.add(req);
+                } else if (req.getTypeOfRequest().getName().equals("Child care") && req.getStatus().equals("Accepted")) {
+                    child.add(req);
+                } else if (req.getTypeOfRequest().getName().equals("Vacation") && req.getStatus().equals("Accepted")) {
+                    vacation.add(req);
+                } else if (req.getTypeOfRequest().getName().equals("Remote work") && req.getStatus().equals("Accepted")) {
+                    remote.add(req);
+                } else if (req.getTypeOfRequest().getName().equals("Sick leave") && req.getStatus().equals("Accepted")) {
+                    sick.add(req);
+                }
+            } else if (status.equals("Consider")) {
+                if (req.getTypeOfRequest().getName().equals("Business trip") && req.getStatus().equals("Under consideration")) {
+                    business.add(req);
+                } else if (req.getTypeOfRequest().getName().equals("Child care") && req.getStatus().equals("Under consideration")) {
+                    child.add(req);
+                } else if (req.getTypeOfRequest().getName().equals("Vacation") && req.getStatus().equals("Under consideration")) {
+                    vacation.add(req);
+                } else if (req.getTypeOfRequest().getName().equals("Remote work") && req.getStatus().equals("Under consideration")) {
+                    remote.add(req);
+                } else if (req.getTypeOfRequest().getName().equals("Sick leave") && req.getStatus().equals("Under consideration")) {
+                    sick.add(req);
+                }
+            } else if (status.equals("Declined")) {
+                if (req.getTypeOfRequest().getName().equals("Business trip") && req.getStatus().equals("Declined")) {
+                    business.add(req);
+                } else if (req.getTypeOfRequest().getName().equals("Child care") && req.getStatus().equals("Declined")) {
+                    child.add(req);
+                } else if (req.getTypeOfRequest().getName().equals("Vacation") && req.getStatus().equals("Declined")) {
+                    vacation.add(req);
+                } else if (req.getTypeOfRequest().getName().equals("Remote work") && req.getStatus().equals("Declined")) {
+                    remote.add(req);
+                } else if (req.getTypeOfRequest().getName().equals("Sick leave") && req.getStatus().equals("Declined")) {
+                    sick.add(req);
+                }
+            }
+        }
+        for (RequestEntity req : business) {
+            begin = formatter.format(req.getBeginning());
+            end = formatter.format(req.getEnding());
+            dates.add("BU//"+begin + "//" + end);
+        }
+        for (RequestEntity req : child) {
+            begin = formatter.format(req.getBeginning());
+            end = formatter.format(req.getEnding());
+            dates.add("CH//"+begin + "//" + end);
+        }
+        for (RequestEntity req : vacation) {
+            begin = formatter.format(req.getBeginning());
+            end = formatter.format(req.getEnding());
+            dates.add("VA//"+begin + "//" + end);
+        }
+        for (RequestEntity req : sick) {
+            begin = formatter.format(req.getBeginning());
+            end = formatter.format(req.getEnding());
+            dates.add("SI//"+begin + "//" + end);
+        }
+        for (RequestEntity req : remote) {
+            begin = formatter.format(req.getBeginning());
+            end = formatter.format(req.getEnding());
+            dates.add("RE//"+begin + "//" + end);
+        }
+        for (String date : dates) {
+            System.out.println(date);
+        }
+        return dates;
+    }
+
 }
+

@@ -1,7 +1,7 @@
 package com.netcracker.vacations.domain.enums;
 
 public enum Role {
-    ADMIN("Admin"),
+    ADMIN("Administrator"),
     DIRECTOR("Director"),
     MANAGER("Manager"),
     EMPLOYEE("Employee");

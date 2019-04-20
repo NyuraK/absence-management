@@ -45,10 +45,8 @@ public class RequestController {
     @GetMapping
     public List<RestRequestDTO> getRequests() {
         System.out.println("used method getreq");
-        /*CalendarService methods =new CalendarService(userRepo, teamRepo, depRepo, reqRepo, typeRepo);
-        UserEntity user=userRepo.findByUsersId(2).get(0);
-        UserDTO userDTO=methods.toDTO(user);
-        methods.getVacationsPerDay("Occupied", user);*/
+        CalendarService methods =new CalendarService(userRepo, teamRepo, depRepo, reqRepo, typeRepo);
+        methods.getVacations("Accepted", "Denis");
         return service.getRequests();
 
     }
