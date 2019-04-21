@@ -64,7 +64,7 @@ public class UserEntity {
     public UserEntity(String login, String password, Role role, Integer restDays, Date hireDate) {
         this.login = login;
         this.password = encode(password);
-        this.role = role.name;
+        this.role = role.getName();
         this.restDays = restDays;
         this.hireDate = hireDate;
     }
@@ -98,7 +98,7 @@ public class UserEntity {
     }
 
     public void setRole(Role role) {
-        this.role = role.name;
+        this.role = role.getName();
     }
 
     public Integer getRestDays() {

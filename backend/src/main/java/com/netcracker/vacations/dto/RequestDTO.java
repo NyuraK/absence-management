@@ -8,6 +8,7 @@ public class RequestDTO {
     private Integer id;
     private String username;
     private String name;
+    private String teamname;
     private Date start, end, creation;
     private String type;
     private String description;
@@ -36,6 +37,15 @@ public class RequestDTO {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public String getTeamname() {
+        return teamname;
+    }
+
+    public void setTeamname(String teamname) {
+        this.teamname = teamname;
+    }
+
 
     public String getType() {
         return type;

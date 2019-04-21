@@ -5,6 +5,9 @@
             <b-row>
                 <b-col>
                     <b-row>
+                        <label><p>Your requests:</p></label>
+                    </b-row>
+                    <b-row>
                         <v-calendar
                                 is-expanded :attributes='attributes'>
                         </v-calendar>
@@ -63,12 +66,6 @@
 
     export default {
         name: "Vacations",
-        /*data () {
-            return {
-                picker: new Date().toISOString().substr(0, 10),
-                picker2: new Date().toISOString().substr(0, 10)
-            }
-        },*/
         data() {
             return {
                 vacantDays: ' ',
@@ -90,7 +87,6 @@
                 vacation: true,
                 remote: false,
                 sick: false,
-                selected: ["Accepted"],
                 attr:
                     [
                         {
@@ -240,7 +236,7 @@
                     name: name
                 }
             }).then(res => {
-                this.declinedVacs = res;
+                this.declinedVacs = res.data;
             }).catch(err => {
                 console.log(err);
             });
@@ -249,7 +245,7 @@
                     name: name
                 }
             }).then(res => {
-                this.considerVacs = res;
+                this.considerVacs = res.data;
             }).catch(err => {
                 console.log(err);
             });
@@ -259,13 +255,18 @@
             disableChecks() {
                 if (this.isAllActive == true) {
                     this.isAllActive = false;
-                } else if (this.isAllActive == false) {
-                    this.isAllActive = true;
                     this.business = false;
                     this.child = false;
                     this.vacation = false;
                     this.remote = false;
                     this.sick = false;
+                } else if (this.isAllActive == false) {
+                    this.isAllActive = true;
+                    this.business = true;
+                    this.child = true;
+                    this.vacation = true;
+                    this.remote = true;
+                    this.sick = true;
                 }
                 if (this.all == true) {
                     this.attributes[0].dates = this.vacSick;
@@ -296,6 +297,7 @@
                 if (this.accepted == true) {
                     this.declined = false;
                     this.consider = false;
+                    this.clearDates();
                     this.determinateType(this.acceptedVacs);
                     this.showVac();
                 } else if (this.accepted == false) {
@@ -306,6 +308,7 @@
                 if (this.declined == true) {
                     this.consider = false;
                     this.accepted = false;
+                    this.clearDates();
                     this.determinateType(this.declinedVacs);
                     this.showVac();
                 } else if (this.declined == false) {
@@ -317,6 +320,7 @@
                 if (this.consider == true) {
                     this.declined = false;
                     this.accepted = false;
+                    this.clearDates();
                     this.determinateType(this.considerVacs);
                     this.showVac();
                 } else if (this.consider == false) {
@@ -356,26 +360,34 @@
             showVac() {
                 if (this.sick == true) {
                     this.attributes[0].dates = this.vacSick;
-                } else if (this.vacation == true) {
+                    console.log("SICK "+this.sick);}
+                if (this.vacation == true) {
                     this.attributes[1].dates = this.vacVacation;
-                } else if (this.business == true) {
+                    console.log("VAC "+this.vacation);}
+                if (this.business == true) {
                     this.attributes[2].dates = this.vacBusiness;
-                } else if (this.child == true) {
+                    console.log("BUS "+this.business);}
+                if (this.child == true) {
                     this.attributes[3].dates = this.vacChild;
-                } else if (this.remote == true) {
+                    console.log("CH "+this.child);}
+                if (this.remote == true) {
                     this.attributes[4].dates = this.vacRemote;
-                }
+                    console.log("RE "+this.remote);}
                 if (this.sick == false) {
                     this.attributes[0].dates = [];
-                } else if (this.vacation == false) {
+                    console.log("SICK "+this.sick);}
+                if (this.vacation == false) {
                     this.attributes[1].dates = [];
-                } else if (this.business == false) {
+                    console.log("VAC "+this.vacation);}
+                if (this.business == false) {
                     this.attributes[2].dates = [];
-                } else if (this.child == false) {
+                    console.log("BUS "+this.business);}
+                if (this.child == false) {
                     this.attributes[3].dates = [];
-                } else if (this.remote == false) {
+                    console.log("CH "+this.child);}
+                if (this.remote == false) {
                     this.attributes[4].dates = [];
-                }
+                    console.log("RE "+this.remote);}
             },
         }
     }
