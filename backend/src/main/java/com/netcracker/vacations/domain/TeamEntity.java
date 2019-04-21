@@ -12,24 +12,22 @@ public class TeamEntity {
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
-
     @Column(name = "teams_id")
     private Integer teamsId;
 
     @Column(name = "absence_quota", nullable = false)
     private Integer quota;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "managers_id")
-    private UserEntity managersId;
+    private UserEntity manager;
 
     @Column(name = "name", nullable = false, unique = true)
     private String name;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
 
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "departments_id")
-    private DepartmentEntity departmentsId;
+    private DepartmentEntity department;
 
 
     public TeamEntity() {
@@ -37,7 +35,7 @@ public class TeamEntity {
 
     public TeamEntity(Integer quota, UserEntity managersId, String name) {
         this.quota = quota;
-        this.managersId = managersId;
+        this.manager = managersId;
         this.name = name;
     }
 
@@ -57,20 +55,20 @@ public class TeamEntity {
         this.quota = quota;
     }
 
-    public UserEntity getManagersId() {
-        return managersId;
+    public UserEntity getManager() {
+        return manager;
     }
 
-    public void setManagersId(UserEntity managersId) {
-        this.managersId = managersId;
+    public void setManager(UserEntity manager) {
+        this.manager = manager;
     }
 
-    public DepartmentEntity getDepartmentsId() {
-        return departmentsId;
+    public DepartmentEntity getDepartment() {
+        return department;
     }
 
-    public void setDepartmentsId(DepartmentEntity departmentsId) {
-        this.departmentsId = departmentsId;
+    public void setDepartment(DepartmentEntity department) {
+        this.department = department;
     }
 
     public String getName() {

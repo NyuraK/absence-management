@@ -9,10 +9,27 @@ import NotFound from "../components/NotFound";
 import Requests from "../components/Requests"
 import store from "../store/index"
 
+import Users from "../components/usersControl/Users";
+import UserEdit from "../components/usersControl/UserEdit";
+
+
+
 Vue.use(VueRouter);
 const router = new VueRouter({
     mode: 'history',
     routes: [
+        {
+            path: '/users',
+            component: Users,
+            meta: {nonRequiresAuth: true, rule:'isPublic'}
+
+        },
+        {
+            path: '/users/:id',
+            component: UserEdit,
+            meta: {nonRequiresAuth: true, rule:'isPublic'}
+
+        },
         {
             path: '/',
             name: 'Login',

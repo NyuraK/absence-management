@@ -72,7 +72,7 @@ public class RequestService {
                     }
             }
         } else {*/
-            List<TeamEntity> managersTeams = teamRepository.findAllByManagersId(user);
+            List<TeamEntity> managersTeams = teamRepository.findAllByManager(user);
             for (RequestEntity entity : requestRepository.findAll()) {
                 for (TeamEntity team : managersTeams) {
                     if ((entity.getStatus().equals(Status.CONSIDER.getName())) && (team.equals(entity.getUser().getTeamsId()))) {
@@ -89,7 +89,7 @@ public class RequestService {
         List<RequestDTO> response = new ArrayList<>();
         UserEntity user = userRepository.findByLogin(name).get(0);
         System.out.println("NAMED"+name);
-            List<TeamEntity> managersTeams = teamRepository.findAllByManagersId(user);
+            List<TeamEntity> managersTeams = teamRepository.findAllByManager(user);
             for (RequestEntity entity : requestRepository.findAll()) {
                 for (TeamEntity team : managersTeams) {
                     if ((!entity.getTypeOfRequest().getNeedApproval()

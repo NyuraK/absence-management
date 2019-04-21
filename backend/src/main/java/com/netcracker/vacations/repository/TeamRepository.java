@@ -14,15 +14,15 @@ import java.util.List;
 public interface TeamRepository extends CrudRepository<TeamEntity, Integer> {
     List<TeamEntity> findByTeamsId(Integer teamsId);
 
-    List<TeamEntity> findByManagersId(UserEntity managersId);
+    List<TeamEntity> findByManager(UserEntity manager);
 
-    List<TeamEntity> findAllByManagersId(UserEntity managersId);
+    List<TeamEntity> findAllByManager(UserEntity manager);
 
     List<TeamEntity> findByQuota(Integer quota);
 
-    List<TeamEntity> findByDepartmentsId(DepartmentEntity departmentsId);
+    List<TeamEntity> findByDepartment(DepartmentEntity department);
 
-    List<TeamEntity> findAllByDepartmentsId(DepartmentEntity departmentsId);
+    List<TeamEntity> findAllByDepartment(DepartmentEntity department);
 
     List<TeamEntity> findByName(String name);
 

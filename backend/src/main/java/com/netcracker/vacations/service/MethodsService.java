@@ -41,21 +41,21 @@ public class MethodsService {
     }
 
     public void SafeDeleteDepartment(DepartmentEntity department) {
-        List<TeamEntity> depTeams = teamRepo.findAllByDepartmentsId(department);
+        List<TeamEntity> depTeams = teamRepo.findAllByDepartment(department);
         for (TeamEntity team : depTeams) {
-            team.setDepartmentsId(null);
+            team.setDepartment(null);
         }
         depRepo.deleteByDepartmentsId(department.getDepartmentsId());
     }
 
     public void SafeDeleteUser(UserEntity user) {
-        List<DepartmentEntity> directors = depRepo.findAllByDirectorsId(user);
-        List<TeamEntity> managers = teamRepo.findAllByManagersId(user);
+        List<DepartmentEntity> directors = depRepo.findAllByDirector(user);
+        List<TeamEntity> managers = teamRepo.findAllByManager(user);
         for (DepartmentEntity director : directors) {
-            director.setDirectorsId(null);
+            director.setDirector(null);
         }
         for (TeamEntity manager : managers) {
-            manager.setManagersId(null);
+            manager.setManager(null);
         }
         userRepo.deleteById(user.getUsersId());
     }

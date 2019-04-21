@@ -12,7 +12,7 @@
                             <v-layout fill-height>
                                 <v-flex xs12 align-end>
                                     <span class="headline">Amount of vacant days</span> <br> <br>
-                                    <span class="headline">{vacantDays}</span>
+                                    <span class="headline">{{vacantDays}}</span>
                                 </v-flex>
                             </v-layout>
                         </v-container>
@@ -41,7 +41,6 @@
         components: {AbsRequest, SecurityTest, Nav},
         created () {
             this.$acl.change(localStorage.getItem('user'));
-            // this.vacantDays = instance.get('/user/rest_days');
         },
 
     }

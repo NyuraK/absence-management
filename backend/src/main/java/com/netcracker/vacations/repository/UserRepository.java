@@ -24,7 +24,7 @@ public interface UserRepository extends CrudRepository<UserEntity, Integer> {
 
     List<UserEntity> findByHireDate(Date hireDate);
 
-    List<UserEntity> findAllByTeamsId(TeamEntity teamsId);
+    List<UserEntity> findAllByTeamsId(TeamEntity team);
 
     List<UserEntity> findByName(String name);
 
