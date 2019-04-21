@@ -1,13 +1,12 @@
 <template>
     <div>
-        <v-toolbar app>
-            <v-toolbar-title>{{ userName }} {{ userSurname }}
-                <v-icon>edit</v-icon>
-            </v-toolbar-title>
-            <v-spacer></v-spacer>
-        </v-toolbar>
+        <Nav></Nav>
         <v-content>
             <v-container>
+                <h4>{{ userName }} {{ userSurname }}
+                    <v-icon>edit</v-icon>
+                </h4>
+                <UpdatePassword></UpdatePassword>
                 Name:
                 <v-flex xs10 sm5>
                     <v-text-field v-model="user.name" label="name" solo></v-text-field>
@@ -24,9 +23,6 @@
                 <v-flex xs10 sm5>
                     <v-select :items="roles" :label="user.role" v-model="user.role"></v-select>
                 </v-flex>
-
-                <!--<v-text-field v-model="role" label="role" solo></v-text-field>-->
-
                 Email:
                 <v-flex xs10 sm5>
                     <v-text-field v-model="user.email" label="email" solo></v-text-field>
@@ -34,10 +30,6 @@
                 Login:
                 <v-flex xs10 sm5>
                     <v-text-field v-model="user.login" label="login" solo></v-text-field>
-                </v-flex>
-                Password:
-                <v-flex xs10 sm5>
-                    <v-text-field v-model="user.password" label="password" solo></v-text-field>
                 </v-flex>
                 Team id:
                 <v-flex xs10 sm5>
@@ -65,8 +57,6 @@
                     </v-alert>
                 </v-flex>
             </v-container>
-
-
         </v-content>
     </div>
 </template>
@@ -74,9 +64,12 @@
 <script>
 
     import {instance} from '../../Api.js';
+    import Nav from "../Nav";
+    import UpdatePassword from "./UpdatePassword";
 
     export default {
         name: "UserEdit",
+        components: {UpdatePassword, Nav},
         data() {
             return {
                 roles: ['Director', 'Manager', 'Employee', 'Administrator'],
@@ -106,6 +99,7 @@
                     .then(function (response) {
                         console.log(response);
                     });
+                this.$router.push({name: 'users', query: {alert: true}});
                 this.alert = true;
             }
         }

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-btn small color="primary" dark @click="dialog = !dialog">Add user</v-btn>
+        <h5>Users<v-icon  v-on:click="dialog = ! dialog">add</v-icon></h5>
         <v-dialog v-model="dialog" max-width="600px">
             <v-card>
                 <v-card-text>
@@ -59,7 +59,6 @@
                 hireDate: '',
                 phoneNumber: '',
                 description: '',
-
                 password: ''
             }
         },
@@ -86,7 +85,6 @@
                     newUser
                 )
                     .then(function (response) {
-                        console.log(response);
                     });
                 location.reload();
                 this.dialog = false;

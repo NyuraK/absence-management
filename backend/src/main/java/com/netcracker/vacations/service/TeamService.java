@@ -82,6 +82,8 @@ public class TeamService {
         teamDTO.setQuota(teamEntity.getQuota());
         teamDTO.setDepartmentId(teamEntity.getDepartment() == null ? -1 : teamEntity.getDepartment().getDepartmentsId());
         teamDTO.setManagerId(teamEntity.getManager() == null ? -1 : teamEntity.getManager().getUsersId());
+        teamDTO.setManagerName(teamEntity.getManager() == null ? "Manager not assign" : teamEntity.getManager().getName());
+        teamDTO.setManagerSurname(teamEntity.getManager() == null ? "" : teamEntity.getManager().getSurname());
         return teamDTO;
     }
 }

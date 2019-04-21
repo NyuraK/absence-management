@@ -34,6 +34,14 @@ public class UserService {
         return toDTO(userRepository.findById(id).get());
     }
 
+    public List<UserDTO> getUsersFromTeam(Integer teamId){
+        List<UserDTO> response = new ArrayList<>();
+        for (UserEntity entity : userRepository.findAllByTeam_TeamsId(teamId)) {
+            response.add(toDTO(entity));
+        }
+        return response;
+    }
+
     public UserDTO addUser(UserDTO userDTO) {
         userRepository.save(toEntity(userDTO));
         return userDTO;
@@ -45,9 +53,14 @@ public class UserService {
 
     public UserDTO updateUser(Integer id, UserDTO userDTO) {
         UserEntity userEntity = userRepository.findByUsersId(id).get(0);
-        BeanUtils.copyProperties(toEntity(userDTO), userEntity, "usersId");
+        BeanUtils.copyProperties(toEntity(userDTO), userEntity, "usersId", "password");
         userRepository.save(userEntity);
         return userDTO;
+    }
+
+    public void updatePassword(Integer id, String password) {
+        UserEntity userEntity = userRepository.findByUsersId(id).get(0);
+        userEntity.setPassword(password);
     }
 
     private UserEntity toEntity(UserDTO userDTO) {

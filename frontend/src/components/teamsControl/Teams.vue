@@ -1,19 +1,48 @@
 <template>
     <div>
-        <v-toolbar app>
-            <v-toolbar-title>Teams</v-toolbar-title>
-            <v-spacer></v-spacer>
-        </v-toolbar>
+        <Nav></Nav>
         <v-content>
-            <ul class="list-group mt-1" v-for="team of teams" :key="team.teamId">
-                <li class="list-group-item">
-                    <v-layout align-center justify-space-between row fill-height>
-                        <div>
-                            <strong class="ml-2"> {{ team.name }} </strong>
-                        </div>
-                    </v-layout>
-                </li>
-            </ul>
+            <v-container>
+                <h4>Manage teams</h4>
+                <p></p>
+                <input v-model="search" class="form-control" placeholder="Search by team name...">
+                <p></p>
+                <NewTeam></NewTeam>
+                <ul class="list-group mt-1" v-for="team of findTeams" :key="team.teamId">
+                    <li class="list-group-item">
+                        <v-layout align-center justify-space-between row fill-height>
+                            <div>
+                                <router-link :to="'/teams/' + team.teamId">
+                                    <strong class="ml-2"> {{ team.name }} </strong>
+                                </router-link>
+                            </div>
+                            <div>
+                                <v-layout align-center>
+                                    <router-link :to="'/teams/' + team.teamId">
+                                        <v-icon>edit</v-icon>
+                                    </router-link>
+                                    <v-icon @click="clickDelete(team.teamId, team.name)">delete</v-icon>
+                                </v-layout>
+                            </div>
+                        </v-layout>
+                    </li>
+                </ul>
+                <v-layout row justify-center>
+                    <v-dialog v-model="deleteDialog" persistent max-width="290">
+                        <v-card>
+                            <v-card-title class="headline">Are you sure, you want to delete this team?</v-card-title>
+                            <v-card-text>
+                                <p>Team name: <strong>{{deleteName}}</strong></p>
+                            </v-card-text>
+                            <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn color="green darken-1" flat @click.native="deleteDialog = false">Cancel</v-btn>
+                                <v-btn color="green darken-1" flat @click.native="deleteTeam(deleteId)">Yes</v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
+                </v-layout>
+            </v-container>
         </v-content>
     </div>
 </template>
@@ -21,22 +50,52 @@
 <script>
 
     import {instance} from '../../Api.js';
+    import NewTeam from "./NewTeam";
+    import Nav from "../Nav";
+    import AddUserToTeam from "./AddUserToTeam";
 
     export default {
         name: "Teams",
-
+        components: {AddUserToTeam, Nav, NewTeam},
         data() {
             return {
                 search: '',
-                teams: []
+                teams: [],
+                deleteName: '',
+                deleteId: '',
+                deleteDialog: false
             }
         },
+
+        methods: {
+            clickDelete(id, name) {
+                this.deleteDialog = true;
+                this.deleteId = id;
+                this.deleteName = name;
+            },
+            deleteTeam(id) {
+                instance.delete('teams/' + id,
+                )
+                    .then(function (response) {
+                        console.log(response);
+                    });
+                this.deleteDialog = false;
+                this.teams = this.teams.filter(x => x.teamId !== id);
+            },
+        },
+
         created: function () {
             instance.get('teams')
                 .then(response => {
                     this.teams = response.data;
                     console.log(response)
                 })
+        },
+
+        computed: {
+            findTeams() {
+                return this.teams.filter(item => item.name.toLocaleLowerCase().indexOf(this.search.toLowerCase()) !== -1)
+            },
         }
     }
 </script>

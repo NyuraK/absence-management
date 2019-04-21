@@ -1,15 +1,17 @@
 <template>
     <div id="users-list">
-        <v-toolbar app>
-            <v-toolbar-title>Users</v-toolbar-title>
-            <v-spacer></v-spacer>
-        </v-toolbar>
+        <Nav></Nav>
         <v-content>
-            <!--<router-link type="button" class="btn btn-primary mb-2 ml-2" to="users/adduser">Add user</router-link>-->
             <v-container>
+<!--                <v-alert v-model="alert" dismissible type="success" class="alert alert-success" outline>-->
+<!--                    Profile has been successfully updated.-->
+<!--                </v-alert>-->
                 <v-layout align-space-between justify-start column>
-                    <NewUser></NewUser>
+                    <h4>Manage users</h4>
+                    <p></p>
                     <input v-model="search" class="form-control" placeholder="Search by name or role...">
+                    <p></p>
+                    <NewUser></NewUser>
                     <ul class="list-group mt-1" v-for="user of findUsers" :key="user.user">
                         <li class="list-group-item">
                             <v-layout align-center justify-space-between row fill-height>
@@ -29,13 +31,10 @@
                                 <div>
                                     <v-layout align-center>
                                         <router-link :to="'/users/' + user.userId">
-                                            <v-btn color="primary" fab small dark>
-                                                <v-icon>edit</v-icon>
-                                            </v-btn>
+                                            <v-icon>edit</v-icon>
                                         </router-link>
-                                        <v-btn depressed small color="error"
-                                               @click="clickDelete(user.userId, user.name, user.surname)">Delete
-                                        </v-btn>
+                                        <v-icon @click="clickDelete(user.userId, user.name, user.surname)">delete
+                                        </v-icon>
                                     </v-layout>
                                 </div>
                             </v-layout>
@@ -67,12 +66,14 @@
 
     import {instance} from '../../Api.js';
     import NewUser from "./NewUser";
+    import Nav from "../Nav";
 
 
     export default {
-        components: {NewUser},
+        components: {Nav, NewUser},
         data() {
             return {
+                alert: false,
                 deleteName: '',
                 deleteSurname: '',
                 deleteId: '',
@@ -82,6 +83,9 @@
             }
         },
         created: function () {
+            if (this.$route.query.alert) {
+                this.alert = this.$route.query.alert;
+            }
             instance.get('users')
                 .then(response => {
                     this.users = response.data;
@@ -102,7 +106,7 @@
                         console.log(response);
                     });
                 this.deleteDialog = false;
-                location.reload();
+                this.users = this.users.filter(x => x.userId !== id);
             }
         },
         computed: {
