@@ -16,8 +16,7 @@
                 <GChart id="timeline"
                         :settings="{ packages: ['timeline'] }"
                         type="Timeline"
-                        :data='absences'
-                        :options="options">
+                        :data='absences'>
                 </GChart>
             </div>
         </b-container>
@@ -37,15 +36,12 @@
                 absences: [],
                 members: [],
                 day: Date,
-                zoom: 0,
-                options: {
-                    backgroundColor: ''
-                }
+                zoom: 0
             }
         },
         created() {
-            instance.get('/teams/timeline').then((res) => {
-                this.members = renderMembers(res.data, this.members);
+            instance.get('/team').then((res) => {
+                this.members = parseStringToDate(res.data);
             });
 
             instance.get('/requests').then((res) => {
@@ -64,18 +60,6 @@
         },
     }
 
-    function renderMembers(names, members) {
-        let date = new Date('invalid date');
-        for (let i = 0; i < names.length; i++) {
-            members[i] = [
-                names[i],
-                '',
-                date,
-                date
-            ]
-        }
-        return members;
-    }
 
     function parseStringToDate(data) {
         for (let i = 0; i < data.length; i++) {
@@ -99,7 +83,7 @@
     }
 
     #timeline {
-    min-height: 400px;
+        min-height: 400px;
     }
 
 </style>

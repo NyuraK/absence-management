@@ -55,7 +55,6 @@ public class TeamService {
         return teamDTO;
     }
 
-
     private TeamEntity toEntity(TeamDTO teamDTO) {
         TeamEntity teamEntity = new TeamEntity();
         teamEntity.setTeamsId(teamDTO.getTeamId());
