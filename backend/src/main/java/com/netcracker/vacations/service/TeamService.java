@@ -58,7 +58,7 @@ public class TeamService {
         teamEntity.setQuota(teamDTO.getQuota());
 
         DepartmentEntity departmentEntity = new DepartmentEntity();
-        if (teamDTO.getDepartmentId() == null || teamDTO.getDepartmentId() == -1) {
+        if (teamDTO.getDepartmentId() == null) {
             departmentEntity = null;
         } else {
             departmentEntity.setDepartmentsId(teamDTO.getDepartmentId());
@@ -66,7 +66,7 @@ public class TeamService {
         teamEntity.setDepartment(departmentEntity);
 
         UserEntity manager = new UserEntity();
-        if (teamDTO.getManagerId() == null || teamDTO.getManagerId() == -1) {
+        if (teamDTO.getManagerId() == null) {
             manager = null;
         } else {
             manager.setUsersId(teamDTO.getManagerId());
@@ -80,10 +80,10 @@ public class TeamService {
         teamDTO.setTeamId(teamEntity.getTeamsId());
         teamDTO.setName(teamEntity.getName());
         teamDTO.setQuota(teamEntity.getQuota());
-        teamDTO.setDepartmentId(teamEntity.getDepartment() == null ? -1 : teamEntity.getDepartment().getDepartmentsId());
-        teamDTO.setManagerId(teamEntity.getManager() == null ? -1 : teamEntity.getManager().getUsersId());
-        teamDTO.setManagerName(teamEntity.getManager() == null ? "Manager not assign" : teamEntity.getManager().getName());
-        teamDTO.setManagerSurname(teamEntity.getManager() == null ? "" : teamEntity.getManager().getSurname());
+        teamDTO.setDepartmentId(teamEntity.getDepartment() == null ? null : teamEntity.getDepartment().getDepartmentsId());
+        teamDTO.setManagerId(teamEntity.getManager() == null ? null : teamEntity.getManager().getUsersId());
+        teamDTO.setManagerName(teamEntity.getManager() == null ? null : teamEntity.getManager().getName());
+        teamDTO.setManagerSurname(teamEntity.getManager() == null ? null : teamEntity.getManager().getSurname());
         return teamDTO;
     }
 }

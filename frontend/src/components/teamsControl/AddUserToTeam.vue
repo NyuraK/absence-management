@@ -86,6 +86,14 @@
                 }
                 location.reload();
                 this.dialog = false;
+            },
+            checkUser(id){
+                var i;
+                for(i = 0; i < this.teamUsers.length; i++) {
+                    if (this.teamUsers[i].userId === id) {
+                        return false;
+                    }
+                } return true;
             }
         },
 
@@ -103,7 +111,7 @@
         computed: {
             findUsers() {
                 return this.users = this.users.filter(x => x.role !== 'Administrator'
-                    && x.role !== 'Director' && this.teamUsers.map(y => y.userId).indexOf(x.userId) < 0);
+                    && x.role !== 'Director' && this.checkUser(x.userId));
 
             },
         }

@@ -101,8 +101,8 @@ public class UserService {
         userDTO.setRole(entity.getRole());
         userDTO.setLogin(entity.getLogin());
         userDTO.setRestDays(entity.getRestDays());
-        userDTO.setTeamId(entity.getTeam() == null ? -1 : entity.getTeam().getTeamsId());
-        userDTO.setTeamName(entity.getTeam() == null ? "User without team" : entity.getTeam().getName());
+        userDTO.setTeamId(entity.getTeam() == null ? null : entity.getTeam().getTeamsId());
+        userDTO.setTeamName(entity.getTeam() == null ? null : entity.getTeam().getName());
         return userDTO;
     }
 

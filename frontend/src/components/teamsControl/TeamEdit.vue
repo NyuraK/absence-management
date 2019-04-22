@@ -7,8 +7,12 @@
                     <v-icon>edit</v-icon>
                 </h4>
 
-                Team manager: {{team.managerName }} {{ team.managerSurname}}
-                <p>Team department: {{team.departmentId}}</p>
+
+                <p v-if="team.managerName === null">Team manager: none </p>
+                <p v-else>Team manager: {{team.managerName }} {{ team.managerSurname}} </p>
+                <p v-if="team.departmentId === null">Team department: none </p>
+                <p v-else>Team department: {{team.departmentId}} </p>
+
 
 
                 <v-layout justify-space-around row>
@@ -116,7 +120,7 @@
 
         methods: {
             clear(user) {
-                user.teamId = -1;
+                user.teamId = null;
                 instance.put('users/' + user.userId, user);
                 this.teamUsers = this.teamUsers.filter(x => x.userId !== user.userId)
             },

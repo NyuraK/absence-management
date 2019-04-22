@@ -16,8 +16,6 @@ public interface UserRepository extends CrudRepository<UserEntity, Integer> {
 
     List<UserEntity> findByLogin(String login);
 
-    List<UserEntity> findByPassword(String password);
-
     List<UserEntity> findByRole(String role);
 
     List<UserEntity> findByRestDays(Integer restDays);
