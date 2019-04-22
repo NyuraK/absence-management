@@ -7,12 +7,13 @@ import javax.persistence.*;
 @Entity
 @Table(name = "departments")
 public class DepartmentEntity {
+
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
-
     @Column(name = "departments_id")
     private Integer departmentsId;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "directors_id")
     private UserEntity director;

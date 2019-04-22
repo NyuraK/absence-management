@@ -38,6 +38,7 @@ const store = new Vuex.Store({
                         let decodedValue = jwt.decode(ca, {algorithm : 'HS512'});
                         localStorage.setItem('user', decodedValue.authorities);
                         localStorage.setItem('username', decodedValue.sub);
+                        resolve(response);
                     })
                     .catch((error) => {
                         localStorage.removeItem('token');

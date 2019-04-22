@@ -16,8 +16,6 @@ public interface UserRepository extends CrudRepository<UserEntity, Integer> {
 
     List<UserEntity> findByLogin(String login);
 
-    List<UserEntity> findByPassword(String password);
-
     List<UserEntity> findByRole(String role);
 
     List<UserEntity> findByRestDays(Integer restDays);
@@ -25,6 +23,8 @@ public interface UserRepository extends CrudRepository<UserEntity, Integer> {
     List<UserEntity> findByHireDate(Date hireDate);
 
     List<UserEntity> findAllByTeam(TeamEntity team);
+
+    List<UserEntity> findAllByTeam_TeamsId(Integer id);
 
     List<UserEntity> findByName(String name);
 

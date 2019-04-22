@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-btn small color="primary" dark @click="dialog = !dialog">Add user</v-btn>
+        <h5>Users<v-icon  v-on:click="dialog = ! dialog">add</v-icon></h5>
         <v-dialog v-model="dialog" max-width="600px">
             <v-card>
                 <v-card-text>
@@ -11,6 +11,7 @@
                     <v-select :items="roles" label="Role" v-model="role"></v-select>
                     <v-text-field v-model="email" :rules="[rules.required, rules.email]" label="E-mail"></v-text-field>
                     <v-text-field label="Login" v-model="login"></v-text-field>
+                    <v-text-field label="Password" v-model="password"></v-text-field>
                     <v-text-field label="Team id" v-model="teamId"></v-text-field>
                     <v-text-field label="Rest Days" v-model="restDays"></v-text-field>
                     <v-text-field label="Hire date" type="date" v-model="hireDate"></v-text-field>
@@ -58,6 +59,7 @@
                 hireDate: '',
                 phoneNumber: '',
                 description: '',
+                password: ''
             }
         },
         methods: {
@@ -66,7 +68,7 @@
                 var newUser = {
                     user: this.user,
                     login: this.login,
-                    password: Math.random().toString(36).slice(-8),
+                    password: this.password,
                     name: this.name,
                     surname: this.surname,
                     familyName: this.familyName,
@@ -83,7 +85,6 @@
                     newUser
                 )
                     .then(function (response) {
-                        console.log(response);
                     });
                 location.reload();
                 this.dialog = false;
