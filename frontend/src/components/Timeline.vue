@@ -34,12 +34,7 @@
                 absences: [],
                 members: [],
                 day: Date,
-                zoom: 0,
-                options:
-                    {
-                        backgroundColor: ''
-
-                    }
+                zoom: 0
             }
         },
         created() {
@@ -48,6 +43,7 @@
             });
             instance.get('/teams/timeline').then((res) => {
                 this.members = renderMembers(res.data, this.members);
+
             });
             instance.get('/requests').then((res) => {
                 this.absences = parseStringToDate(res.data);
@@ -66,18 +62,6 @@
         }
     }
 
-    function renderMembers(names, members) {
-        let date = new Date('invalid date');
-        for (let i = 0; i < names.length; i++) {
-            members[i] = [
-                names[i],
-                '',
-                date,
-                date
-            ]
-        }
-        return members;
-    }
 
     function parseStringToDate(data) {
         for (let i = 0; i < data.length; i++) {

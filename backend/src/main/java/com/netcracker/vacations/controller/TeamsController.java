@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
 @RestController
 @RequestMapping("/api/teams")
 public class TeamsController {
@@ -49,10 +48,4 @@ public class TeamsController {
         teamService.deleteTeam(id);
     }
 
-
-    @GetMapping("/timeline")
-    public List<String> getTeamMembers(){
-        return teamService.getMembers();
-    }
 }
-
