@@ -11,7 +11,8 @@ import store from "../store/index"
 
 import Users from "../components/usersControl/Users";
 import UserEdit from "../components/usersControl/UserEdit";
-
+import Teams from "../components/teamsControl/Teams";
+import TeamEdit from "../components/teamsControl/TeamEdit";
 
 
 Vue.use(VueRouter);
@@ -19,6 +20,7 @@ const router = new VueRouter({
     mode: 'history',
     routes: [
         {
+            name: 'users',
             path: '/users',
             component: Users,
             meta: {nonRequiresAuth: true, rule:'isPublic'}
@@ -27,6 +29,18 @@ const router = new VueRouter({
         {
             path: '/users/:id',
             component: UserEdit,
+            meta: {nonRequiresAuth: true, rule:'isPublic'}
+
+        },
+        {
+            path: '/teams',
+            component: Teams,
+            meta: {nonRequiresAuth: true, rule:'isPublic'}
+
+        },
+        {
+            path: '/teams/:id',
+            component: TeamEdit,
             meta: {nonRequiresAuth: true, rule:'isPublic'}
 
         },

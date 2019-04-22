@@ -1,56 +1,48 @@
 package com.netcracker.vacations.controller;
 
 
-import com.netcracker.vacations.domain.TeamEntity;
-import com.netcracker.vacations.repository.TeamRepository;
-import org.springframework.beans.BeanUtils;
+import com.netcracker.vacations.dto.TeamDTO;
+import com.netcracker.vacations.service.TeamService;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/teams")
 public class TeamsController {
 
-    private final TeamRepository teamRepository;
+    private TeamService teamService;
 
-    public TeamsController(TeamRepository teamRepository) {
-        this.teamRepository = teamRepository;
+    public TeamsController(TeamService teamService) {
+        this.teamService = teamService;
     }
 
-    //    @Secured("ROLE_ADMIN")
     @GetMapping
-    public Iterable<TeamEntity> teams() {
-        return teamRepository.findAll();
+    public List<TeamDTO> teams() {
+        return teamService.getTeams();
     }
 
-    //    @Secured("ROLE_ADMIN")
     @GetMapping("/{id}")
-    public TeamEntity getTeam(@PathVariable("id") TeamEntity team) {
-        System.out.println("in the get team");
-        return team;
+    public TeamDTO getTeam(@PathVariable("id") Integer id) {
+        return teamService.getTeam(id);
     }
 
-    //    @Secured("ROLE_ADMIN")
     @PostMapping("/addTeam")
-    public TeamEntity addUser(@RequestBody TeamEntity team) {
-        return teamRepository.save(team);
+    public TeamDTO addTeam(@RequestBody TeamDTO teamDTO) {
+        return teamService.addTeam(teamDTO);
     }
 
-    //    @Secured("ROLE_ADMIN")
     @PutMapping("/{id}")
-    public TeamEntity updateTeam(
-            @PathVariable("id") TeamEntity teamFromDb,
-            @RequestBody TeamEntity team
+    public TeamDTO updateTeam(
+            @PathVariable("id") Integer id,
+            @RequestBody TeamDTO teamDTO
     ) {
-        BeanUtils.copyProperties(team, teamFromDb, "id");
-
-        return teamRepository.save(teamFromDb);
+        return teamService.updateTeam(id, teamDTO);
     }
 
-    //    @Secured("ROLE_ADMIN")
     @DeleteMapping("/{id}")
-    public void deleteTeam(@PathVariable("id") TeamEntity team) {
-        teamRepository.delete(team);
+    public void deleteTeam(@PathVariable("id") Integer id) {
+        teamService.deleteTeam(id);
     }
-
 
 }

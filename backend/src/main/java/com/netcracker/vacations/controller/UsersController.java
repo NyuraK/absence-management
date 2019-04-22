@@ -27,6 +27,9 @@ public class UsersController {
         return service.getUser(id);
     }
 
+    @GetMapping("team/{id}")
+    public List<UserDTO> getUsersFromTeam(@PathVariable("id") Integer teamId) { return service.getUsersFromTeam(teamId); }
+
     @PostMapping("/addUser")
     public UserDTO addUser(@RequestBody UserDTO userDTO) {
         return service.addUser(userDTO);
@@ -40,7 +43,15 @@ public class UsersController {
         return service.updateUser(id, userDTO);
     }
 
-    @DeleteMapping("/{id}")
+    @PutMapping("/password/{id}")
+    public void updatePassword(
+            @PathVariable("id") Integer id,
+            @RequestBody String password
+    ) {
+        service.updatePassword(id, password);
+    }
+
+    @DeleteMapping("users/{id}")
     public void deleteUser(@PathVariable("id") Integer id) {
         service.deleteUser(id);
     }
