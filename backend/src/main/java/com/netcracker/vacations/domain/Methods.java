@@ -8,9 +8,9 @@ import java.util.*;
 public class Methods {
 
     public void SafeDeleteTeam(TeamEntity team, UserRepository usersRepo, TeamRepository teamRepo) {
-        List<UserEntity> teamsUsers = usersRepo.findAllByTeamsId(team);
+        List<UserEntity> teamsUsers = usersRepo.findAllByTeam(team);
         for (UserEntity user : teamsUsers) {
-            user.setTeamsId(null);
+            user.setTeam(null);
         }
         teamRepo.deleteByTeamsId(team.getTeamsId());
     }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 public class TeamsController {
 
     private final TeamRepository teamRepository;
+
     public TeamsController(TeamRepository teamRepository) {
         this.teamRepository = teamRepository;
     }
@@ -50,7 +51,6 @@ public class TeamsController {
     public void deleteTeam(@PathVariable("id") TeamEntity team) {
         teamRepository.delete(team);
     }
-
 
 
 }

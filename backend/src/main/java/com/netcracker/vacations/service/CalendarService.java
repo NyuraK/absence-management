@@ -32,7 +32,7 @@ public class CalendarService {
 
     public List<String> getVacationsPerDay(String mode, String name) {
         UserEntity user = userRepo.findByLogin(name).get(0);
-        TeamEntity team = user.getTeamsId();
+        TeamEntity team = user.getTeam();
         SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH);
 
         if (!(team == null)) {
@@ -43,7 +43,7 @@ public class CalendarService {
 
                 List<Date> dates = getDatesBetween(BeginDate, EndDate);
                 List<RequestEntity> teamReqs = new ArrayList();
-                List<UserEntity> teamUsers = userRepo.findAllByTeamsId(team);
+                List<UserEntity> teamUsers = userRepo.findAllByTeam(team);
                 List<String> occupied = new ArrayList<String>();
                 List<String> busy = new ArrayList<String>();
 
@@ -53,7 +53,7 @@ public class CalendarService {
                 int quota = team.getQuota();
 
                 for (UserEntity users : teamUsers) {
-                    List<RequestEntity> userReqs = reqRepo.findAllByUsersId(users);
+                    List<RequestEntity> userReqs = reqRepo.findAllByUser(users);
                     for (RequestEntity req : userReqs) {
                         if (req.getStatus().equals("Accepted") && (req.getTypeOfRequest().getInfluenceOnVr())) {
                             teamReqs.add(req);
@@ -129,17 +129,17 @@ public class CalendarService {
         userDTO.setSurname(entity.getSurname());
         userDTO.setPassword(entity.getPassword());
         userDTO.setPhoneNumber(entity.getPhoneNumber());
-        userDTO.setRole(entity.getRole());
+        userDTO.setRole(entity.getRole().getName());
         userDTO.setLogin(entity.getLogin());
         userDTO.setRestDays(entity.getRestDays());
-        userDTO.setTeamId(entity.getTeamsId() == null ? -1 : entity.getTeamsId().getTeamsId());
-        userDTO.setTeamName(entity.getTeamsId() == null ? "User without team" : entity.getTeamsId().getName());
+        userDTO.setTeamId(entity.getTeam() == null ? -1 : entity.getTeam().getTeamsId());
+        userDTO.setTeamName(entity.getTeam() == null ? "User without team" : entity.getTeam().getName());
         return userDTO;
     }
 
     public List<String> getVacations(String status, String name) {
         UserEntity user = userRepo.findByLogin(name).get(0);
-        List<RequestEntity> reqs = reqRepo.findAllByUsersId(user);
+        List<RequestEntity> reqs = reqRepo.findAllByUser(user);
         List<RequestEntity> business = new ArrayList<RequestEntity>();
         List<RequestEntity> child = new ArrayList<RequestEntity>();
         List<RequestEntity> vacation = new ArrayList<RequestEntity>();
@@ -192,27 +192,27 @@ public class CalendarService {
         for (RequestEntity req : business) {
             begin = formatter.format(req.getBeginning());
             end = formatter.format(req.getEnding());
-            dates.add("BU//"+begin + "//" + end);
+            dates.add("BU//" + begin + "//" + end);
         }
         for (RequestEntity req : child) {
             begin = formatter.format(req.getBeginning());
             end = formatter.format(req.getEnding());
-            dates.add("CH//"+begin + "//" + end);
+            dates.add("CH//" + begin + "//" + end);
         }
         for (RequestEntity req : vacation) {
             begin = formatter.format(req.getBeginning());
             end = formatter.format(req.getEnding());
-            dates.add("VA//"+begin + "//" + end);
+            dates.add("VA//" + begin + "//" + end);
         }
         for (RequestEntity req : sick) {
             begin = formatter.format(req.getBeginning());
             end = formatter.format(req.getEnding());
-            dates.add("SI//"+begin + "//" + end);
+            dates.add("SI//" + begin + "//" + end);
         }
         for (RequestEntity req : remote) {
             begin = formatter.format(req.getBeginning());
             end = formatter.format(req.getEnding());
-            dates.add("RE//"+begin + "//" + end);
+            dates.add("RE//" + begin + "//" + end);
         }
         for (String date : dates) {
             System.out.println(date);

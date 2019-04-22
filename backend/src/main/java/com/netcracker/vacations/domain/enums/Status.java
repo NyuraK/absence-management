@@ -7,8 +7,8 @@ public enum Status {
 
     public final String name;
 
-    Status(String name){
-        this.name=name;
+    Status(String name) {
+        this.name = name;
     }
 
     public static String[] getNames() {
@@ -19,6 +19,7 @@ public enum Status {
         }
         return names;
     }
+
     public String getName() {
         return name;
     }

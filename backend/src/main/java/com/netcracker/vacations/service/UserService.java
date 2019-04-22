@@ -59,7 +59,7 @@ public class UserService {
         } else {
             teamEntity.setTeamsId(userDTO.getTeamId());
         }
-        userEntity.setTeamsId(teamEntity);
+        userEntity.setTeam(teamEntity);
         userEntity.setDescription(userDTO.getDescription());
         userEntity.setEmail(userDTO.getEmail());
         userEntity.setFamilyName(userDTO.getFamilyName());
@@ -86,11 +86,11 @@ public class UserService {
         userDTO.setSurname(entity.getSurname());
         userDTO.setPassword(entity.getPassword());
         userDTO.setPhoneNumber(entity.getPhoneNumber());
-        userDTO.setRole(entity.getRole());
+        userDTO.setRole(entity.getRole().getName());
         userDTO.setLogin(entity.getLogin());
         userDTO.setRestDays(entity.getRestDays());
-        userDTO.setTeamId(entity.getTeamsId() == null ? -1 : entity.getTeamsId().getTeamsId());
-        userDTO.setTeamName(entity.getTeamsId() == null ? "User without team" : entity.getTeamsId().getName());
+        userDTO.setTeamId(entity.getTeam() == null ? -1 : entity.getTeam().getTeamsId());
+        userDTO.setTeamName(entity.getTeam() == null ? "User without team" : entity.getTeam().getName());
         return userDTO;
     }
 

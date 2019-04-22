@@ -72,15 +72,15 @@ public class RequestService {
                     }
             }
         } else {*/
-            List<TeamEntity> managersTeams = teamRepository.findAllByManager(user);
-            for (RequestEntity entity : requestRepository.findAll()) {
-                for (TeamEntity team : managersTeams) {
-                    if ((entity.getStatus().equals(Status.CONSIDER.getName())) && (team.equals(entity.getUser().getTeamsId()))) {
-                        response.add(toDTO(entity));
-                        break;
-                    }
+        List<TeamEntity> managersTeams = teamRepository.findAllByManager(user);
+        for (RequestEntity entity : requestRepository.findAll()) {
+            for (TeamEntity team : managersTeams) {
+                if ((entity.getStatus().equals(Status.CONSIDER.getName())) && (team.equals(entity.getUser().getTeam()))) {
+                    response.add(toDTO(entity));
+                    break;
                 }
             }
+        }
         //}
         return response;
     }
@@ -88,17 +88,16 @@ public class RequestService {
     public List<RequestDTO> getResolvedRequests(String name) {
         List<RequestDTO> response = new ArrayList<>();
         UserEntity user = userRepository.findByLogin(name).get(0);
-        System.out.println("NAMED"+name);
-            List<TeamEntity> managersTeams = teamRepository.findAllByManager(user);
-            for (RequestEntity entity : requestRepository.findAll()) {
-                for (TeamEntity team : managersTeams) {
-                    if ((!entity.getTypeOfRequest().getNeedApproval()
-                            || !entity.getStatus().equals(Status.CONSIDER.getName())) && (team.equals(entity.getUser().getTeamsId()))) {
-                        response.add(toDTO(entity));
-                        break;
-                    }
+        List<TeamEntity> managersTeams = teamRepository.findAllByManager(user);
+        for (RequestEntity entity : requestRepository.findAll()) {
+            for (TeamEntity team : managersTeams) {
+                if ((!entity.getTypeOfRequest().getNeedApproval()
+                        || !entity.getStatus().equals(Status.CONSIDER.getName())) && (team.equals(entity.getUser().getTeam()))) {
+                    response.add(toDTO(entity));
+                    break;
                 }
             }
+        }
         return response;
     }
 
@@ -115,9 +114,9 @@ public class RequestService {
             requestDTO.setName(entity.getUser().getName() + " " + entity.getUser().getFamilyName());
         }
         //if (entity.getUser().getTeamsId().getName() != null) {
-            requestDTO.setTeamname(entity.getUser().getTeamsId().getName());
-       // } else {
-            //requestDTO.setTeamname("-");
+        requestDTO.setTeamname(entity.getUser().getTeam().getName());
+        // } else {
+        //requestDTO.setTeamname("-");
         //}
         requestDTO.setDescription(entity.getDescription());
         requestDTO.setStart(entity.getBeginning());

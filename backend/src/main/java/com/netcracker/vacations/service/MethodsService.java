@@ -33,9 +33,9 @@ public class MethodsService {
     }
 
     public void SafeDeleteTeam(TeamEntity team) {
-        List<UserEntity> teamsUsers = userRepo.findAllByTeamsId(team);
+        List<UserEntity> teamsUsers = userRepo.findAllByTeam(team);
         for (UserEntity user : teamsUsers) {
-            user.setTeamsId(null);
+            user.setTeam(null);
         }
         teamRepo.deleteByTeamsId(team.getTeamsId());
     }
@@ -84,38 +84,39 @@ public class MethodsService {
         int maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
         System.out.println(maxDay);
     }
-    public void putInfoInBase (){
+
+    public void putInfoInBase() {
         DateFormat formatter = new SimpleDateFormat("MM/dd/yy");
         try {
-            Date date1 = formatter.parse("01/1/02");
-            Date date2 = formatter.parse("01/5/02");
-            Date date3 = formatter.parse("01/10/02");
-            Date date4 = formatter.parse("01/12/02");
-            Date date5 = formatter.parse("01/14/02");
-            Date date6 = formatter.parse("01/19/02");
-            Date date7 = formatter.parse("01/22/02");
-            Date date8 = formatter.parse("01/24/02");
-            Date date9 = formatter.parse("01/28/02");
+            Date date1 = formatter.parse("04/1/19");
+            Date date2 = formatter.parse("04/5/19");
+            Date date3 = formatter.parse("04/10/19");
+            Date date4 = formatter.parse("04/12/19");
+            Date date5 = formatter.parse("04/14/19");
+            Date date6 = formatter.parse("04/19/19");
+            Date date7 = formatter.parse("04/22/19");
+            Date date8 = formatter.parse("04/24/19");
+            Date date9 = formatter.parse("04/28/19");
 
-            RequestTypeEntity type1=new RequestTypeEntity(false,false, RequestType.BUSINESSTRIP);
-            RequestTypeEntity type2=new RequestTypeEntity(true,false, RequestType.SICKNESS);
-            RequestTypeEntity type3=new RequestTypeEntity(true,false, RequestType.CHILDCARE);
-            RequestTypeEntity type4=new RequestTypeEntity(false,true, RequestType.REMOTE);
-            RequestTypeEntity type5=new RequestTypeEntity(true,true, RequestType.VACATION);
+            RequestTypeEntity type1 = new RequestTypeEntity(false, false, RequestType.BUSINESSTRIP);
+            RequestTypeEntity type2 = new RequestTypeEntity(true, false, RequestType.SICKNESS);
+            RequestTypeEntity type3 = new RequestTypeEntity(true, false, RequestType.CHILDCARE);
+            RequestTypeEntity type4 = new RequestTypeEntity(false, true, RequestType.REMOTE);
+            RequestTypeEntity type5 = new RequestTypeEntity(true, true, RequestType.VACATION);
             typeRepo.save(type1);
             typeRepo.save(type2);
             typeRepo.save(type3);
             typeRepo.save(type4);
             typeRepo.save(type5);
 
-            UserEntity user1=new UserEntity("Denis", "0901", Role.ADMIN, 20, date1);
-            UserEntity user2=new UserEntity("Aleksei", "5101", Role.MANAGER, 20, date2);
-            UserEntity user3=new UserEntity("Artem", "4901", Role.EMPLOYEE, 20, date3);
+            UserEntity user1 = new UserEntity("Denis", "0901", Role.ADMIN, 20, date1);
+            UserEntity user2 = new UserEntity("Aleksei", "5101", Role.MANAGER, 20, date2);
+            UserEntity user3 = new UserEntity("Artem", "4901", Role.EMPLOYEE, 20, date3);
             userRepo.save(user1);
             userRepo.save(user2);
             userRepo.save(user3);
-            DepartmentEntity dep1=new DepartmentEntity(user3);
-            DepartmentEntity dep2=new DepartmentEntity(user2);
+            DepartmentEntity dep1 = new DepartmentEntity(user3);
+            DepartmentEntity dep2 = new DepartmentEntity(user2);
             depRepo.save(dep1);
             depRepo.save(dep2);
             try {
@@ -137,27 +138,28 @@ public class MethodsService {
                 reqRepo.save(calendar8);
                 RequestEntity calendar9 = new RequestEntity(user2, date4, date7, type5, Status.DECLINED);
                 reqRepo.save(calendar9);
-            } catch (EndingBeforeBeginningException ex){
+            } catch (EndingBeforeBeginningException ex) {
                 ex.printStackTrace();
                 System.out.println(ex.message);
             }
 
 
-            TeamEntity team1=new TeamEntity(6,user2,"Netcracker");
+            TeamEntity team1 = new TeamEntity(6, user2, "Netcracker");
             teamRepo.save(team1);
-            TeamEntity team2=new TeamEntity(6,user2,"JavaScript");
+            TeamEntity team2 = new TeamEntity(6, user2, "JavaScript");
             teamRepo.save(team2);
-            user2.setTeamsId(team1);
+            user2.setTeam(team1);
         } catch (ParseException e) {
             e.printStackTrace();
         }
     }
-    public void getUsersAcceptedRequests(int id,String criterion, String topic1/*FOR TYPE*/, String topic2/*FOR STATUS*/){
-        List<UserEntity> users=userRepo.findByUsersId(id);
-        UserEntity user=users.get(0);
+
+    public void getUsersAcceptedRequests(int id, String criterion, String topic1/*FOR TYPE*/, String topic2/*FOR STATUS*/) {
+        List<UserEntity> users = userRepo.findByUsersId(id);
+        UserEntity user = users.get(0);
         System.out.println("USED METHOD");
-        List<RequestEntity> reqs=reqRepo.findAllByUsersId(user);
-        List<RequestEntity> result=new ArrayList<RequestEntity>();
+        List<RequestEntity> reqs = reqRepo.findAllByUser(user);
+        List<RequestEntity> result = new ArrayList<RequestEntity>();
         if (!criterion.equals("Both")) {
             if (!topic1.equals("All")) {
                 switch (criterion) {
@@ -188,16 +190,16 @@ public class MethodsService {
                     result.add(req);
                 }
             }
-        } else{
+        } else {
             int typeID = typeRepo.findByName(topic1).get(0).getTypeOfRequest();
             for (RequestEntity req : reqs) {
-                if (((req.getTypeOfRequest().getTypeOfRequest()) == typeID)&&(req.getStatus().equals(topic2))){
+                if (((req.getTypeOfRequest().getTypeOfRequest()) == typeID) && (req.getStatus().equals(topic2))) {
                     result.add(req);
                 }
             }
         }
-        for (RequestEntity req:result){
-            System.out.println("Request's ID is=> "+req.getRequestsId());
+        for (RequestEntity req : result) {
+            System.out.println("Request's ID is=> " + req.getRequestsId());
         }
     }
 }

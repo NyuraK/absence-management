@@ -23,8 +23,9 @@ public class UserEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-    private String role;
+    private Role role;
 
     @Column(name = "rest_days", nullable = false)
     private Integer restDays;
@@ -33,9 +34,9 @@ public class UserEntity {
     @Temporal(TemporalType.DATE)
     private Date hireDate;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teams_id")
-    private TeamEntity teamsId;
+    private TeamEntity team;
 
     @Column(name = "name")
     private String name;
@@ -64,7 +65,7 @@ public class UserEntity {
     public UserEntity(String login, String password, Role role, Integer restDays, Date hireDate) {
         this.login = login;
         this.password = encode(password);
-        this.role = role.getName();
+        this.role = role;
         this.restDays = restDays;
         this.hireDate = hireDate;
     }
@@ -93,12 +94,12 @@ public class UserEntity {
         this.password = new BCryptPasswordEncoder().encode(password);
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
     public void setRole(Role role) {
-        this.role = role.getName();
+        this.role = role;
     }
 
     public Integer getRestDays() {
@@ -117,12 +118,12 @@ public class UserEntity {
         this.hireDate = hireDate;
     }
 
-    public TeamEntity getTeamsId() {
-        return teamsId;
+    public TeamEntity getTeam() {
+        return team;
     }
 
-    public void setTeamsId(TeamEntity teamsId) {
-        this.teamsId = teamsId;
+    public void setTeam(TeamEntity team) {
+        this.team = team;
     }
 
     public String getName() {
