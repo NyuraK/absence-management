@@ -74,7 +74,6 @@ const router = new VueRouter({
             component: Timeline,
             meta: {rule: 'isLoggedUser'}
         },
-
         {
             path: "/*",
             component: NotFound,

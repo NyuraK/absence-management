@@ -3,7 +3,6 @@ package com.netcracker.vacations.controller;
 
 import com.netcracker.vacations.dto.AbsenceDTO;
 import com.netcracker.vacations.dto.TeamDTO;
-import com.netcracker.vacations.dto.UserDTO;
 import com.netcracker.vacations.service.TeamService;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +18,7 @@ public class TeamsController {
     public TeamsController(TeamService teamService) {
         this.teamService = teamService;
     }
+
 
     @GetMapping
     public List<TeamDTO> teams(@RequestParam Optional<String> username) {
@@ -65,3 +65,4 @@ public class TeamsController {
     }
 
 }
+

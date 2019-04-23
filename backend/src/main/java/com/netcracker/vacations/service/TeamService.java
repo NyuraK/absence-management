@@ -7,7 +7,6 @@ import com.netcracker.vacations.domain.UserEntity;
 import com.netcracker.vacations.domain.enums.Status;
 import com.netcracker.vacations.dto.AbsenceDTO;
 import com.netcracker.vacations.dto.TeamDTO;
-import com.netcracker.vacations.dto.UserDTO;
 import com.netcracker.vacations.repository.RequestRepository;
 import com.netcracker.vacations.repository.TeamRepository;
 import com.netcracker.vacations.repository.UserRepository;
@@ -167,3 +166,4 @@ public class TeamService {
         return absenceDTO;
     }
 }
+

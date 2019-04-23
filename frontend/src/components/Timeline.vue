@@ -24,7 +24,7 @@
                         :settings="{ packages: ['timeline'] }"
                         type="Timeline"
                         :data='absences'
-                        :options='options'>
+                        :options="options">
                 </GChart>
             </div>
         </b-container>
@@ -45,7 +45,8 @@
                 members: [],
                 day: Date,
                 zoom: 0,
-                options: {},
+                options: {}
+                ,
                 teams: [{
                     id: '',
                     name: ''
@@ -72,7 +73,8 @@
                 this.options = {
                     width: this.zoom
                 }
-            },
+            }
+            ,
             showChartForManager(id) {
                 instance.get('/teams/'
                     + localStorage.getItem('username')
@@ -95,17 +97,19 @@
                 }).catch((err) => {
                     console.log(err);
                 });
-            },
+            }
+            ,
             showChartForEmployee(callback) {
                 instance.get('/teams/members',
-                    { params: {username: localStorage.getItem('username') }}
+                    {params: {username: localStorage.getItem('username')}}
                 ).then((res) => {
                     this.members = extractMembers(res.data);
                     callback(res.data[0].teamID);
                 }).catch((err) => {
                     console.log(err);
                 });
-            },
+            }
+            ,
             showAbsences(id) {
                 instance.get('/teams/absences/' + id,
                     {params: {username: localStorage.getItem('username')}}
@@ -117,8 +121,9 @@
                     console.log(err);
                 });
             }
-        },
+        }
     }
+
 
     function parseTeam(data) {
         let teams = [];
