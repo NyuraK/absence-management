@@ -58,6 +58,5 @@ public class RequestController {
     public List<RequestDTO> getRequests() {
         return service.getRequests();
     }
-
 }
 

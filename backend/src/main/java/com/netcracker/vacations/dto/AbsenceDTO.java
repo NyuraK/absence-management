@@ -7,6 +7,7 @@ public class AbsenceDTO {
     private String type;
     private String begin;
     private String end;
+    private Integer teamID;
 
     public String getName() {
         return name;
@@ -46,5 +47,13 @@ public class AbsenceDTO {
 
     public void setEnd(String end) {
         this.end = end;
+    }
+
+    public Integer getTeamID() {
+        return teamID;
+    }
+
+    public void setTeamID(Integer teamID) {
+        this.teamID = teamID;
     }
 }

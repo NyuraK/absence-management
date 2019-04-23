@@ -109,7 +109,9 @@ public class TeamService {
         List<AbsenceDTO> res = new ArrayList<>();
         Integer teamsId = userRepository.findByLogin(username).get(0).getTeam().getTeamsId();
         for (UserEntity user : userRepository.findAllByTeam_TeamsId(teamsId)) {
-            res.add(toAbsenceDTO(user, new RequestEntity()));
+            AbsenceDTO absenceDTO = toAbsenceDTO(user, new RequestEntity());
+            absenceDTO.setTeamID(teamsId);
+            res.add(absenceDTO);
         }
         return res;
     }
