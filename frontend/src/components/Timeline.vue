@@ -8,15 +8,23 @@
                           :min="1200"
                           :max="7000"
                           label="Zoom"
-                          v-on:change="zoomChart"
+                          v-on:click="zoomChart"
                 ></v-slider>
+                <v-select
+                        :items="teams"
+                        item-text="name"
+                        item-value="id"
+                        label="Team"
+                        v-on:change="showChart"
+                ></v-select>
             </v-flex>
 
-            <div id="chart_wrapper">
+            <div id="chart_wrapper" v-if="show">
                 <GChart id="timeline"
                         :settings="{ packages: ['timeline'] }"
                         type="Timeline"
-                        :data='absences'>
+                        :data='absences'
+                        :options='options'>
                 </GChart>
             </div>
         </b-container>
@@ -36,37 +44,79 @@
                 absences: [],
                 members: [],
                 day: Date,
-                zoom: 0
+                zoom: 0,
+                options: {},
+                teams: [{
+                    id: '',
+                    name: ''
+                }],
+                show: false
             }
         },
         created() {
-            instance.get('/team').then((res) => {
-                this.members = parseStringToDate(res.data);
+            instance.get('/teams', {
+                params: {
+                    username: localStorage.getItem('username')
+                }
+            }).then((res) => {
+                this.teams = parseTeam(res.data);
             });
 
-            instance.get('/requests').then((res) => {
-                this.absences = parseStringToDate(res.data);
-                Array.prototype.push.apply(this.absences, this.members);
-            }).catch((err) => {
-                console.log(err);
-            });
         },
+
         methods: {
             zoomChart() {
                 this.options = {
                     width: this.zoom
                 }
+            },
+            showChart(id) {
+                instance.get('/teams/'
+                    + localStorage.getItem('username')
+                    + '/'
+                    + id
+                ).then((res) => {
+                    this.members = extractMembers(res.data);
+                }).catch((err) => {
+                    console.log(err);
+                });
+
+                instance.get('/teams/absences'
+                    + '/'
+                    + id,
+                    { params: {username: localStorage.getItem('username')}}
+                ).then((res) => {
+                    this.absences = extractMembers(res.data);
+                    Array.prototype.push.apply(this.absences, this.members);
+                    this.show = true;
+                }).catch((err) => {
+                    console.log(err);
+                });
             }
         },
     }
 
-
-    function parseStringToDate(data) {
+    function parseTeam(data) {
+        let teams = [];
         for (let i = 0; i < data.length; i++) {
-            data[i][2] = new Date(data[i][2] + 'T00:00:00');
-            data[i][3] = new Date(data[i][3] + 'T00:00:00');
+            teams.push({
+                id: data[i].teamId,
+                name: data[i].name
+            });
         }
-        return data;
+        return teams;
+    }
+
+    function extractMembers(data) {
+        let members = [];
+        for (let i = 0; i < data.length; i++) {
+            members[i] = new Array(4);
+            members[i][0] = data[i].name + ' ' + data[i].familyName;
+            members[i][1] = data[i].type;
+            members[i][2] = new Date(data[i].begin + 'T00:00:00');
+            members[i][3] = new Date(data[i].end + 'T00:00:00');
+        }
+        return members;
     }
 
 

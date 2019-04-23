@@ -23,25 +23,25 @@ const router = new VueRouter({
             name: 'users',
             path: '/users',
             component: Users,
-            meta: {nonRequiresAuth: true, rule:'isPublic'}
+            meta: {nonRequiresAuth: true, rule: 'isPublic'}
 
         },
         {
             path: '/users/:id',
             component: UserEdit,
-            meta: {nonRequiresAuth: true, rule:'isPublic'}
+            meta: {nonRequiresAuth: true, rule: 'isPublic'}
 
         },
         {
             path: '/teams',
             component: Teams,
-            meta: {nonRequiresAuth: true, rule:'isPublic'}
+            meta: {nonRequiresAuth: true, rule: 'isPublic'}
 
         },
         {
             path: '/teams/:id',
             component: TeamEdit,
-            meta: {nonRequiresAuth: true, rule:'isPublic'}
+            meta: {nonRequiresAuth: true, rule: 'isPublic'}
 
         },
         {
@@ -74,6 +74,7 @@ const router = new VueRouter({
             component: Timeline,
             meta: {rule: 'isLoggedUser'}
         },
+
         {
             path: "/*",
             component: NotFound,
@@ -92,8 +93,7 @@ router.beforeEach((to, from, next) => {
         next("/")
     } else if (isLoginPage && isAuthenticated) {
         router.push('/home')
-    }
-    else if (isAllowed) {
+    } else if (isAllowed) {
         next()
     }
 
