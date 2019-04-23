@@ -10,12 +10,12 @@
                           label="Zoom"
                           v-on:click="zoomChart"
                 ></v-slider>
-                <v-select
-                        :items="teams"
-                        item-text="name"
-                        item-value="id"
-                        label="Team"
-                        v-on:change="showChart"
+                <v-select v-if="$acl.check('isManager')"
+                          :items="teams"
+                          item-text="name"
+                          item-value="id"
+                          label="Team"
+                          v-on:change="showChartForManager"
                 ></v-select>
             </v-flex>
 
@@ -62,6 +62,9 @@
                 this.teams = parseTeam(res.data);
             });
 
+            if (this.$acl.not.check('isManager') || this.teams.length === 0) {
+                this.showChartForEmployee(this.showAbsences);
+            }
         },
 
         methods: {
@@ -70,7 +73,7 @@
                     width: this.zoom
                 }
             },
-            showChart(id) {
+            showChartForManager(id) {
                 instance.get('/teams/'
                     + localStorage.getItem('username')
                     + '/'
@@ -84,7 +87,28 @@
                 instance.get('/teams/absences'
                     + '/'
                     + id,
-                    { params: {username: localStorage.getItem('username')}}
+                    {params: {username: localStorage.getItem('username')}}
+                ).then((res) => {
+                    this.absences = extractMembers(res.data);
+                    Array.prototype.push.apply(this.absences, this.members);
+                    this.show = true;
+                }).catch((err) => {
+                    console.log(err);
+                });
+            },
+            showChartForEmployee(callback) {
+                instance.get('/teams/members',
+                    { params: {username: localStorage.getItem('username') }}
+                ).then((res) => {
+                    this.members = extractMembers(res.data);
+                    callback(res.data[0].teamID);
+                }).catch((err) => {
+                    console.log(err);
+                });
+            },
+            showAbsences(id) {
+                instance.get('/teams/absences/' + id,
+                    {params: {username: localStorage.getItem('username')}}
                 ).then((res) => {
                     this.absences = extractMembers(res.data);
                     Array.prototype.push.apply(this.absences, this.members);

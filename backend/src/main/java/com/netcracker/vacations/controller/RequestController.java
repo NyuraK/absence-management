@@ -50,11 +50,4 @@ public class RequestController {
         service.updateRequest(Status.ACCEPTED, requests);
     }
 
-    //TODO implement weeks counting
-    @GetMapping
-    @ResponseBody
-    public List<List<String>> getRequests(){
-        return service.getRequests();
-    }
-
 }

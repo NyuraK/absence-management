@@ -50,16 +50,17 @@ public class TeamsController {
         teamService.deleteTeam(id);
     }
 
-    @GetMapping("/{user}/{id}")
-    public List<AbsenceDTO> getTeamMembers(@PathVariable("user") String username,
-                                           @PathVariable("id") Optional<Integer> teamId) {
+    @GetMapping(value = {"/members", "/members/{id}"})
+    public List<AbsenceDTO> getTeamMembers(@RequestParam String username,
+                                           @PathVariable(value = "id") Optional<Integer> teamId) {
         if (teamId.isPresent())
             return teamService.getTeamMembers(teamId.get());
         else return teamService.getTeamMembers(username);
     }
 
     @GetMapping("/absences/{id}")
-    public List<AbsenceDTO> getTeamAbsences(@RequestParam String username, @PathVariable("id") Integer teamID) {
+    public List<AbsenceDTO> getTeamAbsences(@RequestParam String username,
+                                            @PathVariable("id") Integer teamID) {
         return teamService.getTeamAbsences(username, teamID);
     }
 
