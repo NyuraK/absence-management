@@ -25,11 +25,11 @@ public class RequestEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
-    @Column(name = "beginning_of_vacation", nullable = false)
+    @Column(name = "begin_date", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date beginning;
 
-    @Column(name = "ending_of_vacation", nullable = false)
+    @Column(name = "end_date", nullable = false)
     @Temporal(TemporalType.DATE)
     private Date ending;
 

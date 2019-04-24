@@ -113,11 +113,11 @@ public class RequestService {
         } else {
             requestDTO.setName(entity.getUser().getName() + " " + entity.getUser().getFamilyName());
         }
-        //if (entity.getUser().getTeamsId().getName() != null) {
-        requestDTO.setTeamname(entity.getUser().getTeam().getName());
-        // } else {
-        //requestDTO.setTeamname("-");
-        //}
+        if (entity.getUser().getTeam().getName() != null) {
+        requestDTO.setTeamName(entity.getUser().getTeam().getName());
+         } else {
+        requestDTO.setTeamName("-");
+        }
         requestDTO.setDescription(entity.getDescription());
         requestDTO.setStart(entity.getBeginning());
         requestDTO.setEnd(entity.getEnding());

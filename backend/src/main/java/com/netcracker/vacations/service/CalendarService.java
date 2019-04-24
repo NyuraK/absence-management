@@ -8,7 +8,6 @@ import com.netcracker.vacations.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -20,6 +19,7 @@ public class CalendarService {
     private DepartmentRepository depRepo;
     private RequestRepository reqRepo;
     private RequestTypeRepository typeRepo;
+    SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH);
 
     @Autowired
     public CalendarService(UserRepository userRepo, TeamRepository teamRepo, DepartmentRepository depRepo, RequestRepository reqRepo, RequestTypeRepository typeRepo) {
@@ -33,13 +33,12 @@ public class CalendarService {
     public List<String> getVacationsPerDay(String mode, String name) {
         UserEntity user = userRepo.findByLogin(name).get(0);
         TeamEntity team = user.getTeam();
-        SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH);
 
         if (!(team == null)) {
             try {
                 int year = Calendar.getInstance().get(Calendar.YEAR);
-                Date BeginDate = new SimpleDateFormat("MM/dd/yy").parse("01/01/" + year);
-                Date EndDate = new SimpleDateFormat("MM/dd/yy").parse("31/12/" + year);
+                Date BeginDate = formatter.parse("01 January " + year);
+                Date EndDate = formatter.parse("31 December "+year);
 
                 List<Date> dates = getDatesBetween(BeginDate, EndDate);
                 List<RequestEntity> teamReqs = new ArrayList();
@@ -104,8 +103,6 @@ public class CalendarService {
         Calendar endCalendar = new GregorianCalendar();
         endCalendar.setTime(endDate);
         try {
-            DateFormat formatter = new SimpleDateFormat("MM/dd/yy");
-
             while (calendar.before(endCalendar)) {
                 String dateString = formatter.format(calendar.getTime());
                 Date result = formatter.parse(dateString);
@@ -147,44 +144,43 @@ public class CalendarService {
         List<RequestEntity> remote = new ArrayList<RequestEntity>();
 
         List<String> dates = new ArrayList<String>();
-        SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH);
         String begin;
         String end;
         for (RequestEntity req : reqs) {
-            if (status.equals("Accepted")) {
-                if (req.getTypeOfRequest().getName().equals("Business trip") && req.getStatus().equals("Accepted")) {
+            if (status.equals("Accepted") && req.getStatus().equals("Accepted")) {
+                if (req.getTypeOfRequest().getName().equals("Business trip")) {
                     business.add(req);
-                } else if (req.getTypeOfRequest().getName().equals("Child care") && req.getStatus().equals("Accepted")) {
+                } else if (req.getTypeOfRequest().getName().equals("Child care")) {
                     child.add(req);
-                } else if (req.getTypeOfRequest().getName().equals("Vacation") && req.getStatus().equals("Accepted")) {
+                } else if (req.getTypeOfRequest().getName().equals("Vacation")) {
                     vacation.add(req);
-                } else if (req.getTypeOfRequest().getName().equals("Remote work") && req.getStatus().equals("Accepted")) {
+                } else if (req.getTypeOfRequest().getName().equals("Remote work")) {
                     remote.add(req);
-                } else if (req.getTypeOfRequest().getName().equals("Sick leave") && req.getStatus().equals("Accepted")) {
+                } else if (req.getTypeOfRequest().getName().equals("Sick leave")) {
                     sick.add(req);
                 }
-            } else if (status.equals("Consider")) {
-                if (req.getTypeOfRequest().getName().equals("Business trip") && req.getStatus().equals("Under consideration")) {
+            } else if (status.equals("Consider")&& req.getStatus().equals("Under consideration")) {
+                if (req.getTypeOfRequest().getName().equals("Business trip")) {
                     business.add(req);
-                } else if (req.getTypeOfRequest().getName().equals("Child care") && req.getStatus().equals("Under consideration")) {
+                } else if (req.getTypeOfRequest().getName().equals("Child care")) {
                     child.add(req);
-                } else if (req.getTypeOfRequest().getName().equals("Vacation") && req.getStatus().equals("Under consideration")) {
+                } else if (req.getTypeOfRequest().getName().equals("Vacation")) {
                     vacation.add(req);
-                } else if (req.getTypeOfRequest().getName().equals("Remote work") && req.getStatus().equals("Under consideration")) {
+                } else if (req.getTypeOfRequest().getName().equals("Remote work")) {
                     remote.add(req);
-                } else if (req.getTypeOfRequest().getName().equals("Sick leave") && req.getStatus().equals("Under consideration")) {
+                } else if (req.getTypeOfRequest().getName().equals("Sick leave")) {
                     sick.add(req);
                 }
-            } else if (status.equals("Declined")) {
-                if (req.getTypeOfRequest().getName().equals("Business trip") && req.getStatus().equals("Declined")) {
+            } else if (status.equals("Declined") && req.getStatus().equals("Declined")) {
+                if (req.getTypeOfRequest().getName().equals("Business trip")) {
                     business.add(req);
-                } else if (req.getTypeOfRequest().getName().equals("Child care") && req.getStatus().equals("Declined")) {
+                } else if (req.getTypeOfRequest().getName().equals("Child care")) {
                     child.add(req);
-                } else if (req.getTypeOfRequest().getName().equals("Vacation") && req.getStatus().equals("Declined")) {
+                } else if (req.getTypeOfRequest().getName().equals("Vacation")) {
                     vacation.add(req);
-                } else if (req.getTypeOfRequest().getName().equals("Remote work") && req.getStatus().equals("Declined")) {
+                } else if (req.getTypeOfRequest().getName().equals("Remote work")) {
                     remote.add(req);
-                } else if (req.getTypeOfRequest().getName().equals("Sick leave") && req.getStatus().equals("Declined")) {
+                } else if (req.getTypeOfRequest().getName().equals("Sick leave")) {
                     sick.add(req);
                 }
             }

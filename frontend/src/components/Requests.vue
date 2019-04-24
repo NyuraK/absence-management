@@ -66,7 +66,7 @@
                 selected: [],
                 fields: [
                     {key: "name", label: "Name"},
-                    {key: "teamname", label: "Team"},
+                    {key: "teamName", label: "Team"},
                     {key: "start", label: "Beginning"},
                     {key: "end", label: "End"},
                     {key: "type", label: "Type"},
@@ -74,7 +74,7 @@
                 ],
                 resolvedFields: [
                     {key: "name", label: "Name"},
-                    {key: "teamname", label: "Team"},
+                    {key: "teamName", label: "Team"},
                     {key: "start", label: "Beginning"},
                     {key: "end", label: "End"},
                     {key: "type", label: "Type"},
