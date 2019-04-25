@@ -124,13 +124,7 @@ public class TeamService {
 
     public List<AbsenceDTO> getTeamAbsences(String username, Integer teamID) {
         List<UserEntity> team = userRepository.findAllByTeam_TeamsId(teamID);
-//        List<RequestEntity> requests = requestRepository.findAllByStatus(Status.CONSIDER.name);
-        List<RequestEntity> requests = new ArrayList<>();
-
-        for (RequestEntity entity : requestRepository.findAll())
-            if (entity.getStatus().equals(Status.ACCEPTED.getName()))
-                requests.add(entity);
-
+        List<RequestEntity> requests = requestRepository.findAllByStatus(Status.CONSIDER.name);
         Map<UserEntity, List<RequestEntity>> absences = new HashMap<>();
         for (RequestEntity requestEntity : requests) {
             absences.computeIfAbsent(requestEntity.getUser(), k -> new ArrayList<>()).add(requestEntity);

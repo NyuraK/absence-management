@@ -2,25 +2,23 @@
     <div>
         <Nav></Nav>
         <b-container>
-            <v-flex>
-                <v-slider id="slider"
-                          v-model="zoom"
-                          :min="1200"
-                          :max="7000"
-                          label="Zoom"
-                          v-on:click="zoomChart"
-                ></v-slider>
-                <v-select v-if="$acl.check('isManager')"
-                          :items="teams"
-                          item-text="name"
-                          item-value="id"
-                          label="Team"
-                          v-on:change="showChartForManager"
-                ></v-select>
-            </v-flex>
+            <v-slider id="slider"
+                      v-model="zoom"
+                      :min="1200"
+                      :max="7000"
+                      label="Zoom"
+                      v-on:click="zoomChart"
+            ></v-slider>
+            <v-select v-if="$acl.check('isManager')"
+                      :items="teams"
+                      item-text="name"
+                      item-value="id"
+                      label="Team"
+                      v-on:change="showChartForManager"
+            ></v-select>
 
             <div id="chart_wrapper" v-if="show">
-                <GChart id="timeline"
+                <GChart id="timeline" refs="timeline"
                         :settings="{ packages: ['timeline'] }"
                         type="Timeline"
                         :data='absences'
@@ -51,7 +49,8 @@
                     id: '',
                     name: ''
                 }],
-                show: false
+                show: false,
+                chart: null,
             }
         },
         created() {
@@ -73,19 +72,17 @@
                 this.options = {
                     width: this.zoom
                 }
-            }
-            ,
+            },
             showChartForManager(id) {
-                instance.get('/teams/'
-                    + localStorage.getItem('username')
+                instance.get('/teams/members/'
                     + '/'
-                    + id
+                    + id,
+                    {params: {username: localStorage.getItem('username')}}
                 ).then((res) => {
                     this.members = extractMembers(res.data);
                 }).catch((err) => {
                     console.log(err);
                 });
-
                 instance.get('/teams/absences'
                     + '/'
                     + id,
@@ -97,8 +94,8 @@
                 }).catch((err) => {
                     console.log(err);
                 });
-            }
-            ,
+            },
+
             showChartForEmployee(callback) {
                 instance.get('/teams/members',
                     {params: {username: localStorage.getItem('username')}}
@@ -108,8 +105,7 @@
                 }).catch((err) => {
                     console.log(err);
                 });
-            }
-            ,
+            },
             showAbsences(id) {
                 instance.get('/teams/absences/' + id,
                     {params: {username: localStorage.getItem('username')}}
@@ -120,6 +116,9 @@
                 }).catch((err) => {
                     console.log(err);
                 });
+            },
+            onChartReady(chart, google) {
+                this.chart = chart;
             }
         }
     }
