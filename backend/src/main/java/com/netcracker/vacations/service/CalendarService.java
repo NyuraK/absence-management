@@ -8,6 +8,7 @@ import com.netcracker.vacations.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -99,13 +100,14 @@ public class CalendarService {
         List<Date> datesInRange = new ArrayList<>();
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(startDate);
+        DateFormat format = new SimpleDateFormat("MM/dd/yy");
 
         Calendar endCalendar = new GregorianCalendar();
         endCalendar.setTime(endDate);
         try {
             while (calendar.before(endCalendar)) {
-                String dateString = formatter.format(calendar.getTime());
-                Date result = formatter.parse(dateString);
+                String dateString = format.format(calendar.getTime());
+                Date result = format.parse(dateString);
                 datesInRange.add(result);
                 calendar.add(Calendar.DATE, 1);
             }
