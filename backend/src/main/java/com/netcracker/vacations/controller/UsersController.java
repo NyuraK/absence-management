@@ -18,16 +18,22 @@ public class UsersController {
 
 
     @GetMapping
-    public List<UserDTO> users() { return service.getUsers(); }
+    public List<UserDTO> users() {
+        return service.getUsers();
+    }
 
     @GetMapping("/{id}")
-    public UserDTO getUser(@PathVariable("id") Integer id) { return service.getUser(id); }
+    public UserDTO getUser(@PathVariable("id") Integer id) {
+        return service.getUser(id);
+    }
 
     @GetMapping("team/{id}")
     public List<UserDTO> getUsersFromTeam(@PathVariable("id") Integer teamId) { return service.getUsersFromTeam(teamId); }
 
     @PostMapping("/addUser")
-    public UserDTO addUser(@RequestBody UserDTO userDTO) { return service.addUser(userDTO); }
+    public UserDTO addUser(@RequestBody UserDTO userDTO) {
+        return service.addUser(userDTO);
+    }
 
     @PutMapping("/{id}")
     public UserDTO updateUser(

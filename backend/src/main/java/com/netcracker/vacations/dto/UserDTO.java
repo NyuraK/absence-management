@@ -9,7 +9,7 @@ public class UserDTO {
     private Integer userId;
     private String login;
     private String password;
-    private Role role;
+    private String role;
     private Integer restDays;
     private Date hireDate;
     private String name;
@@ -20,7 +20,7 @@ public class UserDTO {
     private String description;
     private Integer teamId;
     private String teamName;
-    
+
 
     public Integer getUserId() {
         return userId;
@@ -46,11 +46,11 @@ public class UserDTO {
         this.password = password;
     }
 
-    public Role getRole() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(String role) {
         this.role = role;
     }
 

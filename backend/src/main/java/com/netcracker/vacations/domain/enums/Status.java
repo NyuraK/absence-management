@@ -7,21 +7,20 @@ public enum Status {
 
     public final String name;
 
-    Status(String name){
-        this.name=name;
+    Status(String name) {
+        this.name = name;
     }
 
-    public static Status byName(String name) {
+    public static String[] getNames() {
         Status[] statuses = Status.values();
-        for (Status status : statuses) {
-            if (status.name.equals(name))
-                return status;
+        String[] names = new String[statuses.length];
+        for (int i = 0; i < statuses.length; i++) {
+            names[i] = statuses[i].name;
         }
-        return null;
+        return names;
     }
 
     public String getName() {
         return name;
     }
-
 }

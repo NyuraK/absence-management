@@ -3,6 +3,7 @@ package com.netcracker.vacations.controller;
 import com.netcracker.vacations.domain.enums.RequestType;
 import com.netcracker.vacations.domain.enums.Status;
 import com.netcracker.vacations.dto.RequestDTO;
+import com.netcracker.vacations.service.MethodsService;
 import com.netcracker.vacations.service.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +17,7 @@ public class RequestController {
     private RequestService service;
 
     @Autowired
-    public RequestController(RequestService service) {
+    public RequestController(RequestService service,MethodsService methods) {
         this.service = service;
     }
 
@@ -26,13 +27,13 @@ public class RequestController {
     }
 
     @GetMapping("/active")
-    public List<RequestDTO> getActiveRequests() {
-        return service.getActiveRequests();
+    public List<RequestDTO> getActiveRequests(@RequestParam String name) {
+        return service.getActiveRequests(name);
     }
 
     @GetMapping("/resolved")
-    public List<RequestDTO> getResolvedRequests() {
-        return service.getResolvedRequests();
+    public List<RequestDTO> getResolvedRequests(@RequestParam String name) {
+        return service.getResolvedRequests(name);
     }
 
     @GetMapping("/types")
@@ -50,4 +51,12 @@ public class RequestController {
         service.updateRequest(Status.ACCEPTED, requests);
     }
 
+    //TODO implement weeks counting
+    @GetMapping
+    @ResponseBody
+    public List<List<String>> getRequests() {
+        return service.getRequests();
+    }
+
 }
+

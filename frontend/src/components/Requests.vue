@@ -66,6 +66,7 @@
                 selected: [],
                 fields: [
                     {key: "name", label: "Name"},
+                    {key: "teamName", label: "Team"},
                     {key: "start", label: "Beginning"},
                     {key: "end", label: "End"},
                     {key: "type", label: "Type"},
@@ -73,6 +74,7 @@
                 ],
                 resolvedFields: [
                     {key: "name", label: "Name"},
+                    {key: "teamName", label: "Team"},
                     {key: "start", label: "Beginning"},
                     {key: "end", label: "End"},
                     {key: "type", label: "Type"},
@@ -82,11 +84,27 @@
             }
         },
         mounted() {
-            instance.get("/requests/active").then((resp) => {
+            //this.$acl.change(localStorage.getItem('user'));
+            let name = localStorage.getItem('username');
+            console.log(name);
+            instance.get("/requests/active", {
+                params: {
+                    name: name
+                }
+            }).then((resp) => {
                 this.items = resp.data;
+            }).catch(err => {
+                console.log(err);
             });
-            instance.get("/requests/resolved").then((resp)=> {
+            instance.get("/requests/resolved", {
+                params: {
+                    name: name
+                }
+            }).then((resp) => {
                 this.itemsResolved = resp.data;
+                console.log("DATA " + resp.data);
+            }).catch(err => {
+                console.log(err);
             })
         },
         methods: {
@@ -100,9 +118,14 @@
                 instance.patch("/requests/approve", this.selected).then(() => {
                     instance.get("/requests/active").then((resp) => {
                         this.items = resp.data;
+                    }).catch(err => {
+                        console.log(err);
                     });
-                    instance.get("/requests/resolved").then((resp)=> {
+
+                    instance.get("/requests/resolved").then((resp) => {
                         this.itemsResolved = resp.data;
+                    }).catch(err => {
+                        console.log(err);
                     })
                 });
             },
@@ -111,9 +134,13 @@
                 instance.patch("/requests/decline", this.selected).then(() => {
                     instance.get("/active").then((resp) => {
                         this.items = resp.data;
+                    }).catch(err => {
+                        console.log(err);
                     });
-                    instance.get("/resolved").then((resp)=> {
+                    instance.get("/resolved").then((resp) => {
                         this.itemsResolved = resp.data;
+                    }).catch(err => {
+                        console.log(err);
                     })
                 });
             }

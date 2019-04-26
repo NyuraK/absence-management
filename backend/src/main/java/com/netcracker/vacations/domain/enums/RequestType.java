@@ -1,5 +1,6 @@
 package com.netcracker.vacations.domain.enums;
 
+
 public enum RequestType {
     SICKNESS("Sick leave"),
     VACATION("Vacation"),

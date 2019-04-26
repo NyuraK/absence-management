@@ -60,33 +60,34 @@
             })
         },
         methods: {
-        onSubmit(evt) {
-            evt.preventDefault();
-            let msg = {
-                username: localStorage.getItem('username'),
-                start: this.range.start,
-                end: this.range.end,
-                type: this.form.absType,
-                description: this.form.text,
-            };
-            instance.post("/requests", msg).then(res => {
+            onSubmit(evt) {
+                evt.preventDefault();
+                let msg = {
+                    username: localStorage.getItem('username'),
+                    start: this.range.start,
+                    end: this.range.end,
+                    type: this.form.absType,
+                    description: this.form.text,
+                };
+                instance.post("/requests", msg).then(res => {
 
-            }).catch(err=> {
-                console.log(err);
-            });
-            this.form.absType = null;
-            this.form.text = '';
-        },
-        onReset(evt) {
-            evt.preventDefault();
-            this.form.absType = null;
-            this.show = false;
-            this.$nextTick(() => {
-                this.show = true
-            })
+                }).catch(err=> {
+                    console.log(err);
+                });
+                this.form.absType = null;
+                this.form.text = '';
+            },
+            onReset(evt) {
+                evt.preventDefault();
+                this.form.absType = null;
+                this.show = false;
+                this.$nextTick(() => {
+                    this.show = true
+                })
             }
         }
     }
+
 </script>
 
 <style scoped>

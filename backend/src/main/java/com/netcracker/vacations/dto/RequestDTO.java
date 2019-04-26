@@ -1,15 +1,14 @@
 package com.netcracker.vacations.dto;
 
-import com.netcracker.vacations.domain.enums.RequestType;
-import com.netcracker.vacations.domain.enums.Status;
-
 import java.util.Date;
 
 public class RequestDTO {
 
+    //TODO make status enum and type
     private Integer id;
     private String username;
     private String name;
+    private String teamName;
     private Date start, end, creation;
     private String type;
     private String description;
@@ -38,6 +37,15 @@ public class RequestDTO {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public String getTeamName() {
+        return teamName;
+    }
+
+    public void setTeamName(String teamName) {
+        this.teamName = teamName;
+    }
+
 
     public String getType() {
         return type;

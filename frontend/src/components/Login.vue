@@ -50,6 +50,8 @@
                 this.$store.dispatch('login',{username:this.username, password:this.password}).then(()=>{
                     this.$acl.change(localStorage.getItem('user'));
                     this.$router.push('/home');
+                }).catch((err)=>{
+                    console.log(err);
                 });
 
                 this.username='';

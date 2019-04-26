@@ -2,6 +2,7 @@ package com.netcracker.vacations.service;
 
 import com.netcracker.vacations.domain.TeamEntity;
 import com.netcracker.vacations.domain.UserEntity;
+import com.netcracker.vacations.domain.enums.Role;
 import com.netcracker.vacations.dto.UserDTO;
 import com.netcracker.vacations.repository.UserRepository;
 import org.springframework.beans.BeanUtils;
@@ -81,7 +82,7 @@ public class UserService {
         userEntity.setPassword(userDTO.getPassword());
         userEntity.setPhoneNumber(userDTO.getPhoneNumber());
         userEntity.setRestDays(userDTO.getRestDays());
-        userEntity.setRole(userDTO.getRole());
+        userEntity.setRole(Role.findByName(userDTO.getRole()));
         userEntity.setSurname(userDTO.getSurname());
         userEntity.setUsersId(userDTO.getUserId());
         return userEntity;
@@ -98,7 +99,7 @@ public class UserService {
         userDTO.setSurname(entity.getSurname());
         userDTO.setPassword(entity.getPassword());
         userDTO.setPhoneNumber(entity.getPhoneNumber());
-        userDTO.setRole(entity.getRole());
+        userDTO.setRole(entity.getRole().getName());
         userDTO.setLogin(entity.getLogin());
         userDTO.setRestDays(entity.getRestDays());
         userDTO.setTeamId(entity.getTeam() == null ? null : entity.getTeam().getTeamsId());

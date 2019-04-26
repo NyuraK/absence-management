@@ -7,8 +7,8 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
-import java.util.List;
 import java.util.Date;
+import java.util.List;
 
 @Repository
 @Transactional
@@ -16,6 +16,8 @@ public interface RequestRepository extends CrudRepository<RequestEntity, Integer
     List<RequestEntity> findByRequestsId(Integer requestsId);
 
     List<RequestEntity> findByUser(UserEntity user);
+
+    List<RequestEntity> findAllByUser(UserEntity user);
 
     List<RequestEntity> findByBeginning(Date beginning);
 
