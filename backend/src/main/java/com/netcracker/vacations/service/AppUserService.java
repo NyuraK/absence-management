@@ -2,6 +2,7 @@ package com.netcracker.vacations.service;
 
 import com.netcracker.vacations.domain.UserEntity;
 import com.netcracker.vacations.repository.UserRepository;
+import com.netcracker.vacations.security.MyUserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -29,7 +30,8 @@ public class AppUserService implements UserDetailsService {
         if (user != null) {
             List<GrantedAuthority> grantedAuthorities = AuthorityUtils
                     .commaSeparatedStringToAuthorityList("ROLE_" + user.getRole());
-            return new User(user.getLogin(), user.getPassword(), grantedAuthorities);
+//            return new User(user.getLogin(), user.getPassword(), grantedAuthorities);
+            return new MyUserPrincipal(user);
         }
         throw new UsernameNotFoundException("Username: " + username + " not found");
     }

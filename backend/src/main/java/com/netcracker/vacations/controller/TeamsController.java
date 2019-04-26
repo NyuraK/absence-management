@@ -4,6 +4,8 @@ package com.netcracker.vacations.controller;
 import com.netcracker.vacations.dto.AbsenceDTO;
 import com.netcracker.vacations.dto.TeamDTO;
 import com.netcracker.vacations.service.TeamService;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -59,9 +61,10 @@ public class TeamsController {
         else return teamService.getTeamMembers(username);
     }
 
+    @PreAuthorize("@Security.isManager(#teamID, teamRepository, authentication)")
     @GetMapping("/absences/{id}")
     public List<AbsenceDTO> getTeamAbsences(@RequestParam String username,
-                                            @PathVariable("id") Integer teamID) {
+                                             @PathVariable("id") @P("teamID") Integer teamID) {
         return teamService.getTeamAbsences(username, teamID);
     }
 
