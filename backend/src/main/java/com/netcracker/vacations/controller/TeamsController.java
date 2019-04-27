@@ -3,7 +3,6 @@ package com.netcracker.vacations.controller;
 
 import com.netcracker.vacations.dto.AbsenceDTO;
 import com.netcracker.vacations.dto.TeamDTO;
-import com.netcracker.vacations.repository.TeamRepository;
 import com.netcracker.vacations.service.TeamService;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,10 +15,8 @@ import java.util.Optional;
 public class TeamsController {
 
     private TeamService teamService;
-    private final TeamRepository teamRepository;
 
-    public TeamsController(TeamRepository teamRepository, TeamService service) {
-        this.teamRepository = teamRepository;
+    public TeamsController(TeamService service) {
         this.teamService = service;
     }
 

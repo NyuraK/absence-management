@@ -60,16 +60,6 @@
             }).then((res) => {
                 this.teams = parseTeam(res.data);
             });
-            instance.get('/teams/timeline').then((res) => {
-                this.members = renderMembers(res.data, this.members);
-
-            });
-            instance.get('/requests').then((res) => {
-                this.absences = parseStringToDate(res.data);
-                Array.prototype.push.apply(this.absences, this.members);
-            }).catch((err) => {
-                console.log(err);
-            });
             if (this.$acl.not.check('isManager') || this.teams.length === 0) {
                 this.showChartForEmployee(this.showAbsences);
             }
