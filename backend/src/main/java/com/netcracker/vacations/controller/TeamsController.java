@@ -1,6 +1,5 @@
 package com.netcracker.vacations.controller;
 
-
 import com.netcracker.vacations.dto.AbsenceDTO;
 import com.netcracker.vacations.dto.TeamDTO;
 import com.netcracker.vacations.service.TeamService;
@@ -59,12 +58,13 @@ public class TeamsController {
         if (teamId.isPresent())
             return teamService.getTeamMembers(teamId.get());
         else return teamService.getTeamMembers(username);
+
     }
 
-    @PreAuthorize("@Security.isManager(#teamID, teamRepository, authentication)")
+    @PreAuthorize("@Security.isManager(#teamID)")
     @GetMapping("/absences/{id}")
     public List<AbsenceDTO> getTeamAbsences(@RequestParam String username,
-                                             @PathVariable("id") @P("teamID") Integer teamID) {
+                                            @PathVariable("id") @P("teamID") Integer teamID) {
         return teamService.getTeamAbsences(username, teamID);
     }
 

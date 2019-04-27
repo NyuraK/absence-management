@@ -13,7 +13,6 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -26,7 +25,6 @@ public class JwtLoginTokenFilter extends AbstractAuthenticationProcessingFilter 
     private final AuthenticationManager authManager;
 
     private final JwtConfig jwtConfig;
-
 
     public JwtLoginTokenFilter(String url, AuthenticationManager authManager, JwtConfig jwtConfig) {
         super(new AntPathRequestMatcher(url));
@@ -52,7 +50,7 @@ public class JwtLoginTokenFilter extends AbstractAuthenticationProcessingFilter 
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
-                                            Authentication auth) throws IOException, ServletException {
+                                            Authentication auth) {
 
         Long now = System.currentTimeMillis();
 
@@ -70,7 +68,6 @@ public class JwtLoginTokenFilter extends AbstractAuthenticationProcessingFilter 
         response.addHeader(jwtConfig.getHeader(), jwtConfig.getPrefix() + token);
     }
 
-    // A (temporary) class just to represent the user credentials
     private static class UserCredentials {
         private String username, password;
         private Collection<GrantedAuthority> authorities;
