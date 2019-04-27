@@ -17,78 +17,83 @@ import Timeline from "../components/Timeline"
 
 Vue.use(VueRouter);
 const router = new VueRouter({
-    mode: 'history',
-    routes: [
-        {
-            name: 'users',
-            path: '/users',
-            component: Users,
-            meta: {nonRequiresAuth: true, rule: 'isPublic'}
+        mode: 'history',
+        routes: [
+            {
+                name: 'users',
+                path: '/users',
+                component: Users,
+                meta: {nonRequiresAuth: true, rule: 'isPublic'}
 
-        },
-        {
-            path: '/users/:id',
-            component: UserEdit,
-            meta: {nonRequiresAuth: true, rule: 'isPublic'}
+            },
+            {
+                path: '/users/:id',
+                component: UserEdit,
+                meta: {nonRequiresAuth: true, rule: 'isPublic'}
 
-        },
-        {
-            path: '/teams',
-            component: Teams,
-            meta: {nonRequiresAuth: true, rule: 'isPublic'}
+            },
+            {
+                path: '/teams',
+                component: Teams,
+                meta: {nonRequiresAuth: true, rule: 'isPublic'}
 
-        },
-        {
-            path: '/teams/:id',
-            component: TeamEdit,
-            meta: {nonRequiresAuth: true, rule: 'isPublic'}
+            },
+            {
+                path: '/teams/:id',
+                component: TeamEdit,
+                meta: {nonRequiresAuth: true, rule: 'isPublic'}
 
-        },
-        {
-            path: '/',
-            name: 'Login',
-            component: Login,
-            meta: {loginPage: true, nonRequiresAuth: true, rule: 'isPublic'}
-        },
-        {
-            path: '/calendar',
-            name: 'Calendar',
-            component: Calendar,
-            meta: {nonRequiresAuth: true, rule: 'isPublic'}
-        },
-        {
-            path: '/home',
-            name: 'home',
-            component: Home,
-            meta: {rule: 'isLoggedUser'}
-        },
-        {
-            path: '/vacations',
-            name: 'vacations',
-            component: Vacations,
-            meta: {rule: 'isLoggedUser'}
-        },
-        {
-            path: '/requests',
-            name: 'requests',
-            component: Requests,
-            meta: {rule: 'isManager'}
-        },
-        {
-            path: '/timeline',
-            name: 'Timeline',
-            component: Timeline,
-            meta: {rule: 'isLoggedUser'}
-        },
+            },
+            {
+                path: '/',
+                name: 'Login',
+                component: Login,
+                meta: {loginPage: true, nonRequiresAuth: true, rule: 'isPublic'}
+            },
+            {
+                path: '/calendar',
+                name: 'Calendar',
+                component: Calendar,
+                meta: {nonRequiresAuth: true, rule: 'isPublic'}
+            },
+            {
+                path: '/home',
+                name: 'home',
+                component: Home,
+                meta: {rule: 'isLoggedUser'}
+            },
+            {
+                path: '/vacations',
+                name: 'vacations',
+                component: Vacations,
+                meta: {rule: 'isLoggedUser'}
+            },
+            {
+                path: '/requests',
+                name: 'requests',
+                component: Requests,
+                meta: {rule: 'isManager'}
+            },
+            {
+                path: '/timeline',
+                name: 'Timeline',
+                component: Timeline,
+                meta: {rule: 'isLoggedUser'}
+            },
+            {
+                path: "/*",
+                component:
+                NotFound,
+                meta:
+                    {
+                        rule: '*'
+                    }
+            }
+            ,
 
-        {
-            path: "/*",
-            component: NotFound,
-            meta: {rule: '*'}
-        },
-
-    ]
-});
+        ]
+    })
+;
 
 router.beforeEach((to, from, next) => {
     const isLoginPage = to.matched.some(record => record.meta.loginPage);

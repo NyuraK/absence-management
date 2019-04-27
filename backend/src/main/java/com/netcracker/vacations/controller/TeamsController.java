@@ -20,6 +20,7 @@ public class TeamsController {
         this.teamService = service;
     }
 
+
     @GetMapping
     public List<TeamDTO> teams(@RequestParam Optional<String> username) {
         if (username.isPresent())
@@ -65,3 +66,4 @@ public class TeamsController {
     }
 
 }
+
