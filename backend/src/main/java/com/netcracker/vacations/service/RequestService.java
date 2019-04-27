@@ -114,10 +114,11 @@ public class RequestService {
             requestDTO.setName(entity.getUser().getName() + " " + entity.getUser().getFamilyName());
         }
         if (entity.getUser().getTeam().getName() != null) {
-        requestDTO.setTeamName(entity.getUser().getTeam().getName());
-         } else {
-        requestDTO.setTeamName("-");
+            requestDTO.setTeamName(entity.getUser().getTeam().getName());
+        } else {
+            requestDTO.setTeamName("-");
         }
+        requestDTO.setName(entity.getUser().getName() + " " + entity.getUser().getFamilyName());
         requestDTO.setDescription(entity.getDescription());
         requestDTO.setStart(entity.getBeginning());
         requestDTO.setEnd(entity.getEnding());
@@ -126,22 +127,12 @@ public class RequestService {
         return requestDTO;
     }
 
-    public List<List<String>> getRequests() {
-        List<List<String>> response = new ArrayList<>();
+    public List<RequestDTO> getRequests() {
+        List<RequestDTO> response = new ArrayList<>();
         for (RequestEntity entity : requestRepository.findAll()) {
             if (entity.getStatus().equals(Status.ACCEPTED.getName()))
-                response.add(toTimelineDTO(entity));
+                response.add(toDTO(entity));
         }
         return response;
     }
-
-    private List<String> toTimelineDTO(RequestEntity entity) {
-        List<String> res = new ArrayList<>();
-        res.add(entity.getUser().getName() + " " + entity.getUser().getFamilyName());
-        res.add(entity.getTypeOfRequest().getName());
-        res.add(entity.getBeginning().toString());
-        res.add(entity.getEnding().toString());
-        return res;
-    }
-
 }

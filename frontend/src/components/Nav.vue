@@ -7,11 +7,11 @@
         <b-collapse id="nav-collapse" is-nav>
             <b-navbar-nav>
                 <b-nav-item href="/home">Profile</b-nav-item>
-                <b-nav-item href="#">Timeline</b-nav-item>
+                <b-nav-item href="/timeline">Timeline</b-nav-item>
                 <b-nav-item href="/requests" v-if="$acl.check('isManager')">
                     Requests
                 </b-nav-item>
-                <b-nav-item href="#" v-if="$acl.check('isAdmin')">Manage users</b-nav-item>
+                <b-nav-item href="/users" v-if="$acl.check('isAdmin')">Manage users</b-nav-item>
                 <b-nav-item href="/vacations">Calendar view</b-nav-item>
             </b-navbar-nav>
             <b-navbar-nav class="ml-auto">

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/api/requests")
 public class RequestController {
@@ -17,7 +18,7 @@ public class RequestController {
     private RequestService service;
 
     @Autowired
-    public RequestController(RequestService service,MethodsService methods) {
+    public RequestController(RequestService service, MethodsService methods) {
         this.service = service;
     }
 
@@ -54,9 +55,8 @@ public class RequestController {
     //TODO implement weeks counting
     @GetMapping
     @ResponseBody
-    public List<List<String>> getRequests() {
+    public List<RequestDTO> getRequests() {
         return service.getRequests();
     }
-
 }
 
