@@ -49,6 +49,7 @@ public class CalendarService {
 
                 Calendar cal1 = Calendar.getInstance();
                 Calendar cal2 = Calendar.getInstance();
+                Calendar cal3 = Calendar.getInstance();
 
                 int quota = team.getQuota();
 
@@ -66,8 +67,10 @@ public class CalendarService {
 
                         cal1.setTime(date);
                         cal2.setTime(req.getBeginning());
-                        boolean sameDay = cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) && cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR);
-                        if ((((req.getBeginning()).before(date)) || sameDay) && ((((req.getEnding()).after(date)) || sameDay))) {
+                        cal3.setTime(req.getEnding());
+                        boolean sameDayBegin = cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) && cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR);
+                        boolean sameDayEnd = cal1.get(Calendar.DAY_OF_YEAR) == cal3.get(Calendar.DAY_OF_YEAR) && cal1.get(Calendar.YEAR) == cal3.get(Calendar.YEAR);
+                        if ((((req.getBeginning()).before(date)) || sameDayBegin) && ((((req.getEnding()).after(date)) || sameDayEnd))) {
                             counter++;
                         }
                     }

@@ -133,12 +133,12 @@ public class UserService {
         }
     }
 
-    public UserDTO sendMail(UserDTO user) {
+    public UserDTO sendMailPassword(UserDTO user) {
         String code = UUID.randomUUID().toString();
         if (user.getEmail() != null) {
             user.setActivationCode(code);
             String message = String.format("Dear " + user.getName() + " " + user.getSurname() + ",\n" + "you successfully registered your account. " +
-                    "Now your password is " + user.getPassword() + ". For changing your password visit next link: http://localhost:8080/activation/" + code);
+                    "Now your password is \"" + user.getPassword() + "\". For changing your password visit next link: http://localhost:8080/activation/" + code);
             send(user.getEmail(), "Account activation, password changing.", message);
         }
         return user;

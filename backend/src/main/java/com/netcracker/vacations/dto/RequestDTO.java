@@ -13,6 +13,7 @@ public class RequestDTO {
     private String type;
     private String description;
     private String status;
+    private Boolean needToEmail;
 
     public Integer getId() {
         return id;
@@ -93,5 +94,13 @@ public class RequestDTO {
 
     public void setCreation(Date creation) {
         this.creation = creation;
+    }
+
+    public Boolean getNeedToEmail() {
+        return needToEmail;
+    }
+
+    public void setNeedToEmail(Boolean needToEmail) {
+        this.needToEmail = needToEmail;
     }
 }

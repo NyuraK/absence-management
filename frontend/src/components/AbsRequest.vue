@@ -48,6 +48,7 @@
                 },
                 absTypes: [],
                 show: true,
+                isManagerOnRest: false,
                 range: {
                     start: new Date(2019, 3, 16),
                     end: new Date(2019, 3, 19)
@@ -55,9 +56,22 @@
             }
         },
         created() {
+            let name = localStorage.getItem('username');
             instance.get('/requests/types').then((resp)=> {
                 this.absTypes = resp.data;
-            })
+            }).catch(err=> {
+                console.log(err);
+            });
+            instance.get('/requests/managerVac', {
+                params: {
+                    name: name
+                }
+            }).then((resp)=> {
+                this.isManagerOnRest = resp.data;
+                console.log(this.isManagerOnRest);
+            }).catch(err=> {
+                console.log(err);
+            });
         },
         methods: {
             onSubmit(evt) {
@@ -68,6 +82,7 @@
                     end: this.range.end,
                     type: this.form.absType,
                     description: this.form.text,
+                    needToEmail: this.isManagerOnRest,
                 };
                 instance.post("/requests", msg).then(res => {
 
