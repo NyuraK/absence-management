@@ -24,7 +24,11 @@ public interface UserRepository extends CrudRepository<UserEntity, Integer> {
 
     List<UserEntity> findAllByTeam(TeamEntity team);
 
-    List<UserEntity> findAllByTeam_TeamsId(Integer id);
+    List<UserEntity> findAllByTeamTeamsId(Integer id);
+
+    List<UserEntity> findAllByTeamManagerUsersId(Integer id);
+
+    List<UserEntity> findAllByTeamDepartmentDepartmentsId(Integer id);
 
     List<UserEntity> findByName(String name);
 

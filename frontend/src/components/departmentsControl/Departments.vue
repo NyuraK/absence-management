@@ -3,25 +3,26 @@
         <Nav></Nav>
         <v-content>
             <v-container>
-                <h4>Manage teams</h4>
+                <h4>Manage departments</h4>
                 <p></p>
-                <input v-model="search" class="form-control" placeholder="Search by team name...">
+                <input v-model="search" class="form-control" placeholder="Search by department name...">
                 <p></p>
-                <NewTeam></NewTeam>
-                <ul class="list-group mt-1" v-for="team of findTeams" :key="team.teamId">
+                <NewDepartment></NewDepartment>
+                <ul class="list-group mt-1" v-for="department of findDepartments" :key="department.departmentId">
                     <li class="list-group-item">
                         <v-layout align-center justify-space-between row fill-height>
                             <div>
-                                <router-link :to="'/teams/' + team.teamId">
-                                    <strong class="ml-2"> {{ team.name }} </strong>
+                                <router-link :to="'/departments/' + department.departmentId">
+                                    <strong class="ml-2"> {{ department.name }} </strong>
                                 </router-link>
                             </div>
                             <div>
                                 <v-layout align-center>
-                                    <router-link :to="'/teams/' + team.teamId">
+                                    <router-link :to="'/departments/' + department.departmentId">
                                         <v-icon>edit</v-icon>
                                     </router-link>
-                                    <v-icon @click="clickDelete(team.teamId, team.name)">delete</v-icon>
+                                    <v-icon @click="clickDelete(department.departmentId, department.name)">delete
+                                    </v-icon>
                                 </v-layout>
                             </div>
                         </v-layout>
@@ -30,14 +31,16 @@
                 <v-layout row justify-center>
                     <v-dialog v-model="deleteDialog" persistent max-width="290">
                         <v-card>
-                            <v-card-title class="headline">Are you sure, you want to delete this team?</v-card-title>
+                            <v-card-title class="headline">Are you sure, you want to delete this department?
+                            </v-card-title>
                             <v-card-text>
-                                <p>Team name: <strong>{{deleteName}}</strong></p>
+                                <p>Department name: <strong>{{deleteName}}</strong></p>
                             </v-card-text>
                             <v-card-actions>
                                 <v-spacer></v-spacer>
                                 <v-btn color="green darken-1" flat @click.native="deleteDialog = false">Cancel</v-btn>
-                                <v-btn color="green darken-1" flat @click.native="deleteTeam(deleteId)">Yes</v-btn>
+                                <v-btn color="green darken-1" flat @click.native="deleteDepartment(deleteId)">Yes
+                                </v-btn>
                             </v-card-actions>
                         </v-card>
                     </v-dialog>
@@ -50,17 +53,16 @@
 <script>
 
     import {instance} from '../../Api.js';
-    import NewTeam from "./NewTeam";
     import Nav from "../Nav";
-    import AddUserToTeam from "./AddUserToTeam";
+    import NewDepartment from "./NewDepartment";
 
     export default {
-        name: "Teams",
-        components: {AddUserToTeam, Nav, NewTeam},
+        name: "Departments",
+        components: {NewDepartment, Nav},
         data() {
             return {
                 search: '',
-                teams: [],
+                departments: [],
                 deleteName: '',
                 deleteId: '',
                 deleteDialog: false
@@ -73,28 +75,24 @@
                 this.deleteId = id;
                 this.deleteName = name;
             },
-            deleteTeam(id) {
-                instance.delete('teams/' + id,
-                )
-                    .then(function (response) {
-                        console.log(response);
-                    });
+            deleteDepartment(id) {
+                instance.delete('departments/' + id,);
                 this.deleteDialog = false;
-                this.teams = this.teams.filter(x => x.teamId !== id);
+                this.departments = this.departments.filter(x => x.departmentId !== id);
             },
         },
 
         created: function () {
-            instance.get('teams')
+            instance.get('departments')
                 .then(response => {
-                    this.teams = response.data;
-                    this.teams.sort((a, b) => a.name.localeCompare(b.name));
+                    this.departments = response.data;
+                    this.departments.sort((a, b) => a.name.localeCompare(b.name));
                 })
         },
 
         computed: {
-            findTeams() {
-                return this.teams.filter(item => item.name.toLocaleLowerCase().indexOf(this.search.toLowerCase()) !== -1)
+            findDepartments() {
+                return this.departments.filter(item => item.name.toLocaleLowerCase().indexOf(this.search.toLowerCase()) !== -1)
             },
         }
     }

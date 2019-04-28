@@ -89,7 +89,7 @@
             instance.get('users')
                 .then(response => {
                     this.users = response.data;
-                    console.log(response)
+                    this.users.sort((a, b) => a.name.localeCompare(b.name))
                 })
         },
         methods: {
@@ -103,7 +103,6 @@
                 instance.delete('users/' + id,
                 )
                     .then(function (response) {
-                        console.log(response);
                     });
                 this.deleteDialog = false;
                 this.users = this.users.filter(x => x.userId !== id);

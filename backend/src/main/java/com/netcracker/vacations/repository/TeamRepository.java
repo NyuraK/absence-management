@@ -24,6 +24,8 @@ public interface TeamRepository extends CrudRepository<TeamEntity, Integer> {
 
     List<TeamEntity> findAllByDepartment(DepartmentEntity department);
 
+    List<TeamEntity> findAllByDepartmentDepartmentsId(Integer id);
+
     List<TeamEntity> findByName(String name);
 
     List<TeamEntity> findAll();

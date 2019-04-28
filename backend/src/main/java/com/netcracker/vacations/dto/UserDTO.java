@@ -19,7 +19,15 @@ public class UserDTO {
     private Integer teamId;
     private String teamName;
     private String activationCode;
+    private Integer departmentId;
 
+    public Integer getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(Integer departmentId) {
+        this.departmentId = departmentId;
+    }
 
     public Integer getUserId() {
         return userId;

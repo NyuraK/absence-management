@@ -18,19 +18,20 @@ public class UsersController {
 
 
     @GetMapping
-    public List<UserDTO> users() {
-        return service.getUsers();
-    }
+    public List<UserDTO> users(@RequestParam(name = "teamId" , required = false) Integer teamId,
+                               @RequestParam(name = "managerId" , required = false) Integer managerId) {
+        if (teamId != null) {
+            return service.getUsersFromTeam(teamId);
+        } else if (managerId != null) {
+            return service.getUsersSubordinateToManager(managerId);
+        }
+        return service.getUsers(); }
 
     @GetMapping("/{id}")
     public UserDTO getUser(@PathVariable("id") Integer id) {
         return service.getUser(id);
     }
 
-    @GetMapping("team/{id}")
-    public List<UserDTO> getUsersFromTeam(@PathVariable("id") Integer teamId) {
-        return service.getUsersFromTeam(teamId);
-    }
 
     @GetMapping("/userByCode/{code}")
     public String getUserByCode(@PathVariable("code") String code){

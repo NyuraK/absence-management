@@ -1,6 +1,8 @@
 <template>
     <div>
-        <h5>Users<v-icon  v-on:click="dialog = ! dialog">add</v-icon></h5>
+        <h5>Users
+            <v-icon v-on:click="dialog = ! dialog">add</v-icon>
+        </h5>
         <v-dialog v-model="dialog" max-width="600px">
             <v-card>
                 <v-card-text>
@@ -12,12 +14,12 @@
                     <v-text-field v-model="email" :rules="[rules.required, rules.email]" label="E-mail"></v-text-field>
                     <v-text-field label="Login" v-model="login"></v-text-field>
                     <v-text-field label="Password" v-model="password"></v-text-field>
-                    <v-text-field label="Team id" v-model="teamId"></v-text-field>
+                    <v-select :items="teams" label="Team" v-model="team" item-text="name" return-object></v-select>
                     <v-text-field label="Rest Days" v-model="restDays"></v-text-field>
                     <v-text-field label="Hire date" type="date" v-model="hireDate"></v-text-field>
                     <v-text-field label="Phone number" v-model="phoneNumber" mask="+# (###) ###-##-##"></v-text-field>
                     <v-text-field label="Description" v-model="description"></v-text-field>
-                    <!--<small class="grey&#45;&#45;text">* This doesn't actually save.</small>-->
+                    <!--                    <small class="grey&#45;&#45;text">* This doesn't actually save.</small>-->
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn flat color="error" @click="dialog = false">Cancel</v-btn>
@@ -54,12 +56,13 @@
                 email: '',
                 role: '',
                 login: '',
-                teamId: '',
                 restDays: '',
                 hireDate: '',
                 phoneNumber: '',
                 description: '',
-                password: ''
+                password: '',
+                teams: [],
+                team: []
             }
         },
         methods: {
@@ -74,13 +77,12 @@
                     familyName: this.familyName,
                     email: this.email,
                     role: this.role,
-                    teamId: this.teamId,
+                    teamId: this.team.teamId,
                     restDays: this.restDays,
                     hireDate: this.hireDate,
                     phoneNumber: this.phoneNumber,
                     description: this.description
                 };
-                console.log(newUser);
                 instance.post('users/addUser',
                     newUser
                 )
@@ -89,7 +91,13 @@
                 location.reload();
                 this.dialog = false;
             }
-        }
+        },
+        created: function () {
+            instance.get('teams')
+                .then(response => {
+                    this.teams = response.data;
+                });
+        },
     }
 </script>
 
