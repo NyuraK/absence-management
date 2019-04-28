@@ -4,6 +4,7 @@ import Login from '../components/Login'
 import Calendar from '../components/Calendar'
 import Home from "../components/Home";
 import Vacations from "../components/Vacations";
+import Activation from "../components/Activation";
 import NotFound from "../components/NotFound";
 import Requests from "../components/Requests"
 import store from "../store/index"
@@ -22,25 +23,31 @@ const router = new VueRouter({
             name: 'users',
             path: '/users',
             component: Users,
-            meta: {nonRequiresAuth: true, rule:'isPublic'}
+            meta: {nonRequiresAuth: true, rule: 'isAdmin'}
 
         },
         {
             path: '/users/:id',
             component: UserEdit,
-            meta: {nonRequiresAuth: true, rule:'isPublic'}
+            meta: {nonRequiresAuth: true, rule: 'isAdmin'}
 
         },
         {
             path: '/teams',
             component: Teams,
-            meta: {nonRequiresAuth: true, rule:'isPublic'}
+            meta: {nonRequiresAuth: true, rule: 'isAdmin'}
 
         },
         {
             path: '/teams/:id',
             component: TeamEdit,
-            meta: {nonRequiresAuth: true, rule:'isPublic'}
+            meta: {nonRequiresAuth: true, rule: 'isAdmin'}
+
+        },
+        {
+            path: '/activation/:code',
+            component: Activation,
+            meta: {rule: 'isLoggedUser'}
 
         },
         {
@@ -90,8 +97,7 @@ router.beforeEach((to, from, next) => {
         next("/")
     } else if (isLoginPage && isAuthenticated) {
         router.push('/home')
-    }
-    else if (isAllowed) {
+    } else if (isAllowed) {
         next()
     }
 

@@ -70,6 +70,12 @@
             <artifactId>lombok</artifactId>
         </dependency>
 
+        <!--for email-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
         <!--this is here because I have 10sdk, ClassNotFoundException appeared-->
         <dependency>
             <groupId>javax.xml.bind</groupId>
