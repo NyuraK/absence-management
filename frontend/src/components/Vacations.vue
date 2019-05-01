@@ -41,11 +41,10 @@
                     <AbsRequest></AbsRequest>
                     <b-row>
                         <b-col></b-col>
-                        <b-col>
-                            <label><p>Occupied days:</p></label>
+                        <b-col cols="15">
+                            <label><p>Occupied days for team {{team}}:</p></label>
                         </b-col>
                         <b-col></b-col>
-
                     </b-row>
                     <b-row>
                         <v-calendar
@@ -73,6 +72,9 @@
                 accepted: true,
                 declined: false,
                 consider: false,
+                occupiedDays: new Object(),
+                busyDays: new Object(),
+                team: null,
                 acceptedVacs: [],
                 declinedVacs: [],
                 considerVacs: [],
@@ -183,26 +185,51 @@
         components: {AbsRequest, SecurityTest, Nav},
         created() {
             this.$acl.change(localStorage.getItem('user'));
-            // this.vacantDays = instance.get('/user/rest_days');
             let name = localStorage.getItem('username');
             // } ;
-            instance.get("/calendar/occupied", {
+            instance.get("/calendar/occupiedForSend", {
                 params: {
                     name: name
                 }
             }).then(res => {
-                let datesArray = res.data.map(dateString => new Date(dateString));
-                this.attr[0].dates = datesArray;
+                let arr = res.data;
+                let occ;
+                for (let i = 0; i < arr.length; i++) {
+                    occ = [];
+                    for (let j = 1; j < arr[i].length; j++) {
+                        occ.push(arr[i][j]);
+                    }
+                    this.occupiedDays[arr[i][0]] = occ;
+                    if (arr[0][0] != null) {
+                        this.team = arr[0][0];
+                    } else {
+                        this.team = '';
+                    }
+                }
+                this.attr[0].dates = this.occupiedDays[arr[0][0]].map(dateString => new Date(dateString));
+
+
             }).catch(err => {
                 console.log(err);
             });
-            instance.get("/calendar/busy", {
+            instance.get("/calendar/busyForSend", {
                 params: {
                     name: name
                 }
             }).then(res => {
-                let datesArray = res.data.map(dateString => new Date(dateString));
-                this.attr[1].dates = datesArray;
+                let arr = res.data;
+                console.log(arr);
+                let busy;
+                for (let i = 0; i < arr.length; i++) {
+                    busy = [];
+
+                    for (let j = 1; j < arr[i].length; j++) {
+                        busy.push(arr[i][j]);
+                    }
+                    this.busyDays[arr[i][0]] = busy;
+                }
+                this.attr[1].dates = this.busyDays[arr[0][0]].map(dateString => new Date(dateString));
+                console.log(this.busyDays);
             }).catch(err => {
                 console.log(err);
             });
@@ -360,34 +387,44 @@
             showVac() {
                 if (this.sick == true) {
                     this.attributes[0].dates = this.vacSick;
-                    console.log("SICK "+this.sick);}
+                    console.log("SICK " + this.sick);
+                }
                 if (this.vacation == true) {
                     this.attributes[1].dates = this.vacVacation;
-                    console.log("VAC "+this.vacation);}
+                    console.log("VAC " + this.vacation);
+                }
                 if (this.business == true) {
                     this.attributes[2].dates = this.vacBusiness;
-                    console.log("BUS "+this.business);}
+                    console.log("BUS " + this.business);
+                }
                 if (this.child == true) {
                     this.attributes[3].dates = this.vacChild;
-                    console.log("CH "+this.child);}
+                    console.log("CH " + this.child);
+                }
                 if (this.remote == true) {
                     this.attributes[4].dates = this.vacRemote;
-                    console.log("RE "+this.remote);}
+                    console.log("RE " + this.remote);
+                }
                 if (this.sick == false) {
                     this.attributes[0].dates = [];
-                    console.log("SICK "+this.sick);}
+                    console.log("SICK " + this.sick);
+                }
                 if (this.vacation == false) {
                     this.attributes[1].dates = [];
-                    console.log("VAC "+this.vacation);}
+                    console.log("VAC " + this.vacation);
+                }
                 if (this.business == false) {
                     this.attributes[2].dates = [];
-                    console.log("BUS "+this.business);}
+                    console.log("BUS " + this.business);
+                }
                 if (this.child == false) {
                     this.attributes[3].dates = [];
-                    console.log("CH "+this.child);}
+                    console.log("CH " + this.child);
+                }
                 if (this.remote == false) {
                     this.attributes[4].dates = [];
-                    console.log("RE "+this.remote);}
+                    console.log("RE " + this.remote);
+                }
             },
         }
     }

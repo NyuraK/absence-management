@@ -20,14 +20,24 @@ public class CalendarController {
         this.service = service;
     }
 
-    @GetMapping("/occupied")
-    public List<String> getOccupiedDays(@RequestParam String name) {
-        return service.getVacationsPerDay("Occupied", name);
+    @GetMapping("/occupiedForDiscuss")
+    public List<List<String>> getOccupiedDaysForDiscuss(@RequestParam String name) {
+        return service.getVacationsPerDay("Occupied","Discuss", name);
     }
 
-    @GetMapping("/busy")
-    public List<String> getBusyDays(@RequestParam String name) {
-        return service.getVacationsPerDay("Busy", name);
+    @GetMapping("/busyForDiscuss")
+    public List<List<String>> getBusyDaysForDiscuss(@RequestParam String name) {
+        return service.getVacationsPerDay("Busy","Discuss", name);
+    }
+
+    @GetMapping("/occupiedForSend")
+    public List<List<String>> getOccupiedDaysForSend(@RequestParam String name) {
+        return service.getVacationsPerDay("Occupied","Send", name);
+    }
+
+    @GetMapping("/busyForSend")
+    public List<List<String>> getBusyDaysForSend(@RequestParam String name) {
+        return service.getVacationsPerDay("Busy","Send", name);
     }
 
     @GetMapping("/accepted")

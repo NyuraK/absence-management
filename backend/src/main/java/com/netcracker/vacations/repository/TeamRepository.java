@@ -26,6 +26,8 @@ public interface TeamRepository extends CrudRepository<TeamEntity, Integer> {
 
     List<TeamEntity> findByName(String name);
 
+    List<TeamEntity> findAll();
+
     void deleteByTeamsId(Integer teamsId);
 
     void deleteByName(String name);

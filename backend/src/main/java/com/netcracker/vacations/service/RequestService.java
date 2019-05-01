@@ -67,9 +67,7 @@ public class RequestService {
     public List<RequestDTO> getActiveRequests(String name) {
         List<RequestDTO> response = new ArrayList<>();
         UserEntity user = userRepository.findByLogin(name).get(0);
-        System.out.println("NAMED"+((user.getRole().getName().equals("Administrator"))));
         if (user.getRole().getName().equals("Administrator")){
-            System.out.println("DONE ADM");
             for (RequestEntity entity : requestRepository.findAll()) {
                     if ((entity.getStatus().equals(Status.CONSIDER.getName()))) {
                         response.add(toDTO(entity));
