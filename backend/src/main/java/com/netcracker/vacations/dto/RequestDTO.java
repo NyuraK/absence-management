@@ -4,27 +4,6 @@ import java.util.Date;
 
 public class RequestDTO {
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-    //TODO make status enum and type
-=======
-    //TODO make status enum
->>>>>>> before google chart
-=======
-    //TODO make status enum and type
->>>>>>> added google chart
-=======
-    //TODO make status enum
->>>>>>> before google chart
-=======
-    //TODO make status enum and type
->>>>>>> added google chart
-=======
-    //TODO make status enum and type
->>>>>>> bb5c4f245e4a1c839287453f6a8c542dee23fddb
     private Integer id;
     private String username;
     private String name;
