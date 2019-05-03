@@ -49,7 +49,7 @@ public class CalendarService {
 
             dates = getDatesBetween(BeginDate, EndDate);
 
-            if (user.getRole().getName().equals("Employee")||purpose.equals("Send")) {
+            if (user.getRole().getName().equals("Employee") || purpose.equals("Send")) {
                 teams.add(user.getTeam());
             } else if (user.getRole().getName().equals("Manager")) {
                 teams = teamRepo.findAllByManager(user);
@@ -73,7 +73,6 @@ public class CalendarService {
                     Calendar cal1 = Calendar.getInstance();
                     Calendar cal2 = Calendar.getInstance();
                     Calendar cal3 = Calendar.getInstance();
-
 
 
                     int quota = team.getQuota();
@@ -121,7 +120,7 @@ public class CalendarService {
             return busyAll;
         }
         return null;
-}
+    }
 
     public List<Date> getDatesBetween(Date startDate, Date endDate) {
         List<Date> datesInRange = new ArrayList<>();

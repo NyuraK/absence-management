@@ -67,32 +67,32 @@ public class RequestService {
     public List<RequestDTO> getActiveRequests(String name) {
         List<RequestDTO> response = new ArrayList<>();
         UserEntity user = userRepository.findByLogin(name).get(0);
-        if (user.getRole().getName().equals("Administrator")){
+        if (user.getRole().getName().equals("Administrator")) {
             for (RequestEntity entity : requestRepository.findAll()) {
-                    if ((entity.getStatus().equals(Status.CONSIDER.getName()))) {
-                        response.add(toDTO(entity));
-                    }
+                if ((entity.getStatus().equals(Status.CONSIDER.getName()))) {
+                    response.add(toDTO(entity));
+                }
             }
-        } else if(user.getRole().getName().equals("Director")) {
+        } else if (user.getRole().getName().equals("Director")) {
             List<TeamEntity> directorsTeams = teamRepository.findAllByDepartment(departmentRepository.findByDirector(user).get(0));
             for (RequestEntity entity : requestRepository.findAll()) {
                 for (TeamEntity team : directorsTeams) {
-                    if ((entity.getStatus().equals(Status.CONSIDER.getName())) && (team.equals(entity.getUser().getTeam()))){
+                    if ((entity.getStatus().equals(Status.CONSIDER.getName())) && (team.equals(entity.getUser().getTeam()))) {
                         response.add(toDTO(entity));
                         break;
                     }
                 }
             }
         } else {
-        List<TeamEntity> managersTeams = teamRepository.findAllByManager(user);
-        for (RequestEntity entity : requestRepository.findAll()) {
-            for (TeamEntity team : managersTeams) {
-                if ((entity.getStatus().equals(Status.CONSIDER.getName())) && (team.equals(entity.getUser().getTeam()))) {
-                    response.add(toDTO(entity));
-                    break;
+            List<TeamEntity> managersTeams = teamRepository.findAllByManager(user);
+            for (RequestEntity entity : requestRepository.findAll()) {
+                for (TeamEntity team : managersTeams) {
+                    if ((entity.getStatus().equals(Status.CONSIDER.getName())) && (team.equals(entity.getUser().getTeam()))) {
+                        response.add(toDTO(entity));
+                        break;
+                    }
                 }
             }
-        }
         }
         return response;
     }
@@ -100,13 +100,13 @@ public class RequestService {
     public List<RequestDTO> getResolvedRequests(String name) {
         List<RequestDTO> response = new ArrayList<>();
         UserEntity user = userRepository.findByLogin(name).get(0);
-        if (user.getRole().getName().equals("Administrator")){
+        if (user.getRole().getName().equals("Administrator")) {
             for (RequestEntity entity : requestRepository.findAll()) {
                 if (!entity.getStatus().equals(Status.CONSIDER.getName())) {
                     response.add(toDTO(entity));
                 }
             }
-        } else if(user.getRole().getName().equals("Director")){
+        } else if (user.getRole().getName().equals("Director")) {
             List<TeamEntity> directorsTeams = teamRepository.findAllByDepartment(departmentRepository.findByDirector(user).get(0));
             for (RequestEntity entity : requestRepository.findAll()) {
                 for (TeamEntity team : directorsTeams) {
@@ -135,22 +135,28 @@ public class RequestService {
     private RequestDTO toDTO(RequestEntity entity) {
         RequestDTO requestDTO = new RequestDTO();
         requestDTO.setId(entity.getRequestsId());
-        String name=entity.getUser().getName();
-        String familyName=entity.getUser().getFamilyName();
-        if ((name.isEmpty()||name==null) && (familyName.isEmpty())||familyName==null) {
+        String name = entity.getUser().getName();
+        String familyName = entity.getUser().getFamilyName();
+        if ((name.isEmpty() || name == null) && (familyName.isEmpty()) || familyName == null) {
             requestDTO.setName("-");
-        } else if (familyName.isEmpty()||familyName == null) {
+        } else if (familyName.isEmpty() || familyName == null) {
             requestDTO.setName(entity.getUser().getName());
-        } else if (name.isEmpty()||name == null) {
+        } else if (name.isEmpty() || name == null) {
             requestDTO.setName(entity.getUser().getFamilyName());
         } else {
             requestDTO.setName(entity.getUser().getName() + " " + entity.getUser().getFamilyName());
         }
         if (entity.getUser().getTeam() != null) {
-        requestDTO.setTeamName(entity.getUser().getTeam().getName());
-         } else {
-        requestDTO.setTeamName("-");
+            requestDTO.setTeamName(entity.getUser().getTeam().getName());
+        } else {
+            requestDTO.setTeamName("-");
         }
+        if (entity.getUser().getTeam().getName() != null) {
+            requestDTO.setTeamName(entity.getUser().getTeam().getName());
+        } else {
+            requestDTO.setTeamName("-");
+        }
+        requestDTO.setName(entity.getUser().getName() + " " + entity.getUser().getFamilyName());
         requestDTO.setDescription(entity.getDescription());
         requestDTO.setStart(entity.getBeginning());
         requestDTO.setEnd(entity.getEnding());
@@ -158,6 +164,7 @@ public class RequestService {
         requestDTO.setStatus(entity.getStatus());
         return requestDTO;
     }
+
 
     public List<List<String>> getRequests() {
         List<List<String>> response = new ArrayList<>();
@@ -177,9 +184,9 @@ public class RequestService {
         return res;
     }
 
-    public boolean isManagerOnRest(String login){
-        boolean answer=false;
-        UserEntity user=userRepository.findByLogin(login).get(0);
+    public boolean isManagerOnRest(String login) {
+        boolean answer = false;
+        UserEntity user = userRepository.findByLogin(login).get(0);
         if (user.getTeam() != null) {
             UserEntity manager = user.getTeam().getManager();
             List<RequestEntity> requests = requestRepository.findAllByUser(manager);
@@ -206,17 +213,17 @@ public class RequestService {
         return answer;
     }
 
-    public void sendMailRequest(RequestDTO request){
-        UserEntity user=userRepository.findByLogin(request.getUsername()).get(0);
+    public void sendMailRequest(RequestDTO request) {
+        UserEntity user = userRepository.findByLogin(request.getUsername()).get(0);
         boolean needToSend = requestTypeRepository.findByName(request.getType()).get(0).getNeedApproval();
-            if (needToSend && user.getTeam() != null) {
-                UserEntity director = user.getTeam().getDepartment().getDirector();
-                if (director.getEmail() != null) {
-                    String message = String.format("Dear " + director.getName() + " " + director.getSurname() + ".\n" + request.getDescription() +
-                            "||Request was sent by " + user.getName() + " " + user.getSurname() + ". Reason: "+ request.getType() +" Begin date: "+request.getStart()+". End date: "+request.getEnd()+". " +
-                            "Created on "+request.getCreation()+". ||");
-                    userService.send(director.getEmail(), "Request by "+user.getName()+" "+user.getSurname()+".", message);
-                }
+        if (needToSend && user.getTeam() != null) {
+            UserEntity director = user.getTeam().getDepartment().getDirector();
+            if (director.getEmail() != null) {
+                String message = String.format("Dear " + director.getName() + " " + director.getSurname() + ".\n" + request.getDescription() +
+                        "||Request was sent by " + user.getName() + " " + user.getSurname() + ". Reason: " + request.getType() + " Begin date: " + request.getStart() + ". End date: " + request.getEnd() + ". " +
+                        "Created on " + request.getCreation() + ". ||");
+                userService.send(director.getEmail(), "Request by " + user.getName() + " " + user.getSurname() + ".", message);
             }
         }
+    }
 }

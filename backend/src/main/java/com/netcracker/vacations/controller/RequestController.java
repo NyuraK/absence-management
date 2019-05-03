@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/api/requests")
 public class RequestController {
@@ -17,14 +18,15 @@ public class RequestController {
     private RequestService reqService;
 
     @Autowired
+
     public RequestController(RequestService reqService, UserService userService) {
         this.reqService = reqService;
     }
 
     @PostMapping
     public void addRequest(@RequestBody RequestDTO request) {
-        if (request.getNeedToEmail()){
-        reqService.sendMailRequest(request);
+        if (request.getNeedToEmail()) {
+            reqService.sendMailRequest(request);
         }
         reqService.saveRequest(request);
     }
@@ -65,6 +67,5 @@ public class RequestController {
     public List<List<String>> getRequests() {
         return reqService.getRequests();
     }
-
 }
 

@@ -1,11 +1,14 @@
 package com.netcracker.vacations.controller;
 
 
+import com.netcracker.vacations.dto.AbsenceDTO;
 import com.netcracker.vacations.dto.TeamDTO;
 import com.netcracker.vacations.service.TeamService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/api/teams")
@@ -13,12 +16,15 @@ public class TeamsController {
 
     private TeamService teamService;
 
-    public TeamsController(TeamService teamService) {
-        this.teamService = teamService;
+    public TeamsController(TeamService service) {
+        this.teamService = service;
     }
 
+
     @GetMapping
-    public List<TeamDTO> teams() {
+    public List<TeamDTO> teams(@RequestParam Optional<String> username) {
+        if (username.isPresent())
+            return teamService.getManagerTeams(username.get());
         return teamService.getTeams();
     }
 
@@ -45,4 +51,19 @@ public class TeamsController {
         teamService.deleteTeam(id);
     }
 
+    @GetMapping(value = {"/members", "/members/{id}"})
+    public List<AbsenceDTO> getTeamMembers(@RequestParam String username,
+                                           @PathVariable(value = "id") Optional<Integer> teamId) {
+        if (teamId.isPresent())
+            return teamService.getTeamMembers(teamId.get());
+        else return teamService.getTeamMembers(username);
+    }
+
+    @GetMapping("/absences/{id}")
+    public List<AbsenceDTO> getTeamAbsences(@RequestParam String username,
+                                            @PathVariable("id") Integer teamID) {
+        return teamService.getTeamAbsences(username, teamID);
+    }
+
 }
+

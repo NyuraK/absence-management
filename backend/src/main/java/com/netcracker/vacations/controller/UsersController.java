@@ -28,7 +28,9 @@ public class UsersController {
     }
 
     @GetMapping("team/{id}")
-    public List<UserDTO> getUsersFromTeam(@PathVariable("id") Integer teamId) { return service.getUsersFromTeam(teamId); }
+    public List<UserDTO> getUsersFromTeam(@PathVariable("id") Integer teamId) {
+        return service.getUsersFromTeam(teamId);
+    }
 
     @GetMapping("/userByCode/{code}")
     public String getUserByCode(@PathVariable("code") String code){
