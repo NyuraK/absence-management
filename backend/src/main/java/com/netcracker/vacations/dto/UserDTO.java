@@ -1,7 +1,5 @@
 package com.netcracker.vacations.dto;
 
-import com.netcracker.vacations.domain.enums.Role;
-
 import java.util.Date;
 
 public class UserDTO {
@@ -20,6 +18,7 @@ public class UserDTO {
     private String description;
     private Integer teamId;
     private String teamName;
+    private String activationCode;
 
 
     public Integer getUserId() {
@@ -134,4 +133,11 @@ public class UserDTO {
         this.teamName = teamName;
     }
 
+    public String getActivationCode() {
+        return activationCode;
+    }
+
+    public void setActivationCode(String activationCode) {
+        this.activationCode = activationCode;
+    }
 }

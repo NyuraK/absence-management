@@ -31,67 +31,93 @@ public class CalendarService {
         this.typeRepo = typeRepo;
     }
 
-    public List<String> getVacationsPerDay(String mode, String name) {
+    public List<List<String>> getVacationsPerDay(String mode, String purpose, String name) {
+        List<Date> dates;
+        List<RequestEntity> teamReqs;
+        List<UserEntity> teamUsers;
+
         UserEntity user = userRepo.findByLogin(name).get(0);
-        TeamEntity team = user.getTeam();
+        List<TeamEntity> teams = new ArrayList<>();
+        List<List<String>> occupiedAll = new ArrayList<>();
+        List<List<String>> busyAll = new ArrayList<>();
 
-        if (!(team == null)) {
-            try {
-                int year = Calendar.getInstance().get(Calendar.YEAR);
-                Date BeginDate = formatter.parse("01 January " + year);
-                Date EndDate = formatter.parse("31 December "+year);
 
-                List<Date> dates = getDatesBetween(BeginDate, EndDate);
-                List<RequestEntity> teamReqs = new ArrayList();
-                List<UserEntity> teamUsers = userRepo.findAllByTeam(team);
-                List<String> occupied = new ArrayList<String>();
-                List<String> busy = new ArrayList<String>();
+        try {
+            int year = Calendar.getInstance().get(Calendar.YEAR);
+            Date BeginDate = formatter.parse("01 January " + year);
+            Date EndDate = formatter.parse("31 December " + year);
 
-                Calendar cal1 = Calendar.getInstance();
-                Calendar cal2 = Calendar.getInstance();
+            dates = getDatesBetween(BeginDate, EndDate);
 
-                int quota = team.getQuota();
-
-                for (UserEntity users : teamUsers) {
-                    List<RequestEntity> userReqs = reqRepo.findAllByUser(users);
-                    for (RequestEntity req : userReqs) {
-                        if (req.getStatus().equals("Accepted") && (req.getTypeOfRequest().getInfluenceOnVr())) {
-                            teamReqs.add(req);
-                        }
-                    }
-                }
-                for (Date date : dates) {
-                    int counter = 0;
-                    for (RequestEntity req : teamReqs) {
-
-                        cal1.setTime(date);
-                        cal2.setTime(req.getBeginning());
-                        boolean sameDay = cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) && cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR);
-                        if ((((req.getBeginning()).before(date)) || sameDay) && ((((req.getEnding()).after(date)) || sameDay))) {
-                            counter++;
-                        }
-                    }
-                    if (counter >= quota) {
-                        occupied.add(formatter.format(date));
-                    } else if (counter >= quota / 2) {
-                        busy.add(formatter.format(date));
-                    }
-                }
-                if (mode.equals("Occupied")) {
-                    for (String date : occupied) {
-                        System.out.println("DATE OCC=>" + date);
-                    }
-                    return occupied;
-                }
-                if (mode.equals("Busy")) {
-                    for (String date : busy) {
-                        System.out.println("DATE BUSY=>" + date);
-                    }
-                    return busy;
-                }
-            } catch (ParseException ex) {
-                ex.printStackTrace();
+            if (user.getRole().getName().equals("Employee") || purpose.equals("Send")) {
+                teams.add(user.getTeam());
+            } else if (user.getRole().getName().equals("Manager")) {
+                teams = teamRepo.findAllByManager(user);
+            } else if (user.getRole().getName().equals("Director")) {
+                teams = teamRepo.findAllByDepartment(depRepo.findByDirector(user).get(0));
+            } else if (user.getRole().getName().equals("Administrator")) {
+                teams = teamRepo.findAll(); //GET RID OF THIS METHOD LATER
             }
+            for (TeamEntity team : teams) {
+
+                if (!(team == null)) {
+                    List<String> occupied = new ArrayList<>();
+                    List<String> busy = new ArrayList<>();
+                    occupied.add(team.getName());
+                    busy.add(team.getName());
+
+                    teamReqs = new ArrayList();
+                    teamUsers = userRepo.findAllByTeam(team);
+
+
+                    Calendar cal1 = Calendar.getInstance();
+                    Calendar cal2 = Calendar.getInstance();
+                    Calendar cal3 = Calendar.getInstance();
+
+
+                    int quota = team.getQuota();
+
+                    for (UserEntity users : teamUsers) {
+                        List<RequestEntity> userReqs = reqRepo.findAllByUser(users);
+                        for (RequestEntity req : userReqs) {
+                            if (req.getStatus().equals("Accepted") && (req.getTypeOfRequest().getInfluenceOnVr())) {
+                                teamReqs.add(req);
+                            }
+                        }
+                    }
+
+                    for (Date date : dates) {
+                        int counter = 0;
+                        for (RequestEntity req : teamReqs) {
+
+                            cal1.setTime(date);
+                            cal2.setTime(req.getBeginning());
+                            cal3.setTime(req.getEnding());
+                            boolean sameDayBegin = cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) && cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR);
+                            boolean sameDayEnd = cal1.get(Calendar.DAY_OF_YEAR) == cal3.get(Calendar.DAY_OF_YEAR) && cal1.get(Calendar.YEAR) == cal3.get(Calendar.YEAR);
+                            if ((((req.getBeginning()).before(date)) || sameDayBegin) && ((((req.getEnding()).after(date)) || sameDayEnd))) {
+                                counter++;
+                            }
+                        }
+                        if (counter >= quota) {
+                            occupied.add(formatter.format(date));
+                        } else if (counter >= quota / 2) {
+                            busy.add(formatter.format(date));
+                        }
+                    }
+
+                    occupiedAll.add(occupied);
+                    busyAll.add(busy);
+                }
+            }
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+        }
+        if (mode.equals("Occupied")) {
+            return occupiedAll;
+        }
+        if (mode.equals("Busy")) {
+            return busyAll;
         }
         return null;
     }
@@ -161,7 +187,7 @@ public class CalendarService {
                 } else if (req.getTypeOfRequest().getName().equals("Sick leave")) {
                     sick.add(req);
                 }
-            } else if (status.equals("Consider")&& req.getStatus().equals("Under consideration")) {
+            } else if (status.equals("Consider") && req.getStatus().equals("Under consideration")) {
                 if (req.getTypeOfRequest().getName().equals("Business trip")) {
                     business.add(req);
                 } else if (req.getTypeOfRequest().getName().equals("Child care")) {

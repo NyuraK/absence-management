@@ -56,6 +56,9 @@ public class UserEntity {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "activation_code")
+    private String activationCode;
+
     @Transient
     private BCryptPasswordEncoder coder;
 
@@ -172,6 +175,14 @@ public class UserEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getActivationCode() {
+        return activationCode;
+    }
+
+    public void setActivationCode(String activationCode) {
+        this.activationCode = activationCode;
     }
 
     public String encode(String password) {

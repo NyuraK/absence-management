@@ -2,6 +2,17 @@
     <div>
         <Nav></Nav>
         <b-container>
+            <b-row>
+                <b-form-select v-model="selectedTeam" :options="teams" @change="show">
+                    <template slot="first">
+                    <option :value="null" disabled>--Please pick a team to see the days on which you do not want to allow vacation--</option>
+                    </template>
+                </b-form-select>
+                <v-calendar
+                        is-expanded :attributes='attr'>
+                </v-calendar>
+
+            </b-row>
             <b-tabs content-class="mt-3">
                 <b-tab title="Active requests" active>
                     <b-form-group label="Selection mode:" label-cols-md="4">
@@ -63,6 +74,10 @@
                 items: [],
                 itemsResolved: [],
                 selectMode: 'multi',
+                selectedTeam: null,
+                occupiedDays: new Object(),
+                busyDays: new Object(),
+                teams: [],
                 selected: [],
                 fields: [
                     {key: "name", label: "Name"},
@@ -80,13 +95,86 @@
                     {key: "type", label: "Type"},
                     {key: "description", label: "Description"},
                     {key: "status", label: "Status"}
-                ]
+                ],
+                attr:
+                    [
+                        {
+                            highlight: {
+                                backgroundColor: '#ff2d25',     // Red background
+                                borderColor: '#ff473d',
+                                borderWidth: '2px',
+                                borderStyle: 'solid',
+                            },
+                            contentStyle: {
+                                color: 'white',                 // White text
+                            },
+                            dates: [],
+                        },
+                        {
+                            highlight: {
+                                backgroundColor: '#e1d031',     // Orange background
+                                borderColor: '#d2d168',
+                                borderWidth: '2px',
+                                borderStyle: 'solid',
+                            },
+                            contentStyle: {
+                                color: 'white',                 // White text
+                            },
+                            dates: [],
+                        },
+                    ],
             }
         },
         mounted() {
-            //this.$acl.change(localStorage.getItem('user'));
+            this.$acl.change(localStorage.getItem('user'));
+            // this.vacantDays = instance.get('/user/rest_days');
             let name = localStorage.getItem('username');
-            console.log(name);
+            // } ;
+            instance.get("/calendar/occupiedForDiscuss", {
+                params: {
+                    name: name
+                }
+            }).then(res => {
+                //this.occupiedDays = res.data;
+                let arr=res.data;
+                let occ;
+                for (let i=0;i<arr.length;i++){
+                    occ=[];
+                    for (let j=1;j<arr[i].length;j++){
+                        occ.push(arr[i][j]);
+                    }
+                    this.occupiedDays[arr[i][0]]=occ;
+                    this.teams.push({text: arr[i][0], value: arr[i][0]},);
+                }
+
+                console.log(this.teams);
+
+                console.log(this.teams);
+
+            }).catch(err => {
+                console.log(err);
+            });
+            instance.get("/calendar/busyForDiscuss", {
+                params: {
+                    name: name
+                }
+            }).then(res => {
+                let arr=res.data;
+                console.log(arr);
+                let busy;
+                for (let i=0;i<arr.length;i++) {
+                    busy = [];
+
+                    for (let j = 1; j < arr[i].length; j++) {
+                        busy.push(arr[i][j]);
+                    }
+                    this.busyDays[arr[i][0]] = busy;
+                }
+                console.log(this.busyDays);
+            }).catch(err => {
+                console.log(err);
+            });
+            //this.$acl.change(localStorage.getItem('user'));
             instance.get("/requests/active", {
                 params: {
                     name: name
@@ -108,6 +196,10 @@
             })
         },
         methods: {
+            show: function(){
+                this.attr[0].dates = this.occupiedDays[this.selectedTeam].map(dateString => new Date(dateString));
+                this.attr[1].dates = this.busyDays[this.selectedTeam].map(dateString => new Date(dateString));
+            },
             rowSelected(items) {
                 this.selected = items.map(function (el) {
                     return el.id;

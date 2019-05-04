@@ -38,6 +38,8 @@ public interface UserRepository extends CrudRepository<UserEntity, Integer> {
 
     List<UserEntity> findByDescription(String description);
 
+    List<UserEntity> findByActivationCode(String activationCode);
+
     void deleteById(Integer usersId);
 
     void deleteByLogin(String login);

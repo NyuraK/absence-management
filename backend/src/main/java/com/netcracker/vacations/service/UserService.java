@@ -6,15 +6,25 @@ import com.netcracker.vacations.domain.enums.Role;
 import com.netcracker.vacations.dto.UserDTO;
 import com.netcracker.vacations.repository.UserRepository;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional
 public class UserService {
+    @Autowired
+    private JavaMailSender mailSender;
+
+    @Value("${spring.mail.username}")
+    private String username;
 
     private UserRepository userRepository;
 
@@ -35,7 +45,7 @@ public class UserService {
         return toDTO(userRepository.findById(id).get());
     }
 
-    public List<UserDTO> getUsersFromTeam(Integer teamId){
+    public List<UserDTO> getUsersFromTeam(Integer teamId) {
         List<UserDTO> response = new ArrayList<>();
         for (UserEntity entity : userRepository.findAllByTeam_TeamsId(teamId)) {
             response.add(toDTO(entity));
@@ -85,6 +95,7 @@ public class UserService {
         userEntity.setRole(Role.findByName(userDTO.getRole()));
         userEntity.setSurname(userDTO.getSurname());
         userEntity.setUsersId(userDTO.getUserId());
+        userEntity.setActivationCode(userDTO.getActivationCode());
         return userEntity;
     }
 
@@ -107,5 +118,41 @@ public class UserService {
         return userDTO;
     }
 
+    public String getUserByCode(String code) {
+        return userRepository.findByActivationCode(code).get(0).getLogin();
+    }
+
+    public void changePassword(List<String> userInfo) {
+        String password = userInfo.get(0);
+        String login = userInfo.get(1);
+        if (!password.isEmpty() && !login.isEmpty()) {
+            UserEntity user = userRepository.findByLogin(login).get(0);
+            user.setPassword(password);
+            user.setActivationCode(null);
+            userRepository.save(user);
+        }
+    }
+
+    public UserDTO sendMailPassword(UserDTO user) {
+        String code = UUID.randomUUID().toString();
+        if (user.getEmail() != null) {
+            user.setActivationCode(code);
+            String message = String.format("Dear " + user.getName() + " " + user.getSurname() + ",\n" + "you successfully registered your account. " +
+                    "Now your password is \"" + user.getPassword() + "\". For changing your password visit next link: http://localhost:8080/activation/" + code);
+            send(user.getEmail(), "Account activation, password changing.", message);
+        }
+        return user;
+    }
+
+    public void send(String emailTo, String subject, String message) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+
+        mailMessage.setFrom(username);
+        mailMessage.setTo(emailTo);
+        mailMessage.setSubject(subject);
+        mailMessage.setText(message);
+
+        mailSender.send(mailMessage);
+    }
 
 }
