@@ -9,7 +9,8 @@
                       label="Zoom"
                       v-on:click="zoomChart"
             ></v-slider>
-            <v-select v-if="$acl.check('isManager')"
+            <v-select
+                    v-if="isManager"
                       :items="teams"
                       item-text="name"
                       item-value="id"
@@ -49,10 +50,16 @@
                     name: ''
                 }],
                 show: false,
+                isManager: false,
                 chart: null,
             }
         },
         created() {
+            // console.log(this.$acl.check('isLoggedUser'));
+            if (localStorage.getItem('user') === 'ROLE_MANAGER' ||
+                localStorage.getItem('user') === 'ROLE_DIRECTOR')
+                this.isManager = true;
+
             instance.get('/teams', {
                 params: {
                     username: localStorage.getItem('username')
@@ -60,7 +67,8 @@
             }).then((res) => {
                 this.teams = parseTeam(res.data);
             });
-            if (this.$acl.not.check('isManager') || this.teams.length === 0) {
+            // if (this.$acl.not.check('isManager') || this.teams.length === 0) {
+            if (!this.isManager || this.teams.length === 0) {
                 this.showChartForEmployee(this.showAbsences);
             }
         },
@@ -139,6 +147,7 @@
             members[i][2] = new Date(data[i].begin + 'T00:00:00');
             members[i][3] = new Date(data[i].end + 'T00:00:00');
         }
+        console.log(members);
         return members;
     }
 

@@ -21,24 +21,27 @@ public class TeamsController {
         this.teamService = service;
     }
 
-
+    @PreAuthorize("hasAnyRole('DIRECTOR', 'ADMIN') or @Security.isAllowed(#username)")
     @GetMapping
-    public List<TeamDTO> teams(@RequestParam Optional<String> username) {
+    public List<TeamDTO> teams(@RequestParam @P("username") Optional<String> username) {
         if (username.isPresent())
             return teamService.getManagerTeams(username.get());
         return teamService.getTeams();
     }
 
+    @PreAuthorize("hasAnyRole('DIRECTOR', 'ADMIN') or @Security.isTeamManager(#id)")
     @GetMapping("/{id}")
-    public TeamDTO getTeam(@PathVariable("id") Integer id) {
+    public TeamDTO getTeam(@PathVariable("id") @P("id") Integer id) {
         return teamService.getTeam(id);
     }
 
+    @PreAuthorize("hasAnyRole('DIRECTOR', 'ADMIN')")
     @PostMapping("/addTeam")
     public TeamDTO addTeam(@RequestBody TeamDTO teamDTO) {
         return teamService.addTeam(teamDTO);
     }
 
+    @PreAuthorize("hasAnyRole('DIRECTOR', 'ADMIN')")
     @PutMapping("/{id}")
     public TeamDTO updateTeam(
             @PathVariable("id") Integer id,
@@ -47,23 +50,25 @@ public class TeamsController {
         return teamService.updateTeam(id, teamDTO);
     }
 
+    @PreAuthorize("hasAnyRole('DIRECTOR', 'ADMIN')")
     @DeleteMapping("/{id}")
     public void deleteTeam(@PathVariable("id") Integer id) {
         teamService.deleteTeam(id);
     }
 
+    @PreAuthorize("@Security.isTeamMember(#username, #teamId)")
     @GetMapping(value = {"/members", "/members/{id}"})
-    public List<AbsenceDTO> getTeamMembers(@RequestParam String username,
-                                           @PathVariable(value = "id") Optional<Integer> teamId) {
+    public List<AbsenceDTO> getTeamMembers(@RequestParam @P("username") String username,
+                                           @PathVariable(value = "id") @P("teamId") Optional<Integer> teamId) {
         if (teamId.isPresent())
             return teamService.getTeamMembers(teamId.get());
         else return teamService.getTeamMembers(username);
 
     }
 
-    @PreAuthorize("@Security.isManager(#teamID)")
+    @PreAuthorize("@Security.isTeamMember(#username, #teamID)")
     @GetMapping("/absences/{id}")
-    public List<AbsenceDTO> getTeamAbsences(@RequestParam String username,
+    public List<AbsenceDTO> getTeamAbsences(@RequestParam @P("username") String username,
                                             @PathVariable("id") @P("teamID") Integer teamID) {
         return teamService.getTeamAbsences(username, teamID);
     }

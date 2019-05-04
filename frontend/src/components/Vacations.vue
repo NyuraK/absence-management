@@ -58,7 +58,6 @@
 </template>
 
 <script>
-    import SecurityTest from "./SecurityTest";
     import AbsRequest from "./AbsRequest";
     import Nav from "./Nav";
     import {instance} from "../Api";
@@ -182,7 +181,7 @@
             }
 
         },
-        components: {AbsRequest, SecurityTest, Nav},
+        components: {AbsRequest, Nav},
         created() {
             this.$acl.change(localStorage.getItem('user'));
             let name = localStorage.getItem('username');

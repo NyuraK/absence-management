@@ -4,6 +4,7 @@ import com.netcracker.vacations.domain.RequestEntity;
 import com.netcracker.vacations.domain.RequestTypeEntity;
 import com.netcracker.vacations.domain.TeamEntity;
 import com.netcracker.vacations.domain.UserEntity;
+import com.netcracker.vacations.domain.enums.Role;
 import com.netcracker.vacations.domain.enums.Status;
 import com.netcracker.vacations.dto.RequestDTO;
 import com.netcracker.vacations.repository.*;
@@ -67,13 +68,13 @@ public class RequestService {
     public List<RequestDTO> getActiveRequests(String name) {
         List<RequestDTO> response = new ArrayList<>();
         UserEntity user = userRepository.findByLogin(name).get(0);
-        if (user.getRole().getName().equals("Administrator")) {
+        if (user.getRole().equals(Role.ADMIN)) {
             for (RequestEntity entity : requestRepository.findAll()) {
                 if ((entity.getStatus().equals(Status.CONSIDER.getName()))) {
                     response.add(toDTO(entity));
                 }
             }
-        } else if (user.getRole().getName().equals("Director")) {
+        } else if (user.getRole().equals(Role.DIRECTOR)) {
             List<TeamEntity> directorsTeams = teamRepository.findAllByDepartment(departmentRepository.findByDirector(user).get(0));
             for (RequestEntity entity : requestRepository.findAll()) {
                 for (TeamEntity team : directorsTeams) {
@@ -100,13 +101,13 @@ public class RequestService {
     public List<RequestDTO> getResolvedRequests(String name) {
         List<RequestDTO> response = new ArrayList<>();
         UserEntity user = userRepository.findByLogin(name).get(0);
-        if (user.getRole().getName().equals("Administrator")) {
+        if (user.getRole().equals(Role.ADMIN)) {
             for (RequestEntity entity : requestRepository.findAll()) {
                 if (!entity.getStatus().equals(Status.CONSIDER.getName())) {
                     response.add(toDTO(entity));
                 }
             }
-        } else if (user.getRole().getName().equals("Director")) {
+        } else if (user.getRole().equals(Role.DIRECTOR)) {
             List<TeamEntity> directorsTeams = teamRepository.findAllByDepartment(departmentRepository.findByDirector(user).get(0));
             for (RequestEntity entity : requestRepository.findAll()) {
                 for (TeamEntity team : directorsTeams) {

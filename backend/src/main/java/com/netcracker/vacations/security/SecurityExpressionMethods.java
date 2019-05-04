@@ -9,6 +9,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component("Security")
 public class SecurityExpressionMethods {
     private static final Logger logger = LogManager.getLogger(SecurityExpressionMethods.class);
@@ -20,11 +22,34 @@ public class SecurityExpressionMethods {
         this.teamRepository = teamRepository;
     }
 
-    public boolean isManager(Integer teamId) {
+    public boolean isTeamManager(Integer teamId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        final UserEntity user = ((MyUserPrincipal) authentication.getPrincipal()).getUser();
-        if (teamRepository.findByManager(user).isEmpty()) return false;
-        Integer user_team_id = teamRepository.findByManager(user).get(0).getTeamsId();
-        return user_team_id.equals(teamId);
+        final UserEntity currentUser = ((MyUserPrincipal) authentication.getPrincipal()).getUser();
+        if (teamRepository.findByManager(currentUser).isEmpty()) return false;
+        Integer currentUserTeamId = teamRepository.findByManager(currentUser).get(0).getTeamsId();
+        return currentUserTeamId.equals(teamId);
     }
+
+    public boolean isTeamMember(String username, Optional<Integer> teamID) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        final UserEntity currentUser = ((MyUserPrincipal) authentication.getPrincipal()).getUser();
+        boolean isTeamMember;
+        boolean isTeamManager;
+        if (teamID.isPresent()) {
+            isTeamMember = currentUser.getTeam().getTeamsId().equals(teamID.get());
+            isTeamManager = isTeamManager(teamID.get());
+            return currentUser.getLogin().equals(username) && (isTeamMember || isTeamManager);
+        }
+        return currentUser.getLogin().equals(username);
+    }
+
+    //TODO probably should rename
+    public boolean isAllowed(Optional<String> username) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        final UserEntity currentUser = ((MyUserPrincipal) authentication.getPrincipal()).getUser();
+        return username.isPresent() && currentUser.getLogin().equals(username.get());
+
+    }
+
 }
+

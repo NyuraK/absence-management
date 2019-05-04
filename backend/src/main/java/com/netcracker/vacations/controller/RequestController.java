@@ -6,6 +6,8 @@ import com.netcracker.vacations.dto.RequestDTO;
 import com.netcracker.vacations.service.RequestService;
 import com.netcracker.vacations.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,13 +33,15 @@ public class RequestController {
         reqService.saveRequest(request);
     }
 
+    @PreAuthorize("@Security.isTeamMember(#name, null)")
     @GetMapping("/active")
     public List<RequestDTO> getActiveRequests(@RequestParam String name) {
         return reqService.getActiveRequests(name);
     }
 
+    @PreAuthorize("@Security.isTeamMember(#name, null)")
     @GetMapping("/resolved")
-    public List<RequestDTO> getResolvedRequests(@RequestParam String name) {
+    public List<RequestDTO> getResolvedRequests(@RequestParam @P("name") String name) {
         return reqService.getResolvedRequests(name);
     }
 
@@ -51,17 +55,20 @@ public class RequestController {
         return RequestType.getNames();
     }
 
+    //TODO should add logic on the backend to decline only my requests?
+    @PreAuthorize("@Security.isTeamMember(#name, null)")
     @PatchMapping("/decline")
     public void declineRequest(@RequestBody List<Integer> requests) {
         reqService.updateRequest(Status.DECLINED, requests);
     }
 
+    @PreAuthorize("@Security.isTeamMember(#name, null)")
     @PatchMapping("/approve")
     public void approveRequest(@RequestBody List<Integer> requests) {
         reqService.updateRequest(Status.ACCEPTED, requests);
     }
 
-    //TODO implement weeks counting
+    //TODO implement weeks counting(I don't remember what is that used for)
     @GetMapping
     @ResponseBody
     public List<List<String>> getRequests() {

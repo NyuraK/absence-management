@@ -8,7 +8,7 @@ import VCalendar from 'v-calendar';
 import 'v-calendar/lib/v-calendar.min.css';
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
-import 'material-design-icons-iconfont/dist/material-design-icons.css'
+// import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
