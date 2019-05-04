@@ -8,6 +8,8 @@ import com.netcracker.vacations.domain.enums.Role;
 import com.netcracker.vacations.domain.enums.Status;
 import com.netcracker.vacations.dto.RequestDTO;
 import com.netcracker.vacations.repository.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,9 +19,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+
 @Service
 @Transactional
 public class RequestService {
+    private static final Logger logger = LogManager.getLogger(RequestService.class);
 
     private RequestRepository requestRepository;
     private RequestTypeRepository requestTypeRepository;
@@ -51,13 +55,13 @@ public class RequestService {
                 type,
                 status
         );
+
         requestEntity.setDescription(request.getDescription());
         requestRepository.save(requestEntity);
     }
 
 
     public void updateRequest(Status status, List<Integer> requests) {
-        //TODO add logic to decrement amount of vacant days left
         for (Integer id : requests) {
             RequestEntity entity = requestRepository.findById(id).get();
             entity.setStatus(status);
@@ -65,12 +69,13 @@ public class RequestService {
         }
     }
 
+
     public List<RequestDTO> getActiveRequests(String name) {
         List<RequestDTO> response = new ArrayList<>();
         UserEntity user = userRepository.findByLogin(name).get(0);
         if (user.getRole().equals(Role.ADMIN)) {
             for (RequestEntity entity : requestRepository.findAll()) {
-                if ((entity.getStatus().equals(Status.CONSIDER.getName()))) {
+                if ((entity.getStatus().equals(Status.CONSIDER))) {
                     response.add(toDTO(entity));
                 }
             }
@@ -78,7 +83,7 @@ public class RequestService {
             List<TeamEntity> directorsTeams = teamRepository.findAllByDepartment(departmentRepository.findByDirector(user).get(0));
             for (RequestEntity entity : requestRepository.findAll()) {
                 for (TeamEntity team : directorsTeams) {
-                    if ((entity.getStatus().equals(Status.CONSIDER.getName())) && (team.equals(entity.getUser().getTeam()))) {
+                    if ((entity.getStatus().equals(Status.CONSIDER)) && (team.equals(entity.getUser().getTeam()))) {
                         response.add(toDTO(entity));
                         break;
                     }
@@ -103,7 +108,7 @@ public class RequestService {
         UserEntity user = userRepository.findByLogin(name).get(0);
         if (user.getRole().equals(Role.ADMIN)) {
             for (RequestEntity entity : requestRepository.findAll()) {
-                if (!entity.getStatus().equals(Status.CONSIDER.getName())) {
+                if (!entity.getStatus().equals(Status.CONSIDER)) {
                     response.add(toDTO(entity));
                 }
             }
@@ -162,28 +167,10 @@ public class RequestService {
         requestDTO.setStart(entity.getBeginning());
         requestDTO.setEnd(entity.getEnding());
         requestDTO.setType(entity.getTypeOfRequest().getName());
-        requestDTO.setStatus(entity.getStatus());
+        requestDTO.setStatus(entity.getStatus().getName());
         return requestDTO;
     }
 
-
-    public List<List<String>> getRequests() {
-        List<List<String>> response = new ArrayList<>();
-        for (RequestEntity entity : requestRepository.findAll()) {
-            if (entity.getStatus().equals(Status.ACCEPTED.getName()))
-                response.add(toTimelineDTO(entity));
-        }
-        return response;
-    }
-
-    private List<String> toTimelineDTO(RequestEntity entity) {
-        List<String> res = new ArrayList<>();
-        res.add(entity.getUser().getName() + " " + entity.getUser().getFamilyName());
-        res.add(entity.getTypeOfRequest().getName());
-        res.add(entity.getBeginning().toString());
-        res.add(entity.getEnding().toString());
-        return res;
-    }
 
     public boolean isManagerOnRest(String login) {
         boolean answer = false;

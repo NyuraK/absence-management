@@ -38,7 +38,7 @@ public class RequestEntity {
     private RequestTypeEntity typeOfRequest;
 
     @Column(name = "status", nullable = false)
-    private String status;
+    private Status status;
 
     @Column(name = "description")
     private String description;
@@ -49,7 +49,7 @@ public class RequestEntity {
     public RequestEntity(UserEntity user, Date beginning, Date ending, RequestTypeEntity typeOfRequest, Status status) throws EndingBeforeBeginningException {
         this.user = user;
         this.typeOfRequest = typeOfRequest;
-        this.status = status.name;
+        this.status = status;
 
         if (ending.before(beginning)) {
             throw new EndingBeforeBeginningException();
@@ -107,12 +107,12 @@ public class RequestEntity {
         this.typeOfRequest = typeOfRequest;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
     public void setStatus(Status status) {
-        this.status = status.name;
+        this.status = status;
     }
 
     public String getDescription() {

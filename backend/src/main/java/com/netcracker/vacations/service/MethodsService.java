@@ -69,7 +69,7 @@ public class MethodsService {
     }
 
     public List<RequestEntity> findByDates(Date begin, Date end) {
-        List<RequestEntity> requests = reqRepo.findAllByStatus(Status.ACCEPTED.name);
+        List<RequestEntity> requests = reqRepo.findAllByStatus(Status.ACCEPTED);
         List<RequestEntity> result = new ArrayList<RequestEntity>();
         for (RequestEntity request : requests) {
             if ((((request.getBeginning()).after(begin)) || (request.getBeginning().equals(begin))) && ((((request.getEnding()).before(end)) || (request.getEnding().equals(end))))) {
@@ -140,7 +140,7 @@ public class MethodsService {
                 reqRepo.save(calendar9);
             } catch (EndingBeforeBeginningException ex) {
                 ex.printStackTrace();
-                System.out.println(ex.message);
+                System.out.println(EndingBeforeBeginningException.message);
             }
 
 

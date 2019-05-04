@@ -3,6 +3,7 @@ package com.netcracker.vacations.service;
 import com.netcracker.vacations.domain.RequestEntity;
 import com.netcracker.vacations.domain.TeamEntity;
 import com.netcracker.vacations.domain.UserEntity;
+import com.netcracker.vacations.domain.enums.Status;
 import com.netcracker.vacations.dto.UserDTO;
 import com.netcracker.vacations.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -175,7 +176,7 @@ public class CalendarService {
         String begin;
         String end;
         for (RequestEntity req : reqs) {
-            if (status.equals("Accepted") && req.getStatus().equals("Accepted")) {
+            if (status.equals("Accepted") && req.getStatus().equals(Status.ACCEPTED)) {
                 if (req.getTypeOfRequest().getName().equals("Business trip")) {
                     business.add(req);
                 } else if (req.getTypeOfRequest().getName().equals("Child care")) {

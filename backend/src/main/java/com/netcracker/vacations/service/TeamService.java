@@ -120,12 +120,14 @@ public class TeamService {
         List<TeamDTO> teams = new ArrayList<>();
         for (TeamEntity team : teamRepository.findAllByManager(manager))
             teams.add(toDTO(team));
+        teams.add(toDTO(manager.getTeam()));
         return teams;
     }
 
     public List<AbsenceDTO> getTeamAbsences(String username, Integer teamID) {
         List<UserEntity> team = userRepository.findAllByTeam_TeamsId(teamID);
-        List<RequestEntity> requests = requestRepository.findAllByStatus(Status.CONSIDER.name);
+        List<RequestEntity> requests = requestRepository.findAllByStatus(Status.ACCEPTED);
+
         Map<UserEntity, List<RequestEntity>> absences = new HashMap<>();
         for (RequestEntity requestEntity : requests) {
             absences.computeIfAbsent(requestEntity.getUser(), k -> new ArrayList<>()).add(requestEntity);

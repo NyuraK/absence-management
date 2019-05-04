@@ -29,7 +29,7 @@
                             show-empty
                     >
                         <template slot="empty" slot-scope="scope">
-                            <h4>No requests</h4>
+                            <h4>No active requests</h4>
                         </template>
                         <template slot="thead-top" slot-scope="data"></template>
                     </b-table>
@@ -37,21 +37,14 @@
                     <b-button variant="danger" v-on:click="decline">Decline</b-button>
                 </b-tab>
                 <b-tab title="Resolved requests">
-                    <b-form-group label="Selection mode:" label-cols-md="4">
-                        <b-form-select v-model="selectMode" :options="modes" class="mb-3"></b-form-select>
-                    </b-form-group>
 
                     <b-table id="tableResolved"
-                             selectable
-                             :select-mode="selectMode"
-                             selectedVariant="success"
                              :fields="resolvedFields"
                              :items="itemsResolved"
-                             @row-selected="rowSelected"
                              show-empty
                     >
                         <template slot="empty" slot-scope="scope">
-                            <h4>No requests</h4>
+                            <h4>No resolved requests</h4>
                         </template>
                         <template slot="thead-top" slot-scope="data"></template>
                     </b-table>
@@ -223,12 +216,13 @@
             },
 
             decline() {
+                let name = localStorage.getItem('username');
                 instance.patch("/requests/decline", this.selected, {
                     params: {
                         name: name
                     }
                 }).then(() => {
-                    instance.get("/active", {
+                    instance.get("/requests/active", {
                         params: {
                             name: name
                         }
@@ -237,7 +231,7 @@
                     }).catch(err => {
                         console.log(err);
                     });
-                    instance.get("/resolved", {
+                    instance.get("/requests/resolved", {
                         params: {
                             name: name
                         }

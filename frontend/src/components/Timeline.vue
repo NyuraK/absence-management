@@ -68,7 +68,7 @@
                 this.teams = parseTeam(res.data);
             });
             // if (this.$acl.not.check('isManager') || this.teams.length === 0) {
-            if (!this.isManager || this.teams.length === 0) {
+            if (!this.isManager) {
                 this.showChartForEmployee(this.showAbsences);
             }
         },

@@ -1,26 +1,21 @@
 package com.netcracker.vacations.domain.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum Status {
     ACCEPTED("Accepted"),
     DECLINED("Declined"),
     CONSIDER("Under consideration");
 
-    public final String name;
+    private final String name;
 
     Status(String name) {
         this.name = name;
     }
 
-    public static String[] getNames() {
-        Status[] statuses = Status.values();
-        String[] names = new String[statuses.length];
-        for (int i = 0; i < statuses.length; i++) {
-            names[i] = statuses[i].name;
-        }
-        return names;
-    }
-
+    @JsonValue
     public String getName() {
         return name;
     }
+
 }
