@@ -56,12 +56,6 @@ const router = new VueRouter({
             meta: {loginPage: true, nonRequiresAuth: true, rule: 'isPublic'}
         },
         {
-            path: '/calendar',
-            name: 'Calendar',
-            component: Calendar,
-            meta: {nonRequiresAuth: true, rule: 'isPublic'}
-        },
-        {
             path: '/home',
             name: 'home',
             component: Home,
