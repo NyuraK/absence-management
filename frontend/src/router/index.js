@@ -43,53 +43,11 @@ const router = new VueRouter({
             component: TeamEdit,
             meta: {nonRequiresAuth: true, rule: 'isAdmin'}
 
-<<<<<<< HEAD
         },
         {
             path: '/activation/:code',
             component: Activation,
             meta: {rule: 'isLoggedUser'}
-=======
-            },
-            {
-                path: '/',
-                name: 'Login',
-                component: Login,
-                meta: {loginPage: true, nonRequiresAuth: true, rule: 'isPublic'}
-            },
-            {
-                path: '/home',
-                name: 'home',
-                component: Home,
-                meta: {rule: 'isLoggedUser'}
-            },
-            {
-                path: '/vacations',
-                name: 'vacations',
-                component: Vacations,
-                meta: {rule: 'isLoggedUser'}
-            },
-            {
-                path: '/requests',
-                name: 'requests',
-                component: Requests,
-                meta: {rule: 'isManager'}
-            },
-            {
-                path: '/timeline',
-                name: 'Timeline',
-                component: Timeline,
-                meta: {rule: 'isLoggedUser'}
-            },
-            {
-                path: "/*",
-                component:
-                NotFound,
-                meta: {rule: '*'}
-            }
-            ,
->>>>>>> secure for teams, users, calendar
-
         },
         {
             path: '/',
