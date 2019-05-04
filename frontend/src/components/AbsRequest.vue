@@ -85,7 +85,6 @@
                     needToEmail: this.isManagerOnRest,
                 };
                 instance.post("/requests", msg).then(res => {
-
                 }).catch(err=> {
                     console.log(err);
                 });

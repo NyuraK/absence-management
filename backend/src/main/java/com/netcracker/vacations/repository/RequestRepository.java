@@ -3,6 +3,7 @@ package com.netcracker.vacations.repository;
 import com.netcracker.vacations.domain.RequestEntity;
 import com.netcracker.vacations.domain.RequestTypeEntity;
 import com.netcracker.vacations.domain.UserEntity;
+import com.netcracker.vacations.domain.enums.Status;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -27,9 +28,9 @@ public interface RequestRepository extends CrudRepository<RequestEntity, Integer
 
     List<RequestEntity> findAllByEnding(Date ending);//Поиск в диапазоне см.
 
-    List<RequestEntity> findByStatus(String status);
+    List<RequestEntity> findByStatus(Status status);
 
-    List<RequestEntity> findAllByStatus(String status);
+    List<RequestEntity> findAllByStatus(Status status);
 
     List<RequestEntity> findAllByTypeOfRequest(RequestTypeEntity typeOfRequest);
 

@@ -30,7 +30,7 @@ public class RequestTypeEntity {
     public RequestTypeEntity(Boolean influenceOnVr, Boolean needApproval, RequestType name) {
         this.influenceOnVr = influenceOnVr;
         this.needApproval = needApproval;
-        this.name = name.name;
+        this.name = name.getName();
     }
 
     public Integer getTypeOfRequest() {
@@ -62,6 +62,6 @@ public class RequestTypeEntity {
     }
 
     public void setName(RequestType name) {
-        this.name = name.name;
+        this.name = name.getName();
     }
 }

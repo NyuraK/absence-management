@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '../components/Login'
-import Calendar from '../components/Calendar'
 import Home from "../components/Home";
 import Vacations from "../components/Vacations";
 import Activation from "../components/Activation";
@@ -49,7 +48,6 @@ const router = new VueRouter({
             path: '/activation/:code',
             component: Activation,
             meta: {rule: 'isLoggedUser'}
-
         },
         {
             path: '/',

@@ -29,7 +29,7 @@
                             show-empty
                     >
                         <template slot="empty" slot-scope="scope">
-                            <h4>No requests</h4>
+                            <h4>No active requests</h4>
                         </template>
                         <template slot="thead-top" slot-scope="data"></template>
                     </b-table>
@@ -37,21 +37,14 @@
                     <b-button variant="danger" v-on:click="decline">Decline</b-button>
                 </b-tab>
                 <b-tab title="Resolved requests">
-                    <b-form-group label="Selection mode:" label-cols-md="4">
-                        <b-form-select v-model="selectMode" :options="modes" class="mb-3"></b-form-select>
-                    </b-form-group>
 
                     <b-table id="tableResolved"
-                             selectable
-                             :select-mode="selectMode"
-                             selectedVariant="success"
                              :fields="resolvedFields"
                              :items="itemsResolved"
-                             @row-selected="rowSelected"
                              show-empty
                     >
                         <template slot="empty" slot-scope="scope">
-                            <h4>No requests</h4>
+                            <h4>No resolved requests</h4>
                         </template>
                         <template slot="thead-top" slot-scope="data"></template>
                     </b-table>
@@ -127,15 +120,12 @@
         },
         mounted() {
             this.$acl.change(localStorage.getItem('user'));
-            // this.vacantDays = instance.get('/user/rest_days');
             let name = localStorage.getItem('username');
-            // } ;
             instance.get("/calendar/occupiedForDiscuss", {
                 params: {
                     name: name
                 }
             }).then(res => {
-                //this.occupiedDays = res.data;
                 let arr=res.data;
                 let occ;
                 for (let i=0;i<arr.length;i++){
@@ -146,11 +136,6 @@
                     this.occupiedDays[arr[i][0]]=occ;
                     this.teams.push({text: arr[i][0], value: arr[i][0]},);
                 }
-
-                console.log(this.teams);
-
-                console.log(this.teams);
-
             }).catch(err => {
                 console.log(err);
             });
@@ -170,11 +155,9 @@
                     }
                     this.busyDays[arr[i][0]] = busy;
                 }
-                console.log(this.busyDays);
             }).catch(err => {
                 console.log(err);
             });
-            //this.$acl.change(localStorage.getItem('user'));
             instance.get("/requests/active", {
                 params: {
                     name: name
@@ -190,7 +173,6 @@
                 }
             }).then((resp) => {
                 this.itemsResolved = resp.data;
-                console.log("DATA " + resp.data);
             }).catch(err => {
                 console.log(err);
             })
@@ -207,14 +189,25 @@
             },
 
             approve() {
-                instance.patch("/requests/approve", this.selected).then(() => {
-                    instance.get("/requests/active").then((resp) => {
-                        this.items = resp.data;
+                let name = localStorage.getItem('username');
+                instance.patch("/requests/approve", this.selected, {
+                    params: {
+                        name: name
+                    }
+                }).then(() => {
+                    instance.get("/requests/active", {
+                        params: {
+                            name: name
+                        }
                     }).catch(err => {
                         console.log(err);
                     });
 
-                    instance.get("/requests/resolved").then((resp) => {
+                    instance.get("/requests/resolved", {
+                        params: {
+                            name: name
+                        }
+                    }).then((resp) => {
                         this.itemsResolved = resp.data;
                     }).catch(err => {
                         console.log(err);
@@ -223,13 +216,26 @@
             },
 
             decline() {
-                instance.patch("/requests/decline", this.selected).then(() => {
-                    instance.get("/active").then((resp) => {
+                let name = localStorage.getItem('username');
+                instance.patch("/requests/decline", this.selected, {
+                    params: {
+                        name: name
+                    }
+                }).then(() => {
+                    instance.get("/requests/active", {
+                        params: {
+                            name: name
+                        }
+                    }).then((resp) => {
                         this.items = resp.data;
                     }).catch(err => {
                         console.log(err);
                     });
-                    instance.get("/resolved").then((resp) => {
+                    instance.get("/requests/resolved", {
+                        params: {
+                            name: name
+                        }
+                    }).then((resp) => {
                         this.itemsResolved = resp.data;
                     }).catch(err => {
                         console.log(err);
