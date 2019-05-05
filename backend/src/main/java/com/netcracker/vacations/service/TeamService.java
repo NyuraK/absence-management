@@ -104,7 +104,7 @@ public class TeamService {
 
     public List<AbsenceDTO> getTeamMembers(Integer id) {
         List<AbsenceDTO> res = new ArrayList<>();
-        for (UserEntity user : userRepository.findAllByTeam_TeamsId(id)) {
+        for (UserEntity user : userRepository.findAllByTeamTeamsId(id)) {
             res.add(toAbsenceDTO(user, new RequestEntity()));
         }
         return res;
@@ -113,7 +113,7 @@ public class TeamService {
     public List<AbsenceDTO> getTeamMembers(String username) {
         List<AbsenceDTO> res = new ArrayList<>();
         Integer teamsId = userRepository.findByLogin(username).get(0).getTeam().getTeamsId();
-        for (UserEntity user : userRepository.findAllByTeam_TeamsId(teamsId)) {
+        for (UserEntity user : userRepository.findAllByTeamTeamsId(teamsId)) {
             AbsenceDTO absenceDTO = toAbsenceDTO(user, new RequestEntity());
             absenceDTO.setTeamID(teamsId);
             res.add(absenceDTO);
@@ -131,7 +131,7 @@ public class TeamService {
     }
 
     public List<AbsenceDTO> getTeamAbsences(String username, Integer teamID) {
-        List<UserEntity> team = userRepository.findAllByTeam_TeamsId(teamID);
+        List<UserEntity> team = userRepository.findAllByTeamTeamsId(teamID);
         List<RequestEntity> requests = requestRepository.findAllByStatus(Status.ACCEPTED);
 
         Map<UserEntity, List<RequestEntity>> absences = new HashMap<>();
