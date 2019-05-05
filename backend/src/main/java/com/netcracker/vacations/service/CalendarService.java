@@ -81,7 +81,7 @@ public class CalendarService {
                     for (UserEntity users : teamUsers) {
                         List<RequestEntity> userReqs = reqRepo.findAllByUser(users);
                         for (RequestEntity req : userReqs) {
-                            if (req.getStatus().equals("Accepted") && (req.getTypeOfRequest().getInfluenceOnVr())) {
+                            if (req.getStatus().equals(Status.ACCEPTED) && (req.getTypeOfRequest().getInfluenceOnVr())) {
                                 teamReqs.add(req);
                             }
                         }
@@ -188,7 +188,7 @@ public class CalendarService {
                 } else if (req.getTypeOfRequest().getName().equals("Sick leave")) {
                     sick.add(req);
                 }
-            } else if (status.equals("Consider") && req.getStatus().equals("Under consideration")) {
+            } else if (status.equals("Consider") && req.getStatus().equals(Status.CONSIDER)) {
                 if (req.getTypeOfRequest().getName().equals("Business trip")) {
                     business.add(req);
                 } else if (req.getTypeOfRequest().getName().equals("Child care")) {
@@ -200,7 +200,7 @@ public class CalendarService {
                 } else if (req.getTypeOfRequest().getName().equals("Sick leave")) {
                     sick.add(req);
                 }
-            } else if (status.equals("Declined") && req.getStatus().equals("Declined")) {
+            } else if (status.equals("Declined") && req.getStatus().equals(Status.DECLINED)) {
                 if (req.getTypeOfRequest().getName().equals("Business trip")) {
                     business.add(req);
                 } else if (req.getTypeOfRequest().getName().equals("Child care")) {

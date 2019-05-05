@@ -31,15 +31,17 @@ public class RequestService {
     private TeamRepository teamRepository;
     private DepartmentRepository departmentRepository;
     private UserService userService;
+    private MethodsService methodService;
 
     @Autowired
-    public RequestService(RequestRepository requestRepository, RequestTypeRepository requestTypeRepository, UserRepository userRepository, TeamRepository teamRepository, DepartmentRepository departmentRepository, UserService userService) {
+    public RequestService(RequestRepository requestRepository, RequestTypeRepository requestTypeRepository, UserRepository userRepository, TeamRepository teamRepository, DepartmentRepository departmentRepository, UserService userService, MethodsService methodService) {
         this.requestRepository = requestRepository;
         this.requestTypeRepository = requestTypeRepository;
         this.userRepository = userRepository;
         this.teamRepository = teamRepository;
         this.departmentRepository = departmentRepository;
         this.userService = userService;
+        this.methodService=methodService;
     }
 
     public void saveRequest(RequestDTO request) {
@@ -93,7 +95,7 @@ public class RequestService {
             List<TeamEntity> managersTeams = teamRepository.findAllByManager(user);
             for (RequestEntity entity : requestRepository.findAll()) {
                 for (TeamEntity team : managersTeams) {
-                    if ((entity.getStatus().equals(Status.CONSIDER.getName())) && (team.equals(entity.getUser().getTeam()))) {
+                    if ((entity.getStatus().equals(Status.CONSIDER)) && (team.equals(entity.getUser().getTeam()))) {
                         response.add(toDTO(entity));
                         break;
                     }
@@ -117,7 +119,7 @@ public class RequestService {
             for (RequestEntity entity : requestRepository.findAll()) {
                 for (TeamEntity team : directorsTeams) {
                     if ((!entity.getTypeOfRequest().getNeedApproval()
-                            || !entity.getStatus().equals(Status.CONSIDER.getName())) && (team.equals(entity.getUser().getTeam()))) {
+                            || !entity.getStatus().equals(Status.CONSIDER)) && (team.equals(entity.getUser().getTeam()))) {
                         response.add(toDTO(entity));
                         break;
                     }
@@ -128,7 +130,7 @@ public class RequestService {
             for (RequestEntity entity : requestRepository.findAll()) {
                 for (TeamEntity team : managersTeams) {
                     if ((!entity.getTypeOfRequest().getNeedApproval()
-                            || !entity.getStatus().equals(Status.CONSIDER.getName())) && (team.equals(entity.getUser().getTeam()))) {
+                            || !entity.getStatus().equals(Status.CONSIDER)) && (team.equals(entity.getUser().getTeam()))) {
                         response.add(toDTO(entity));
                         break;
                     }
@@ -143,11 +145,11 @@ public class RequestService {
         requestDTO.setId(entity.getRequestsId());
         String name = entity.getUser().getName();
         String familyName = entity.getUser().getFamilyName();
-        if ((name.isEmpty() || name == null) && (familyName.isEmpty()) || familyName == null) {
+        if ((name == null || name.isEmpty() ) && (familyName == null || familyName.isEmpty())) {
             requestDTO.setName("-");
-        } else if (familyName.isEmpty() || familyName == null) {
+        } else if (familyName == null || familyName.isEmpty() ) {
             requestDTO.setName(entity.getUser().getName());
-        } else if (name.isEmpty() || name == null) {
+        } else if (name == null || name.isEmpty()) {
             requestDTO.setName(entity.getUser().getFamilyName());
         } else {
             requestDTO.setName(entity.getUser().getName() + " " + entity.getUser().getFamilyName());
@@ -157,7 +159,7 @@ public class RequestService {
         } else {
             requestDTO.setTeamName("-");
         }
-        if (entity.getUser().getTeam().getName() != null) {
+        if (entity.getUser().getTeam() != null) {
             requestDTO.setTeamName(entity.getUser().getTeam().getName());
         } else {
             requestDTO.setTeamName("-");

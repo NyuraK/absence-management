@@ -37,6 +37,7 @@ public class RequestEntity {
     @JoinColumn(name = "type_of_request_id", referencedColumnName = "type_of_requests_id")
     private RequestTypeEntity typeOfRequest;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private Status status;
 
