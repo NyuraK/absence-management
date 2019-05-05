@@ -87,7 +87,7 @@ public class MethodsService {
 
     public void putInfoInBase() {
         DateFormat formatter = new SimpleDateFormat("MM/dd/yy");
-        try {
+        /*try {
             Date date1 = formatter.parse("04/1/19");
             Date date2 = formatter.parse("04/5/19");
             Date date3 = formatter.parse("04/10/19");
@@ -96,7 +96,7 @@ public class MethodsService {
             Date date6 = formatter.parse("04/19/19");
             Date date7 = formatter.parse("04/22/19");
             Date date8 = formatter.parse("04/24/19");
-            Date date9 = formatter.parse("04/28/19");
+            Date date9 = formatter.parse("04/28/19");*/
 
             RequestTypeEntity type1 = new RequestTypeEntity(false, false, RequestType.BUSINESSTRIP);
             RequestTypeEntity type2 = new RequestTypeEntity(true, false, RequestType.SICKNESS);
@@ -109,7 +109,7 @@ public class MethodsService {
             typeRepo.save(type4);
             typeRepo.save(type5);
 
-            UserEntity user1 = new UserEntity("Denis", "0901", Role.ADMIN, 20, date1);
+           /* UserEntity user1 = new UserEntity("Denis", "0901", Role.ADMIN, 20, date1);
             UserEntity user2 = new UserEntity("Aleksei", "5101", Role.MANAGER, 20, date2);
             UserEntity user3 = new UserEntity("Artem", "4901", Role.EMPLOYEE, 20, date3);
             userRepo.save(user1);
@@ -151,7 +151,7 @@ public class MethodsService {
             user2.setTeam(team1);
         } catch (ParseException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     public void getUsersAcceptedRequests(int id, String criterion, String topic1/*FOR TYPE*/, String topic2/*FOR STATUS*/) {

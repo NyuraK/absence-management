@@ -119,7 +119,10 @@ public class UserService {
     }
 
     public String getUserByCode(String code) {
-        return userRepository.findByActivationCode(code).get(0).getLogin();
+        if(userRepository.findByActivationCode(code).get(0)!=null){
+            return userRepository.findByActivationCode(code).get(0).getLogin();
+        }
+        return null;
     }
 
     public void changePassword(List<String> userInfo) {

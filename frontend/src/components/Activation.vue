@@ -79,6 +79,7 @@
                             .catch((err) => {
                                 console.log(err);
                             });
+                        this.$router.push('/home');
 
                     } else {
                         this.warning = "You have no access to this operation!";
@@ -88,7 +89,7 @@
                     this.password = '';
                     this.repeatPassword = '';
                 }
-                this.$router.push('/home');
+
             }
         },
     }

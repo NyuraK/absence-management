@@ -13,7 +13,6 @@
                 </b-nav-item>
                 <b-nav-item href="/users" v-if="$acl.check('isAdmin')">Manage users</b-nav-item>
                 <b-nav-item href="/teams" v-if="$acl.check('isAdmin')">Manage teams</b-nav-item>
-                <b-nav-item href="/vacations">Calendar view</b-nav-item>
             </b-navbar-nav>
             <b-navbar-nav class="ml-auto">
                 <b-nav-item v-b-modal="'modal-sm'">Logout</b-nav-item>
