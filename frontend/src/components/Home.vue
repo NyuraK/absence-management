@@ -4,6 +4,7 @@
         <b-container>
             <b-row>
                 <b-col>
+                    <SecurityTest></SecurityTest>
                     <b-row>
                         <label><p>Your requests:</p></label>
                     </b-row>
@@ -37,20 +38,34 @@
                         </b-col>
                     </b-row>
                 </b-col>
-                <b-col>
-                    <AbsRequest></AbsRequest>
-                    <b-row>
-                        <b-col></b-col>
-                        <b-col cols="15">
-                            <label><p>Occupied days for team {{team}}:</p></label>
-                        </b-col>
-                        <b-col></b-col>
-                    </b-row>
-                    <b-row>
-                        <v-calendar
-                                is-expanded :attributes='attr'>
-                        </v-calendar>
-                    </b-row>
+                <b-col cols="2" v-if="$acl.not.check('isAdmin')">
+                    <v-card id="days">
+                        <v-container fill-height>
+                            <v-layout fill-height>
+                                <v-flex xs12 align-end>
+                                    <span class="headline">Amount of vacant days</span> <br> <br>
+                                    <span class="headline">{{vacantDays}}</span>
+                                </v-flex>
+                            </v-layout>
+                        </v-container>
+                    </v-card>
+                </b-col>
+                <b-col cols="5">
+                    <b-col>
+                        <AbsRequest></AbsRequest>
+                        <b-row>
+                            <b-col></b-col>
+                            <b-col cols="15">
+                                <label><p>Occupied days for team {{team}}:</p></label>
+                            </b-col>
+                            <b-col></b-col>
+                        </b-row>
+                        <b-row>
+                            <v-calendar
+                                    is-expanded :attributes='attr'>
+                            </v-calendar>
+                        </b-row>
+                    </b-col>
                 </b-col>
             </b-row>
         </b-container>
@@ -63,7 +78,7 @@
     import {instance} from "../Api";
 
     export default {
-        name: "Vacations",
+        name: "Home",
         data() {
             return {
                 vacantDays: ' ',
