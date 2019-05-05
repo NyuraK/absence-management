@@ -148,17 +148,12 @@ public class RequestService {
         String name = entity.getUser().getName();
         String familyName = entity.getUser().getFamilyName();
         if ((name == null || name.isEmpty() ) && (familyName == null || familyName.isEmpty())) {
-            System.out.println("1"+((name.isEmpty() || name == null) && (familyName.isEmpty()) || familyName == null));
             requestDTO.setName("-");
         } else if (familyName == null || familyName.isEmpty() ) {
-            System.out.println("2");
             requestDTO.setName(entity.getUser().getName());
-            System.out.println(requestDTO.getName());
         } else if (name == null || name.isEmpty()) {
-            System.out.println("3");
             requestDTO.setName(entity.getUser().getFamilyName());
         } else {
-            System.out.println("4");
             requestDTO.setName(entity.getUser().getName() + " " + entity.getUser().getFamilyName());
         }
         if (entity.getUser().getTeam() != null) {
