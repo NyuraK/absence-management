@@ -31,9 +31,10 @@
                 <v-flex xs10 sm5>
                     <v-text-field v-model="user.login" label="login" solo></v-text-field>
                 </v-flex>
-                Team id:
+                Team:
                 <v-flex xs10 sm5>
-                    <v-text-field v-model="user.teamId" label="team id" solo></v-text-field>
+                    <v-select :items="teams" :label="user.teamName" v-model="user.teamId" item-text="name"
+                              item-value="teamId" placeholder="Change team"></v-select>
                 </v-flex>
                 Rest days:
                 <v-flex xs10 sm5>
@@ -77,18 +78,20 @@
                 userName: '',
                 userSurname: '',
                 userId: '',
-                alert: false
+                alert: false,
+                teams: [],
             }
         },
         created: function () {
             instance.get('users/' + this.$router.currentRoute.params['id'])
                 .then(response => {
                     this.user = response.data;
-                    console.log(response);
                     this.userName = this.user.name;
                     this.userSurname = this.user.surname;
                     this.userId = this.user.userId;
                 });
+            instance.get('teams')
+                .then(response => this.teams = response.data);
 
         },
         methods: {
@@ -97,7 +100,6 @@
                     this.user
                 )
                     .then(function (response) {
-                        console.log(response);
                     });
                 this.$router.push({name: 'users', query: {alert: true}});
                 this.alert = true;

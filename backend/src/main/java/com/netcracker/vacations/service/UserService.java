@@ -41,13 +41,21 @@ public class UserService {
         return response;
     }
 
+    public List<UserDTO> getUsersSubordinateToManager(Integer id) {
+        List<UserDTO> response = new ArrayList<>();
+        for (UserEntity entity : userRepository.findAllByTeamManagerUsersId(id)) {
+            response.add(toDTO(entity));
+        }
+        return response;
+    }
+
     public UserDTO getUser(Integer id) {
         return toDTO(userRepository.findById(id).get());
     }
 
     public List<UserDTO> getUsersFromTeam(Integer teamId) {
         List<UserDTO> response = new ArrayList<>();
-        for (UserEntity entity : userRepository.findAllByTeam_TeamsId(teamId)) {
+        for (UserEntity entity : userRepository.findAllByTeamTeamsId(teamId)) {
             response.add(toDTO(entity));
         }
         return response;
@@ -115,6 +123,9 @@ public class UserService {
         userDTO.setRestDays(entity.getRestDays());
         userDTO.setTeamId(entity.getTeam() == null ? null : entity.getTeam().getTeamsId());
         userDTO.setTeamName(entity.getTeam() == null ? null : entity.getTeam().getName());
+        userDTO.setDepartmentId(entity.getTeam() == null ? null :
+                entity.getTeam().getDepartment() == null ? null :
+                        entity.getTeam().getDepartment().getDepartmentsId());
         return userDTO;
     }
 

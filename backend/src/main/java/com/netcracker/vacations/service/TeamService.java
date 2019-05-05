@@ -1,12 +1,12 @@
 package com.netcracker.vacations.service;
 
-import com.netcracker.vacations.domain.DepartmentEntity;
 import com.netcracker.vacations.domain.RequestEntity;
 import com.netcracker.vacations.domain.TeamEntity;
 import com.netcracker.vacations.domain.UserEntity;
 import com.netcracker.vacations.domain.enums.Status;
 import com.netcracker.vacations.dto.AbsenceDTO;
 import com.netcracker.vacations.dto.TeamDTO;
+import com.netcracker.vacations.repository.DepartmentRepository;
 import com.netcracker.vacations.repository.RequestRepository;
 import com.netcracker.vacations.repository.TeamRepository;
 import com.netcracker.vacations.repository.UserRepository;
@@ -22,12 +22,13 @@ public class TeamService {
 
     private TeamRepository teamRepository;
     private UserRepository userRepository;
+    private DepartmentRepository departmentRepository;
     private RequestRepository requestRepository;
 
-    public TeamService(TeamRepository teamRepository, UserRepository userRepository, RequestRepository requestRepository) {
-
+    public TeamService(TeamRepository teamRepository, UserRepository userRepository, DepartmentRepository departmentRepository,  RequestRepository requestRepository) {
         this.teamRepository = teamRepository;
         this.userRepository = userRepository;
+        this.departmentRepository = departmentRepository;
         this.requestRepository = requestRepository;
     }
 
@@ -42,6 +43,14 @@ public class TeamService {
 
     public TeamDTO getTeam(Integer id) {
         return toDTO(teamRepository.findById(id).get());
+    }
+
+    public List<TeamDTO> getTeamsFromDepartment(Integer id) {
+        List<TeamDTO> response = new ArrayList<>();
+        for (TeamEntity entity : teamRepository.findAllByDepartmentDepartmentsId(id)) {
+            response.add(toDTO(entity));
+        }
+        return response;
     }
 
     public TeamDTO addTeam(TeamDTO teamDTO) {
@@ -62,25 +71,21 @@ public class TeamService {
 
     private TeamEntity toEntity(TeamDTO teamDTO) {
         TeamEntity teamEntity = new TeamEntity();
-        teamEntity.setTeamsId(teamDTO.getTeamId());
+        teamEntity.setTeamsId(null);
         teamEntity.setName(teamDTO.getName());
         teamEntity.setQuota(teamDTO.getQuota());
 
-        DepartmentEntity departmentEntity = new DepartmentEntity();
         if (teamDTO.getDepartmentId() == null) {
-            departmentEntity = null;
+            teamEntity.setDepartment(null);
         } else {
-            departmentEntity.setDepartmentsId(teamDTO.getDepartmentId());
+            teamEntity.setDepartment(departmentRepository.findByDepartmentsId(teamDTO.getDepartmentId()).get(0));
         }
-        teamEntity.setDepartment(departmentEntity);
 
-        UserEntity manager = new UserEntity();
         if (teamDTO.getManagerId() == null) {
-            manager = null;
+            teamEntity.setManager(null);
         } else {
-            manager.setUsersId(teamDTO.getManagerId());
+            teamEntity.setManager(userRepository.findByUsersId(teamDTO.getManagerId()).get(0));
         }
-        teamEntity.setManager(manager);
         return teamEntity;
     }
 
@@ -90,6 +95,7 @@ public class TeamService {
         teamDTO.setName(teamEntity.getName());
         teamDTO.setQuota(teamEntity.getQuota());
         teamDTO.setDepartmentId(teamEntity.getDepartment() == null ? null : teamEntity.getDepartment().getDepartmentsId());
+        teamDTO.setDepartmentName(teamEntity.getDepartment() == null ? null : teamEntity.getDepartment().getName());
         teamDTO.setManagerId(teamEntity.getManager() == null ? null : teamEntity.getManager().getUsersId());
         teamDTO.setManagerName(teamEntity.getManager() == null ? null : teamEntity.getManager().getName());
         teamDTO.setManagerSurname(teamEntity.getManager() == null ? null : teamEntity.getManager().getSurname());
@@ -98,7 +104,7 @@ public class TeamService {
 
     public List<AbsenceDTO> getTeamMembers(Integer id) {
         List<AbsenceDTO> res = new ArrayList<>();
-        for (UserEntity user : userRepository.findAllByTeam_TeamsId(id)) {
+        for (UserEntity user : userRepository.findAllByTeamTeamsId(id)) {
             res.add(toAbsenceDTO(user, new RequestEntity()));
         }
         return res;
@@ -107,7 +113,7 @@ public class TeamService {
     public List<AbsenceDTO> getTeamMembers(String username) {
         List<AbsenceDTO> res = new ArrayList<>();
         Integer teamsId = userRepository.findByLogin(username).get(0).getTeam().getTeamsId();
-        for (UserEntity user : userRepository.findAllByTeam_TeamsId(teamsId)) {
+        for (UserEntity user : userRepository.findAllByTeamTeamsId(teamsId)) {
             AbsenceDTO absenceDTO = toAbsenceDTO(user, new RequestEntity());
             absenceDTO.setTeamID(teamsId);
             res.add(absenceDTO);
@@ -125,7 +131,7 @@ public class TeamService {
     }
 
     public List<AbsenceDTO> getTeamAbsences(String username, Integer teamID) {
-        List<UserEntity> team = userRepository.findAllByTeam_TeamsId(teamID);
+        List<UserEntity> team = userRepository.findAllByTeamTeamsId(teamID);
         List<RequestEntity> requests = requestRepository.findAllByStatus(Status.ACCEPTED);
 
         Map<UserEntity, List<RequestEntity>> absences = new HashMap<>();

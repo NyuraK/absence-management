@@ -87,13 +87,14 @@
                 location.reload();
                 this.dialog = false;
             },
-            checkUser(id){
-                var i;
-                for(i = 0; i < this.teamUsers.length; i++) {
-                    if (this.teamUsers[i].userId === id) {
-                        return false;
+            checkUser(id) {
+                    var i;
+                    for (i = 0; i < this.teamUsers.length; i++) {
+                        if (this.teamUsers[i].userId === id) {
+                            return false;
+                        }
                     }
-                } return true;
+                    return true;
             }
         },
 
@@ -102,7 +103,12 @@
                 .then(response => {
                     this.users = response.data;
                 });
-            instance.get('users/team/' + this.$router.currentRoute.params['id'])
+            instance.get('users/',
+                {
+                    params: {
+                        teamId: this.$router.currentRoute.params['id']
+                    }
+                })
                 .then(response => {
                     this.teamUsers = response.data;
                 });

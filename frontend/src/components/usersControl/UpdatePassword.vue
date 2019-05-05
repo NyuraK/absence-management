@@ -80,7 +80,7 @@
         },
 
         methods: {
-            save(){
+            save() {
                 if (this.passwordNew === this.passwordNewRep) {
                     instance.put('users/password/' + this.$router.currentRoute.params['id'], this.passwordNew);
                     this.dialog = false;

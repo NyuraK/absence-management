@@ -6,81 +6,59 @@
                 <h4>{{teamName}}
                     <v-icon>edit</v-icon>
                 </h4>
-
-
                 <p v-if="team.managerName === null">Team manager: none </p>
                 <p v-else>Team manager: {{team.managerName }} {{ team.managerSurname}} </p>
-                <p v-if="team.departmentId === null">Team department: none </p>
-                <p v-else>Team department: {{team.departmentId}} </p>
-
-
-
-                <v-layout justify-space-around row>
-                    <v-flex xs12 lg5 mb-3>
-                        <v-expansion-panel>
-                            <v-expansion-panel-content>
-                                <template v-slot:header>
-                                    <div>Rename</div>
-                                </template>
-                                <v-card>
-                                    <v-card-text>
-                                        <v-text-field v-model="team.name" label="name" solo></v-text-field>
-                                        <v-btn block color="teal lighten-1" dark @click="rename">Save</v-btn>
-                                    </v-card-text>
-                                </v-card>
-                            </v-expansion-panel-content>
-                        </v-expansion-panel>
-                    </v-flex>
-
-                    <v-flex xs12 lg5 mb-3>
-                        <v-expansion-panel>
-                            <v-expansion-panel-content>
-                                <template v-slot:header>
-                                    <div>Change Quota</div>
-                                </template>
-                                <v-card>
-                                    <v-card-text>
-                                        <v-text-field v-model="team.quota" label="quota" solo></v-text-field>
-                                        <v-btn block color="teal lighten-1" dark @click="changeQuota">Save</v-btn>
-                                    </v-card-text>
-                                </v-card>
-                            </v-expansion-panel-content>
-                        </v-expansion-panel>
-                    </v-flex>
-
-                    <v-flex xs12 lg5 mb-3>
-                        <v-expansion-panel>
-                            <v-expansion-panel-content>
-                                <template v-slot:header>
-                                    <div>Change Department</div>
-                                </template>
-                                <v-card>
-                                    <v-card-text>
-                                        <v-text-field v-model="team.departmentId" label="department id"
-                                                      solo></v-text-field>
-                                        <v-btn block color="teal lighten-1" dark @click="changeDepartment">Save</v-btn>
-                                    </v-card-text>
-                                </v-card>
-                            </v-expansion-panel-content>
-                        </v-expansion-panel>
-                    </v-flex>
-
-                    <v-flex xs12 lg5 mb-3>
-                        <v-expansion-panel>
-                            <v-expansion-panel-content>
-                                <template v-slot:header>
-                                    <div>Change Manager</div>
-                                </template>
-                                <v-card>
-                                    <v-card-text>
-                                        <ChangeManagerComponent></ChangeManagerComponent>
-                                    </v-card-text>
-                                </v-card>
-                            </v-expansion-panel-content>
-                        </v-expansion-panel>
-                    </v-flex>
-                </v-layout>
-
+                <p v-if="team.departmentName === null">Team department: none </p>
+                <p v-else>Team department: {{team.departmentName}} </p>
+                <v-flex xs12 lg5 sm5>
+                    <v-expansion-panel>
+                        <v-expansion-panel-content>
+                            <template v-slot:header>
+                                <div>Rename</div>
+                            </template>
+                            <v-card>
+                                <v-card-text>
+                                    <v-text-field v-model="team.name" label="name" solo></v-text-field>
+                                    <v-btn block color="teal lighten-1" dark @click="rename">Save</v-btn>
+                                </v-card-text>
+                            </v-card>
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-flex>
+                <v-flex xs12 lg5>
+                    <v-expansion-panel>
+                        <v-expansion-panel-content>
+                            <template v-slot:header>
+                                <div>Change Quota</div>
+                            </template>
+                            <v-card>
+                                <v-card-text>
+                                    <v-text-field v-model="team.quota" label="quota" solo></v-text-field>
+                                    <v-btn block color="teal lighten-1" dark @click="changeQuota">Save</v-btn>
+                                </v-card-text>
+                            </v-card>
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-flex>
+                <v-flex xs12 lg5>
+                    <v-expansion-panel>
+                        <v-expansion-panel-content>
+                            <template v-slot:header>
+                                <div>Change manager or (and) department</div>
+                            </template>
+                            <v-card>
+                                <v-card-text>
+                                    <v-select :items="departments" label="Department" v-model="department"
+                                              item-text="name" return-object></v-select>
+                                    <v-select :items="findManagers" label="Manager" v-model="managerId"
+                                              :item-text="text" item-value="userId"></v-select>
+                                    <v-btn block color="teal lighten-1" dark @click="changeDepartmentAndManager">Save
+                                    </v-btn>
+                                </v-card-text>
+                            </v-card>
+                        </v-expansion-panel-content>
+                    </v-expansion-panel>
+                </v-flex>
                 <AddUserToTeam></AddUserToTeam>
                 <ul class="list-group mt-1" v-for="user of teamUsers" :key="user.userId">
                     <li class="list-group-item">
@@ -102,39 +80,54 @@
 <script>
 
     import {instance} from "../../Api";
-    import ChangeManagerComponent from "./ChangeManagerComponent";
     import Nav from "../Nav";
     import AddUserToTeam from "./AddUserToTeam";
 
     export default {
         name: "TeamEdit",
-        components: {AddUserToTeam, Nav, ChangeManagerComponent},
+        components: {AddUserToTeam, Nav},
         data() {
             return {
                 teamName: '',
                 team: [],
                 teamUsers: [],
-                user: []
+                managers: [],
+                departments: [],
+                department: [],
+                user: [],
+                managerId: '',
             }
         },
 
         methods: {
+            text: item => item.name + ' ' + item.surname,
             clear(user) {
                 user.teamId = null;
                 instance.put('users/' + user.userId, user);
                 this.teamUsers = this.teamUsers.filter(x => x.userId !== user.userId)
             },
-            rename(){
+            rename() {
                 instance.put('teams/' + this.$router.currentRoute.params['id'], this.team);
                 location.reload();
             },
-            changeQuota(){
+            changeQuota() {
                 instance.put('teams/' + this.$router.currentRoute.params['id'], this.team);
                 location.reload();
             },
-            changeDepartment(){
+            changeDepartmentAndManager() {
+                this.team.departmentId = this.department.departmentId;
+                this.team.managerId = this.managerId;
                 instance.put('teams/' + this.$router.currentRoute.params['id'], this.team);
                 location.reload();
+            },
+            checkUser(id) {
+                var i;
+                for (i = 0; i < this.teamUsers.length; i++) {
+                    if (this.teamUsers[i].userId === id) {
+                        return false;
+                    }
+                }
+                return true;
             }
 
         },
@@ -145,11 +138,29 @@
                     this.team = response.data;
                     this.teamName = this.team.name;
                 });
-            instance.get('users/team/' + this.$router.currentRoute.params['id'])
+            instance.get('users',
+                {
+                    params: {
+                        teamId: this.$router.currentRoute.params['id']
+                    }
+                })
                 .then(response => {
                     this.teamUsers = response.data;
+                    this.teamUsers.sort((a, b) => a.name.localeCompare(b.name))
                 });
+            instance.get('users')
+                .then(response => this.managers = response.data);
+            instance.get('departments')
+                .then(response => this.departments = response.data);
         },
+
+        computed: {
+            findManagers() {
+                return this.managers.filter(item => item.departmentId === this.department.departmentId && item.role !== 'Employee'
+                    && this.checkUser(item.userId) || item.userId === this.department.directorId
+                    && item.userId !== this.team.managerId);
+            },
+        }
 
     }
 </script>

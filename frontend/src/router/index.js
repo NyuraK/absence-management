@@ -12,6 +12,9 @@ import Users from "../components/usersControl/Users";
 import UserEdit from "../components/usersControl/UserEdit";
 import Teams from "../components/teamsControl/Teams";
 import TeamEdit from "../components/teamsControl/TeamEdit";
+import Departments from "../components/departmentsControl/Departments";
+import DepartmentEdit from "../components/departmentsControl/DepartmentEdit";
+
 import Timeline from "../components/Timeline"
 
 
@@ -42,6 +45,18 @@ const router = new VueRouter({
             path: '/teams/:id',
             component: TeamEdit,
             meta: {nonRequiresAuth: true, rule: 'isAdmin'}
+
+        },
+        {
+            path: '/departments',
+            component: Departments,
+            meta: {nonRequiresAuth: true, rule:'isAdmin'}
+
+        },
+        {
+            path: '/departments/:id',
+            component: DepartmentEdit,
+            meta: {nonRequiresAuth: true, rule:'isAdmin'}
 
         },
         {

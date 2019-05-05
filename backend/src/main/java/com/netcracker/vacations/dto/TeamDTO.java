@@ -7,8 +7,17 @@ public class TeamDTO {
     private Integer managerId;
     private String name;
     private Integer departmentId;
+    private String departmentName;
     private String managerName;
     private String managerSurname;
+
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
+    }
 
     public String getManagerName() {
         return managerName;

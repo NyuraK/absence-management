@@ -23,9 +23,13 @@ public class TeamsController {
 
     @PreAuthorize("hasAnyRole('DIRECTOR', 'ADMIN') or @Security.isAllowed(#username)")
     @GetMapping
-    public List<TeamDTO> teams(@RequestParam @P("username") Optional<String> username) {
+    public List<TeamDTO> teams(@RequestParam @P("username") Optional<String> username,
+                               @RequestParam(name = "departmentId" , required = false) Integer departmentId) {
         if (username.isPresent())
             return teamService.getManagerTeams(username.get());
+        if (departmentId != null) {
+            return teamService.getTeamsFromDepartment(departmentId);
+        }
         return teamService.getTeams();
     }
 
