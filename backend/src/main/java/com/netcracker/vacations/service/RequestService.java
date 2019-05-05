@@ -8,7 +8,6 @@ import com.netcracker.vacations.domain.enums.Role;
 import com.netcracker.vacations.domain.enums.Status;
 import com.netcracker.vacations.dto.RequestDTO;
 import com.netcracker.vacations.repository.*;
-import com.sun.org.apache.xml.internal.serialize.Method;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +45,6 @@ public class RequestService {
     }
 
     public void saveRequest(RequestDTO request) {
-       // methodService.putInfoInBase();
         RequestTypeEntity type = requestTypeRepository.findByName(request.getType()).get(0);
         Status status = Status.CONSIDER;
         if (!type.getNeedApproval()) {
