@@ -9,7 +9,7 @@
                     <h3 class="headline mb-0">Enter user details</h3>
                     <v-text-field label="First name" v-model="name"></v-text-field>
                     <v-text-field label="Surname" v-model="surname"></v-text-field>
-                    <v-text-field label="Family name" v-model="familyName"></v-text-field>
+                    <v-text-field label="Family name" v-model="surname"></v-text-field>
                     <v-select :items="roles" label="Role" v-model="role"></v-select>
                     <v-text-field v-model="email" :rules="[rules.required, rules.email]" label="E-mail"></v-text-field>
                     <v-text-field label="Login" v-model="login"></v-text-field>
@@ -52,7 +52,7 @@
                 user: '',
                 name: '',
                 surname: '',
-                familyName: '',
+                surname: '',
                 email: '',
                 role: '',
                 login: '',
@@ -74,7 +74,7 @@
                     password: this.password,
                     name: this.name,
                     surname: this.surname,
-                    familyName: this.familyName,
+                    surname: this.surname,
                     email: this.email,
                     role: this.role,
                     teamId: this.team.teamId,

@@ -11,11 +11,11 @@
             ></v-slider>
             <v-select
                     v-if="isManager"
-                      :items="teams"
-                      item-text="name"
-                      item-value="id"
-                      label="Team"
-                      v-on:change="showChartForManager"
+                    :items="teams"
+                    item-text="name"
+                    item-value="id"
+                    label="Team"
+                    v-on:change="showChartForManager"
             ></v-select>
 
             <div id="chart_wrapper" v-if="show">
@@ -26,6 +26,9 @@
                         :options='options'>
                 </GChart>
             </div>
+            <p v-if="!show">
+                nothing to show
+            </p>
         </b-container>
     </div>
 </template>
@@ -78,9 +81,12 @@
                     width: this.zoom
                 }
             },
+
             showChartForManager(id) {
+                this.members = [];
+                this.absences = [];
+                this.show = false;
                 instance.get('/teams/members/'
-                    + '/'
                     + id,
                     {params: {username: localStorage.getItem('username')}}
                 ).then((res) => {
@@ -88,14 +94,17 @@
                 }).catch((err) => {
                     console.log(err);
                 });
-                instance.get('/teams/absences'
-                    + '/'
+
+                instance.get('/teams/absences/'
                     + id,
                     {params: {username: localStorage.getItem('username')}}
                 ).then((res) => {
                     this.absences = extractMembers(res.data);
-                    Array.prototype.push.apply(this.absences, this.members);
-                    this.show = true;
+                    if (this.absences.length > 0) {
+                        Array.prototype.push.apply(this.absences, this.members);
+                        this.show = true;
+                    }
+
                 }).catch((err) => {
                     console.log(err);
                 });
@@ -110,17 +119,21 @@
                     console.log(err);
                 });
             },
+
             showAbsences(id) {
                 instance.get('/teams/absences/' + id,
                     {params: {username: localStorage.getItem('username')}}
                 ).then((res) => {
-                    this.absences = extractMembers(res.data);
-                    Array.prototype.push.apply(this.absences, this.members);
-                    this.show = true;
+                    this.absences = extractMembers(this.members);
+                    if (this.absences.length > 0) {
+                        Array.prototype.push.apply(this.absences, this.members);
+                        this.show = true;
+                    }
                 }).catch((err) => {
                     console.log(err);
                 });
             },
+
             onChartReady(chart, google) {
                 this.chart = chart;
             }
@@ -142,12 +155,11 @@
         let members = [];
         for (let i = 0; i < data.length; i++) {
             members[i] = new Array(4);
-            members[i][0] = data[i].name + ' ' + data[i].familyName;
+            members[i][0] = data[i].name + ' ' + data[i].surname;
             members[i][1] = data[i].type;
             members[i][2] = new Date(data[i].begin + 'T00:00:00');
             members[i][3] = new Date(data[i].end + 'T00:00:00');
         }
-        console.log(members);
         return members;
     }
 

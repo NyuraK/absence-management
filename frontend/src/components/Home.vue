@@ -4,41 +4,45 @@
         <b-container>
             <b-row>
                 <b-col>
-                    <SecurityTest></SecurityTest>
-                    <b-row>
-                        <label><p>Your requests:</p></label>
-                    </b-row>
-                    <b-row>
+                    <div style="text-align: center">
+                        <p>Your requests:</p>
                         <v-calendar
                                 is-expanded :attributes='attributes'>
                         </v-calendar>
-                    </b-row>
-                    <b-row>
-                        <b-col>
-                            <v-switch v-model="accepted" label="Accepted" color="indigo" @change="onAccepted()"
-                                      hide-details></v-switch>
-                            <v-switch v-model="declined" label="Declined" color="indigo" @change="onDeclined()"
-                                      hide-details></v-switch>
-                            <v-switch v-model="consider" label="Under consider" color="indigo" @change="onConsider()"
-                                      hide-details></v-switch>
-                        </b-col>
-                        <b-col>
-                            <v-checkbox v-model="all" id="all" label="All" @change="disableChecks()"
-                                        hide-details></v-checkbox>
-                            <v-checkbox v-model="business" label="Business trip" color="indigo" @change="showVac()"
-                                        :disabled="isAllActive" hide-details></v-checkbox>
-                            <v-checkbox v-model="vacation" label="Vacation" color="orange darken-3" @change="showVac()"
-                                        :disabled="isAllActive" hide-details></v-checkbox>
-                            <v-checkbox v-model="sick" label="Sick leave" color="red" @change="showVac()"
-                                        :disabled="isAllActive" hide-details></v-checkbox>
-                            <v-checkbox v-model="child" label="Child care" color="green" @change="showVac()"
-                                        :disabled="isAllActive" hide-details></v-checkbox>
-                            <v-checkbox v-model="remote" label="Remote work" color="cyan" @change="showVac()"
-                                        :disabled="isAllActive" hide-details></v-checkbox>
-                        </b-col>
-                    </b-row>
+                    </div>
                 </b-col>
-                <b-col cols="2" v-if="$acl.not.check('isAdmin')">
+                <b-col>
+                    <div>
+                        <p>Send new request</p>
+                        <AbsRequest></AbsRequest>
+                    </div>
+                </b-col>
+            </b-row>
+            <br>
+            <b-row>
+                <b-col cols="3">
+                    <v-switch v-model="accepted" label="Accepted" color="indigo" @change="onAccepted()"
+                              hide-details></v-switch>
+                    <v-switch v-model="declined" label="Declined" color="indigo" @change="onDeclined()"
+                              hide-details></v-switch>
+                    <v-switch v-model="consider" label="Under consider" color="indigo" @change="onConsider()"
+                              hide-details></v-switch>
+                </b-col>
+                <b-col cols="3">
+                    <v-checkbox v-model="all" id="all" label="All" @change="disableChecks()"
+                                hide-details></v-checkbox>
+                    <v-checkbox v-model="business" label="Business trip" color="indigo" @change="showVac()"
+                                :disabled="isAllActive" hide-details></v-checkbox>
+                    <v-checkbox v-model="vacation" label="Vacation" color="orange darken-3" @change="showVac()"
+                                :disabled="isAllActive" hide-details></v-checkbox>
+                    <v-checkbox v-model="sick" label="Sick leave" color="red" @change="showVac()"
+                                :disabled="isAllActive" hide-details></v-checkbox>
+                    <v-checkbox v-model="child" label="Child care" color="green" @change="showVac()"
+                                :disabled="isAllActive" hide-details></v-checkbox>
+                    <v-checkbox v-model="remote" label="Remote work" color="cyan" @change="showVac()"
+                                :disabled="isAllActive" hide-details></v-checkbox>
+                </b-col>
+                <b-col cols="2">
                     <v-card id="days">
                         <v-container fill-height>
                             <v-layout fill-height>
@@ -50,22 +54,13 @@
                         </v-container>
                     </v-card>
                 </b-col>
-                <b-col cols="5">
-                    <b-col>
-                        <AbsRequest></AbsRequest>
-                        <b-row>
-                            <b-col></b-col>
-                            <b-col cols="15">
-                                <label><p>Occupied days for team {{team}}:</p></label>
-                            </b-col>
-                            <b-col></b-col>
-                        </b-row>
-                        <b-row>
-                            <v-calendar
-                                    is-expanded :attributes='attr'>
-                            </v-calendar>
-                        </b-row>
-                    </b-col>
+                <b-col>
+                    <div style="text-align: center">
+                        <p>Occupied days for team {{team}}:</p>
+                        <v-calendar
+                                is-expanded :attributes='attr'>
+                        </v-calendar>
+                    </div>
                 </b-col>
             </b-row>
         </b-container>
@@ -450,6 +445,8 @@
         background-color: deepskyblue;
         color: lightgreen;
         text-align: center;
+        /*width: 175px;*/
+        /*height: 150px;*/
     }
 
     p {

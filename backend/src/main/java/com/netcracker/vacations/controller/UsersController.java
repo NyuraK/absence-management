@@ -2,6 +2,7 @@ package com.netcracker.vacations.controller;
 
 import com.netcracker.vacations.dto.UserDTO;
 import com.netcracker.vacations.service.UserService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,16 +17,16 @@ public class UsersController {
         this.service = service;
     }
 
-
     @GetMapping
-    public List<UserDTO> users(@RequestParam(name = "teamId" , required = false) Integer teamId,
-                               @RequestParam(name = "managerId" , required = false) Integer managerId) {
+    public List<UserDTO> users(@RequestParam(name = "teamId", required = false) Integer teamId,
+                               @RequestParam(name = "managerId", required = false) Integer managerId) {
         if (teamId != null) {
             return service.getUsersFromTeam(teamId);
         } else if (managerId != null) {
             return service.getUsersSubordinateToManager(managerId);
         }
-        return service.getUsers(); }
+        return service.getUsers();
+    }
 
     @GetMapping("/{id}")
     public UserDTO getUser(@PathVariable("id") Integer id) {
@@ -34,18 +35,18 @@ public class UsersController {
 
 
     @GetMapping("/userByCode/{code}")
-    public String getUserByCode(@PathVariable("code") String code){
+    public String getUserByCode(@PathVariable("code") String code) {
         return service.getUserByCode(code);
     }
 
     @PatchMapping("/changePassword")
-    public void changePassword(@RequestBody List<String> userInfo){
+    public void changePassword(@RequestBody List<String> userInfo) {
         service.changePassword(userInfo);
     }
 
     @PostMapping("/addUser")
     public UserDTO addUser(@RequestBody UserDTO userDTO) {
-        userDTO=service.sendMailPassword(userDTO);
+        userDTO = service.sendMailPassword(userDTO);
         return service.addUser(userDTO);
     }
 

@@ -1,5 +1,6 @@
 package com.netcracker.vacations.security;
 
+import com.netcracker.vacations.domain.TeamEntity;
 import com.netcracker.vacations.domain.UserEntity;
 import com.netcracker.vacations.repository.TeamRepository;
 import org.apache.logging.log4j.LogManager;
@@ -10,6 +11,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+import java.util.Set;
+
+import static java.util.stream.Collectors.toSet;
 
 @Component("Security")
 public class SecurityExpressionMethods {
@@ -26,8 +30,11 @@ public class SecurityExpressionMethods {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         final UserEntity currentUser = ((MyUserPrincipal) authentication.getPrincipal()).getUser();
         if (teamRepository.findByManager(currentUser).isEmpty()) return false;
-        Integer currentUserTeamId = teamRepository.findByManager(currentUser).get(0).getTeamsId();
-        return currentUserTeamId.equals(teamId);
+        Set<Integer> currentUserTeams = teamRepository.findByManager(currentUser)
+                .stream()
+                .map(TeamEntity::getTeamsId)
+                .collect(toSet());
+        return currentUserTeams.contains(teamId);
     }
 
     public boolean isTeamMember(String username, Optional<Integer> teamID) {
@@ -48,7 +55,6 @@ public class SecurityExpressionMethods {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         final UserEntity currentUser = ((MyUserPrincipal) authentication.getPrincipal()).getUser();
         return username.isPresent() && currentUser.getLogin().equals(username.get());
-
     }
 
 }

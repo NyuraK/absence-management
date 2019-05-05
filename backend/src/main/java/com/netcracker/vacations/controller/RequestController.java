@@ -20,7 +20,6 @@ public class RequestController {
     private RequestService reqService;
 
     @Autowired
-
     public RequestController(RequestService reqService, UserService userService) {
         this.reqService = reqService;
     }
