@@ -3,6 +3,7 @@ package com.netcracker.vacations.service;
 import com.netcracker.vacations.domain.TeamEntity;
 import com.netcracker.vacations.domain.UserEntity;
 import com.netcracker.vacations.domain.enums.Role;
+import com.netcracker.vacations.dto.TeamDTO;
 import com.netcracker.vacations.dto.UserDTO;
 import com.netcracker.vacations.repository.UserRepository;
 import org.springframework.beans.BeanUtils;
@@ -169,4 +170,8 @@ public class UserService {
         mailSender.send(mailMessage);
     }
 
+    public TeamDTO getUserTeam(String username) {
+        TeamEntity team = userRepository.findByLogin(username).get(0).getTeam();
+        return new TeamDTO().setTeamId(team.getTeamsId()).setName(team.getName());
+    }
 }

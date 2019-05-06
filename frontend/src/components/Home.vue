@@ -47,7 +47,7 @@
                         <v-container fill-height>
                             <v-layout fill-height>
                                 <v-flex xs12 align-end>
-                                    <span class="headline">Amount of vacant days</span> <br> <br>
+                                    <span class="headline">Amount of vacant days: </span>
                                     <span class="headline">{{vacantDays}}</span>
                                 </v-flex>
                             </v-layout>
@@ -76,7 +76,7 @@
         name: "Home",
         data() {
             return {
-                vacantDays: ' ',
+                vacantDays: '',
                 isAllActive: false,
                 accepted: true,
                 declined: false,
@@ -195,7 +195,7 @@
         created() {
             this.$acl.change(localStorage.getItem('user'));
             let name = localStorage.getItem('username');
-            // } ;
+
             instance.get("/calendar/occupiedForSend", {
                 params: {
                     name: name
@@ -242,6 +242,7 @@
             }).catch(err => {
                 console.log(err);
             });
+
             instance.get("/calendar/accepted", {
                 params: {
                     name: name
@@ -286,6 +287,13 @@
                 console.log(err);
             });
 
+            instance.get("/calendar/restdays", {
+                params: {
+                    name: name
+                }
+            }).then((resp)=>{
+                this.vacantDays = resp.data;
+            });
         },
         methods: {
             disableChecks() {
@@ -445,8 +453,6 @@
         background-color: deepskyblue;
         color: lightgreen;
         text-align: center;
-        /*width: 175px;*/
-        /*height: 150px;*/
     }
 
     p {

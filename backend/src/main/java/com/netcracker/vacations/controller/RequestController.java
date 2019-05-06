@@ -6,6 +6,7 @@ import com.netcracker.vacations.dto.RequestDTO;
 import com.netcracker.vacations.service.RequestService;
 import com.netcracker.vacations.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
@@ -25,11 +26,12 @@ public class RequestController {
     }
 
     @PostMapping
-    public void addRequest(@RequestBody RequestDTO request) {
+    public ResponseEntity<?> addRequest(@RequestBody RequestDTO request) {
+        reqService.saveRequest(request);
         if (request.getNeedToEmail()) {
             reqService.sendMailRequest(request);
         }
-        reqService.saveRequest(request);
+        return ResponseEntity.ok("Requests is sent");
     }
 
     @PreAuthorize("@Security.isTeamMember(#name, null)")

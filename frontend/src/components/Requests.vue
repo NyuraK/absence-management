@@ -3,53 +3,60 @@
         <Nav></Nav>
         <b-container>
             <b-row>
-                <b-form-select v-model="selectedTeam" :options="teams" @change="show">
-                    <template slot="first">
-                    <option :value="null" disabled>--Please pick a team to see the days on which you do not want to allow vacation--</option>
-                    </template>
-                </b-form-select>
-                <v-calendar
-                        is-expanded :attributes='attr'>
-                </v-calendar>
+                <b-col cols="4">
+                    <b-form-select v-model="selectedTeam" :options="teams" @change="show">
+                        <template slot="first">
+                            <option :value="null" disabled>--Please pick a team to see the days on which you do not want
+                                to
+                                allow vacation--
+                            </option>
+                        </template>
+                    </b-form-select>
+                    <br><br>
+                    <v-calendar
+                            is-expanded :attributes='attr'>
+                    </v-calendar>
+                </b-col>
+                <b-col>
+                    <b-tabs content-class="mt-3">
+                        <b-tab title="Active requests" active>
+                            <b-form-group label="Selection mode:" label-cols-md="4">
+                                <b-form-select v-model="selectMode" :options="modes" class="mb-3"></b-form-select>
+                            </b-form-group>
 
+                            <b-table
+                                    selectable
+                                    :select-mode="selectMode"
+                                    selectedVariant="success"
+                                    :fields="fields"
+                                    :items="items"
+                                    @row-selected="rowSelected"
+                                    show-empty
+                            >
+                                <template slot="empty" slot-scope="scope">
+                                    <h4>No active requests</h4>
+                                </template>
+                                <template slot="thead-top" slot-scope="data"></template>
+                            </b-table>
+                            <b-button variant="primary" v-on:click="approve">Approve</b-button>
+                            <b-button variant="danger" v-on:click="decline">Decline</b-button>
+                        </b-tab>
+                        <b-tab title="Resolved requests">
+
+                            <b-table id="tableResolved"
+                                     :fields="resolvedFields"
+                                     :items="itemsResolved"
+                                     show-empty
+                            >
+                                <template slot="empty" slot-scope="scope">
+                                    <h4>No resolved requests</h4>
+                                </template>
+                                <template slot="thead-top" slot-scope="data"></template>
+                            </b-table>
+                        </b-tab>
+                    </b-tabs>
+                </b-col>
             </b-row>
-            <b-tabs content-class="mt-3">
-                <b-tab title="Active requests" active>
-                    <b-form-group label="Selection mode:" label-cols-md="4">
-                        <b-form-select v-model="selectMode" :options="modes" class="mb-3"></b-form-select>
-                    </b-form-group>
-
-                    <b-table
-                            selectable
-                            :select-mode="selectMode"
-                            selectedVariant="success"
-                            :fields="fields"
-                            :items="items"
-                            @row-selected="rowSelected"
-                            show-empty
-                    >
-                        <template slot="empty" slot-scope="scope">
-                            <h4>No active requests</h4>
-                        </template>
-                        <template slot="thead-top" slot-scope="data"></template>
-                    </b-table>
-                    <b-button variant="primary" v-on:click="approve">Approve</b-button>
-                    <b-button variant="danger" v-on:click="decline">Decline</b-button>
-                </b-tab>
-                <b-tab title="Resolved requests">
-
-                    <b-table id="tableResolved"
-                             :fields="resolvedFields"
-                             :items="itemsResolved"
-                             show-empty
-                    >
-                        <template slot="empty" slot-scope="scope">
-                            <h4>No resolved requests</h4>
-                        </template>
-                        <template slot="thead-top" slot-scope="data"></template>
-                    </b-table>
-                </b-tab>
-            </b-tabs>
         </b-container>
     </div>
 </template>
@@ -126,14 +133,14 @@
                     name: name
                 }
             }).then(res => {
-                let arr=res.data;
+                let arr = res.data;
                 let occ;
-                for (let i=0;i<arr.length;i++){
-                    occ=[];
-                    for (let j=1;j<arr[i].length;j++){
+                for (let i = 0; i < arr.length; i++) {
+                    occ = [];
+                    for (let j = 1; j < arr[i].length; j++) {
                         occ.push(arr[i][j]);
                     }
-                    this.occupiedDays[arr[i][0]]=occ;
+                    this.occupiedDays[arr[i][0]] = occ;
                     this.teams.push({text: arr[i][0], value: arr[i][0]},);
                 }
             }).catch(err => {
@@ -144,10 +151,9 @@
                     name: name
                 }
             }).then(res => {
-                let arr=res.data;
-                console.log(arr);
+                let arr = res.data;
                 let busy;
-                for (let i=0;i<arr.length;i++) {
+                for (let i = 0; i < arr.length; i++) {
                     busy = [];
 
                     for (let j = 1; j < arr[i].length; j++) {
@@ -178,7 +184,7 @@
             })
         },
         methods: {
-            show: function(){
+            show: function () {
                 this.attr[0].dates = this.occupiedDays[this.selectedTeam].map(dateString => new Date(dateString));
                 this.attr[1].dates = this.busyDays[this.selectedTeam].map(dateString => new Date(dateString));
             },
@@ -199,9 +205,11 @@
                         params: {
                             name: name
                         }
+                    }).then((resp) => {
+                        this.items = resp.data;
                     }).catch(err => {
-                        console.log(err);
-                    });
+                            console.log(err);
+                        });
 
                     instance.get("/requests/resolved", {
                         params: {

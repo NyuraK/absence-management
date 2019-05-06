@@ -2,6 +2,7 @@ package com.netcracker.vacations.controller;
 
 import com.netcracker.vacations.service.CalendarService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -59,5 +60,11 @@ public class CalendarController {
     @GetMapping("/consider")
     public List<String> getConsider(@RequestParam @P("name") String name) {
         return service.getVacations("Consider", name);
+    }
+
+    @PreAuthorize("@Security.isAllowed(#name)")
+    @GetMapping("/restdays")
+    public ResponseEntity<?> getRestDays(@RequestParam @P("name") String name) {
+        return ResponseEntity.ok(service.getRestDays(name));
     }
 }

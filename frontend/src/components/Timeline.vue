@@ -2,7 +2,10 @@
     <div>
         <Nav></Nav>
         <b-container>
-            <v-slider id="slider"
+            <h3 v-if="userTeam.name !== ''">You are a member of {{userTeam.name}} team</h3>
+            <h3 v-else>You are not a member of any team</h3>
+            <v-slider v-if="show"
+                      id="slider"
                       v-model="zoom"
                       :min="1200"
                       :max="7000"
@@ -27,7 +30,7 @@
                 </GChart>
             </div>
             <p v-if="!show">
-                nothing to show
+                Nothing to show
             </p>
         </b-container>
     </div>
@@ -54,7 +57,10 @@
                 }],
                 show: false,
                 isManager: false,
-                chart: null,
+                userTeam: {
+                    teamId: 0,
+                    name: ''
+                }
             }
         },
         created() {
@@ -62,6 +68,7 @@
             if (localStorage.getItem('user') === 'ROLE_MANAGER' ||
                 localStorage.getItem('user') === 'ROLE_DIRECTOR')
                 this.isManager = true;
+            this.userTeam = this.$store.getters.team;
 
             instance.get('/teams', {
                 params: {
@@ -70,6 +77,7 @@
             }).then((res) => {
                 this.teams = parseTeam(res.data);
             });
+
             // if (this.$acl.not.check('isManager') || this.teams.length === 0) {
             if (!this.isManager) {
                 this.showChartForEmployee(this.showAbsences);
@@ -86,6 +94,7 @@
                 this.members = [];
                 this.absences = [];
                 this.show = false;
+                this.$router.replace({name: "Timeline", params: {id: id}});
                 instance.get('/teams/members/'
                     + id,
                     {params: {username: localStorage.getItem('username')}}
@@ -114,7 +123,7 @@
                     {params: {username: localStorage.getItem('username')}}
                 ).then((res) => {
                     this.members = extractMembers(res.data);
-                    callback(res.data[0].teamID);
+                    callback(this.userTeam.teamId);
                 }).catch((err) => {
                     console.log(err);
                 });
@@ -124,7 +133,7 @@
                 instance.get('/teams/absences/' + id,
                     {params: {username: localStorage.getItem('username')}}
                 ).then((res) => {
-                    this.absences = extractMembers(this.members);
+                    this.absences = extractMembers(res.data);
                     if (this.absences.length > 0) {
                         Array.prototype.push.apply(this.absences, this.members);
                         this.show = true;
@@ -132,10 +141,6 @@
                 }).catch((err) => {
                     console.log(err);
                 });
-            },
-
-            onChartReady(chart, google) {
-                this.chart = chart;
             }
         }
     }

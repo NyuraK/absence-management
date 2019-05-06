@@ -31,7 +31,6 @@
 </template>
 
 <script>
-
     export default {
         name: "Login",
         data () {
@@ -44,11 +43,11 @@
             check: function () {
                 this.$store.dispatch('login',{username:this.username, password:this.password}).then(()=>{
                     this.$acl.change(localStorage.getItem('user'));
+                    this.$store.dispatch('getTeam');
                     this.$router.push('/home');
                 }).catch((err)=>{
                     console.log(err);
                 });
-
                 this.username='';
                 this.password='';
             }
