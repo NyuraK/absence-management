@@ -57,6 +57,7 @@
                     newTeam
                 )
                     .then(function (response) {
+                        console.log(response);
                     });
                 location.reload();
                 this.dialog = false;

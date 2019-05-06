@@ -39,8 +39,9 @@ public class TeamDTO {
         return teamId;
     }
 
-    public void setTeamId(Integer teamId) {
+    public TeamDTO setTeamId(Integer teamId) {
         this.teamId = teamId;
+        return this;
     }
 
     public Integer getQuota() {
@@ -63,8 +64,9 @@ public class TeamDTO {
         return name;
     }
 
-    public void setName(String name) {
+    public TeamDTO setName(String name) {
         this.name = name;
+        return this;
     }
 
     public Integer getDepartmentId() {

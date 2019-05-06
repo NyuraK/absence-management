@@ -7,12 +7,17 @@
         <b-collapse id="nav-collapse" is-nav>
             <b-navbar-nav>
                 <b-nav-item href="/home">Profile</b-nav-item>
-                <b-nav-item href="/timeline">Timeline</b-nav-item>
+                <b-nav-item>
+                    <router-link tag="li" :to="'/timeline/' + this.$store.getters.teamId">
+                        Timeline
+                    </router-link>
+                </b-nav-item>
                 <b-nav-item href="/requests" v-if="$acl.check('isManager')">
                     Requests
                 </b-nav-item>
                 <b-nav-item href="/users" v-if="$acl.check('isAdmin')">Manage users</b-nav-item>
                 <b-nav-item href="/teams" v-if="$acl.check('isAdmin')">Manage teams</b-nav-item>
+                <b-nav-item href="/departments" v-if="$acl.check('isAdmin')">Manage departments</b-nav-item>
             </b-navbar-nav>
             <b-navbar-nav class="ml-auto">
                 <b-nav-item v-b-modal="'modal-sm'">Logout</b-nav-item>
@@ -23,10 +28,11 @@
 </template>
 
 <script>
+
     export default {
         name: "Nav",
-        created() {
-            this.$acl.change(localStorage.getItem('user'));
+        mounted() {
+            this.$store.dispatch('getTeam');
         },
         methods: {
             exit(evt) {
@@ -35,7 +41,7 @@
                     this.$acl.change(localStorage.getItem('user'));
                     this.$router.push('/');
                 });
-            }
+            },
         },
     }
 </script>

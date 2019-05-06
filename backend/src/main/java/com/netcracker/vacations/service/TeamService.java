@@ -25,7 +25,7 @@ public class TeamService {
     private DepartmentRepository departmentRepository;
     private RequestRepository requestRepository;
 
-    public TeamService(TeamRepository teamRepository, UserRepository userRepository, DepartmentRepository departmentRepository,  RequestRepository requestRepository) {
+    public TeamService(TeamRepository teamRepository, UserRepository userRepository, DepartmentRepository departmentRepository, RequestRepository requestRepository) {
         this.teamRepository = teamRepository;
         this.userRepository = userRepository;
         this.departmentRepository = departmentRepository;
@@ -155,7 +155,7 @@ public class TeamService {
     private AbsenceDTO toAbsenceDTO(UserEntity user, RequestEntity requestEntity) {
         AbsenceDTO absenceDTO = new AbsenceDTO();
         absenceDTO.setName(user.getName());
-        absenceDTO.setFamilyName(user.getFamilyName());
+        absenceDTO.setSurname(user.getSurname());
         if (requestEntity.getUser() != null) {
             absenceDTO.setType(requestEntity.getTypeOfRequest().getName());
             absenceDTO.setBegin(requestEntity.getBeginning().toString());

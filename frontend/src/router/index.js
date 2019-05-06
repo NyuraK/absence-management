@@ -89,7 +89,7 @@ const router = new VueRouter({
             meta: {rule: 'isManager'}
         },
         {
-            path: '/timeline',
+            path: '/timeline/:id',
             name: 'Timeline',
             component: Timeline,
             meta: {rule: 'isLoggedUser'}
