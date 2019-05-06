@@ -45,7 +45,6 @@ public class UsersController {
 
     @PostMapping("/addUser")
     public UserDTO addUser(@RequestBody UserDTO userDTO) {
-        userDTO=service.sendMailPassword(userDTO);
         return service.addUser(userDTO);
     }
 

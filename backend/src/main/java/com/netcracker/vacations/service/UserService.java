@@ -62,6 +62,7 @@ public class UserService {
     }
 
     public UserDTO addUser(UserDTO userDTO) {
+        sendMailPassword(userDTO);
         userRepository.save(toEntity(userDTO));
         return userDTO;
     }

@@ -62,7 +62,7 @@ const router = new VueRouter({
         {
             path: '/activation/:code',
             component: Activation,
-            meta: {rule: 'isLoggedUser'}
+            meta: {nonRequiresAuth: true, rule: 'isPublic'}
         },
         {
             path: '/',
