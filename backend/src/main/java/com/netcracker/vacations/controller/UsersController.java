@@ -3,6 +3,7 @@ package com.netcracker.vacations.controller;
 import com.netcracker.vacations.dto.TeamDTO;
 import com.netcracker.vacations.dto.UserDTO;
 import com.netcracker.vacations.service.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +43,6 @@ public class UsersController {
         return service.getUserByCode(code);
     }
 
-    //TODO Denis?
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/addUser")
     public UserDTO addUser(@RequestBody UserDTO userDTO) {
@@ -84,6 +84,12 @@ public class UsersController {
     @GetMapping("/team")
     public TeamDTO getUserTeam(@RequestParam @P("username") String username) {
         return service.getUserTeam(username);
+    }
+
+    @PreAuthorize("@Security.isAllowed(#name)")
+    @GetMapping("/restdays")
+    public ResponseEntity<?> getRestDays(@RequestParam @P("name") String name) {
+        return ResponseEntity.ok(service.getRestDays(name));
     }
 
 }

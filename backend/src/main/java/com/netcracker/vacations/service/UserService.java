@@ -174,4 +174,8 @@ public class UserService {
         TeamEntity team = userRepository.findByLogin(username).get(0).getTeam();
         return new TeamDTO().setTeamId(team.getTeamsId()).setName(team.getName());
     }
+
+    public Integer getRestDays(String username) {
+        return userRepository.findByLogin(username).get(0).getRestDays();
+    }
 }

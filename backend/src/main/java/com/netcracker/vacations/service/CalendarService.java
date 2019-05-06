@@ -245,9 +245,5 @@ public class CalendarService {
         return dates;
     }
 
-    public Integer getRestDays(String username) {
-        return userRepo.findByLogin(username).get(0).getRestDays();
-    }
-
 }
 

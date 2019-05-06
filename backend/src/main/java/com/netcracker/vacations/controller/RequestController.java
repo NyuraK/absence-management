@@ -56,7 +56,6 @@ public class RequestController {
         return RequestType.getNames();
     }
 
-    //TODO should add logic on the backend to decline only my requests?
     @PreAuthorize("@Security.isTeamMember(#name, null)")
     @PatchMapping("/decline")
     public void declineRequest(@RequestBody List<Integer> requests, @RequestParam @P("name") String name) {

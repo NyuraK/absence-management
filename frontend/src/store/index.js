@@ -44,11 +44,12 @@ const store = new Vuex.Store({
                         let accessToken = response.headers['authorization'];
                         context.commit('authSuccess', accessToken);
                         localStorage.setItem('token', accessToken);
-                        instance.defaults.headers.common['Authorization'] = accessToken;
+                        instance.defaults.headers.Authorization = accessToken;
                         let ca = accessToken.substring(7);
                         let decodedValue = jwt.decode(ca, {algorithm: 'HS512'});
                         localStorage.setItem('user', decodedValue.authorities);
                         localStorage.setItem('username', decodedValue.sub);
+                        console.log(accessToken);
                         resolve(response);
                     })
                     .catch((error) => {
@@ -70,7 +71,6 @@ const store = new Vuex.Store({
         userLogOut({commit}) {
             commit('authLogout');
             localStorage.removeItem('token');
-            delete instance.defaults.headers.common['Authorization'];
             localStorage.setItem('user', 'public');
             localStorage.removeItem('username');
         }
