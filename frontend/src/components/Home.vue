@@ -56,7 +56,7 @@
                 </b-col>
                 <b-col>
                     <div style="text-align: center">
-                        <p>Occupied days for team {{team}}:</p>
+                        <p>Occupied days for {{team}} team:</p>
                         <v-calendar
                                 is-expanded :attributes='attr'>
                         </v-calendar>
@@ -287,7 +287,7 @@
                 console.log(err);
             });
 
-            instance.get("/calendar/restdays", {
+            instance.get("/users/restdays", {
                 params: {
                     name: name
                 }

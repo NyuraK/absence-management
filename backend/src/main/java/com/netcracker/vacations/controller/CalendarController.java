@@ -62,9 +62,4 @@ public class CalendarController {
         return service.getVacations("Consider", name);
     }
 
-    @PreAuthorize("@Security.isAllowed(#name)")
-    @GetMapping("/restdays")
-    public ResponseEntity<?> getRestDays(@RequestParam @P("name") String name) {
-        return ResponseEntity.ok(service.getRestDays(name));
-    }
 }

@@ -1,6 +1,8 @@
 package com.netcracker.vacations.security;
 
 import com.netcracker.vacations.exception.MyAuthenticationException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -12,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class JwtTokenFilter extends OncePerRequestFilter {
+    private static final Logger logger = LogManager.getLogger(JwtTokenFilter.class);
 
     private JwtTokenProvider jwtTokenProvider;
 
@@ -22,6 +25,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         String token = jwtTokenProvider.resolveToken(httpServletRequest);
+        logger.info("token " + token);
         try {
             if (token != null && jwtTokenProvider.validateToken(token)) {
                 Authentication auth = jwtTokenProvider.getAuthentication(token);

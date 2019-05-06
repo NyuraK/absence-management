@@ -56,8 +56,8 @@
                 show: true,
                 isManagerOnRest: false,
                 range: {
-                    start: new Date(2019, 3, 16),
-                    end: new Date(2019, 3, 19)
+                    start: new Date(),
+                    end: new Date()
                 },
                 error_msg: ''
             }
