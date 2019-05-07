@@ -12,10 +12,10 @@
     <groupId>com.netcracker</groupId>
     <artifactId>vacations</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>vacations</name>
+    <name>AbsenceManagement</name>
     <packaging>pom</packaging>
 
-    <description>Demo project for Spring Boot</description>
+    <description>Web app for absences management</description>
 
     <properties>
         <main.basedir>${project.basedir}</main.basedir>

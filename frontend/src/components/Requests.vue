@@ -126,7 +126,6 @@
             }
         },
         mounted() {
-            this.$acl.change(localStorage.getItem('user'));
             let name = localStorage.getItem('username');
             instance.get("/calendar/occupiedForDiscuss", {
                 params: {

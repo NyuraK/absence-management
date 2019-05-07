@@ -3,8 +3,8 @@
         <Nav></Nav>
         <b-container>
             <h3 v-if="userTeam.name !== ''">You are a member of {{userTeam.name}} team</h3>
-            <h3 v-else>You are not a member of any team</h3>
-            <v-slider v-if="show"
+            <h3 v-else>{{this.$store.getters.team_msg}}</h3>
+            <v-slider v-if="showChart"
                       id="slider"
                       v-model="zoom"
                       :min="1200"
@@ -13,7 +13,7 @@
                       v-on:click="zoomChart"
             ></v-slider>
             <v-select
-                    v-if="isManager"
+                    v-if="$acl.check('isManager') && showSelector"
                     :items="teams"
                     item-text="name"
                     item-value="id"
@@ -21,7 +21,7 @@
                     v-on:change="showChartForManager"
             ></v-select>
 
-            <div id="chart_wrapper" v-if="show">
+            <div id="chart_wrapper" v-if="showChart">
                 <GChart id="timeline" refs="timeline"
                         :settings="{ packages: ['timeline'] }"
                         type="Timeline"
@@ -29,7 +29,7 @@
                         :options='options'>
                 </GChart>
             </div>
-            <p v-if="!show">
+            <p v-if="!showChart && !this.$store.getters.team_msg">
                 Nothing to show
             </p>
         </b-container>
@@ -55,8 +55,8 @@
                     id: '',
                     name: ''
                 }],
-                show: false,
-                isManager: false,
+                showChart: false,
+                showSelector: false,
                 userTeam: {
                     teamId: 0,
                     name: ''
@@ -64,22 +64,18 @@
             }
         },
         created() {
-            // console.log(this.$acl.check('isLoggedUser'));
-            if (localStorage.getItem('user') === 'ROLE_MANAGER' ||
-                localStorage.getItem('user') === 'ROLE_DIRECTOR')
-                this.isManager = true;
+            this.$acl.change(localStorage.getItem('user'));
             this.userTeam = this.$store.getters.team;
-
             instance.get('/teams', {
                 params: {
                     username: localStorage.getItem('username')
                 }
             }).then((res) => {
                 this.teams = parseTeam(res.data);
+                this.showSelector = true;
             });
 
-            // if (this.$acl.not.check('isManager') || this.teams.length === 0) {
-            if (!this.isManager) {
+            if (this.$acl.not.check('isManager')) {
                 this.showChartForEmployee(this.showAbsences);
             }
         },
@@ -93,7 +89,7 @@
             showChartForManager(id) {
                 this.members = [];
                 this.absences = [];
-                this.show = false;
+                this.showChart = false;
                 this.$router.replace({name: "Timeline", params: {id: id}});
                 instance.get('/teams/members/'
                     + id,
@@ -111,7 +107,7 @@
                     this.absences = extractMembers(res.data);
                     if (this.absences.length > 0) {
                         Array.prototype.push.apply(this.absences, this.members);
-                        this.show = true;
+                        this.showChart = true;
                     }
 
                 }).catch((err) => {
@@ -136,7 +132,7 @@
                     this.absences = extractMembers(res.data);
                     if (this.absences.length > 0) {
                         Array.prototype.push.apply(this.absences, this.members);
-                        this.show = true;
+                        this.showChart = true;
                     }
                 }).catch((err) => {
                     console.log(err);

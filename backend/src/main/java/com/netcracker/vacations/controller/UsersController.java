@@ -82,8 +82,8 @@ public class UsersController {
 
     @PreAuthorize("@Security.isAllowed(#username)")
     @GetMapping("/team")
-    public TeamDTO getUserTeam(@RequestParam @P("username") String username) {
-        return service.getUserTeam(username);
+    public ResponseEntity<?> getUserTeam(@RequestParam @P("username") String username) {
+        return ResponseEntity.accepted().body(service.getUserTeam(username));
     }
 
     @PreAuthorize("@Security.isAllowed(#name)")

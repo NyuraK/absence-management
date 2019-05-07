@@ -107,10 +107,14 @@ router.beforeEach((to, from, next) => {
     const requiresAuth = !to.matched.some(record => record.meta.nonRequiresAuth);
     const isAuthenticated = store.getters.isAuthenticated;
     const isAllowed = to.matched.some(record => record.meta.rule);
+    const isToTimeline = to.name === 'Timeline';
     if (requiresAuth && !isAuthenticated) {
         next("/")
     } else if (isLoginPage && isAuthenticated) {
         router.push('/home')
+    } else if (isAllowed && isToTimeline) {
+        store.dispatch('getTeam');
+        next();
     } else if (isAllowed) {
         next()
     }

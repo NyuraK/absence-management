@@ -183,9 +183,7 @@
         },
         components: {AbsRequest, Nav},
         created() {
-            this.$acl.change(localStorage.getItem('user'));
             let name = localStorage.getItem('username');
-            // } ;
             instance.get("/calendar/occupiedForSend", {
                 params: {
                     name: name
