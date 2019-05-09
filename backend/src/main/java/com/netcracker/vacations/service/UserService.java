@@ -5,6 +5,7 @@ import com.netcracker.vacations.domain.UserEntity;
 import com.netcracker.vacations.domain.enums.Role;
 import com.netcracker.vacations.dto.TeamDTO;
 import com.netcracker.vacations.dto.UserDTO;
+import com.netcracker.vacations.exception.NoTeamException;
 import com.netcracker.vacations.repository.UserRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -172,6 +173,7 @@ public class UserService {
 
     public TeamDTO getUserTeam(String username) {
         TeamEntity team = userRepository.findByLogin(username).get(0).getTeam();
+        if (team==null) throw new NoTeamException("You are not a member of any team");
         return new TeamDTO().setTeamId(team.getTeamsId()).setName(team.getName());
     }
 

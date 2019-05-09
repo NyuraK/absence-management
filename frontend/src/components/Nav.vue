@@ -31,8 +31,8 @@
 
     export default {
         name: "Nav",
-        mounted() {
-            this.$store.dispatch('getTeam');
+        created() {
+            this.$acl.change(localStorage.getItem('user'));
         },
         methods: {
             exit(evt) {
