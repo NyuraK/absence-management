@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   absence-management-service:
-    image: sivuha/absence-management:latest
+    image: sivuha/absence-management:0.0.1-SNAPSHOT
     ports:
       - 8088:8088
     depends_on:
