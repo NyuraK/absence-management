@@ -23,17 +23,10 @@ jobs:
     displayName: 'Build and push an image'
     inputs:
       dockerFile: 'backend/Dockerfile'
+      azureSubscriptionEndpoint: 'Azure for Students'
+      azureContainerRegistry: 'https://absence-management.azurewebsites.net'
 
   - script:
       dockerFile:build 
       dockerfile:push
       docker-compose -f backend/docker-compose.yml --project-directory . -p docs up -d
-
-  # - task: DockerCompose@0
-  #   displayName: Push services
-  #   inputs:
-  #     action: Push services
-  #     azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
-  #     azureContainerRegistry: $(azureContainerRegistry)
-  #     dockerComposeFile: docker-compose.yml
-  #     projectName: $(Build.Repository.Name)
