@@ -11,16 +11,22 @@ jobs:
 
   pool:
     vmImage: 'ubuntu-latest'
-  
+
   steps:
+  - task: Maven@3
+    displayName: 'Maven clean install'
+    inputs:
+      mavenPomFile: 'pom.xml' 
+      goals: 'package' 
+
   - task: Docker@1
     displayName: 'Build and push an image'
     inputs:
       dockerFile: 'backend/Dockerfile'
 
   - script:
-      mvn package dockerFile:build
-      mvn dockerfile:push
+      dockerFile:build 
+      dockerfile:push
       docker-compose -f backend/docker-compose.yml --project-directory . -p docs up -d
 
   # - task: DockerCompose@0
