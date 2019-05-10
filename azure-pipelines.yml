@@ -27,6 +27,6 @@ jobs:
       azureContainerRegistry: 'absencemanagementacr'
 
   - script:
-      dockerFile:build 
-      dockerfile:push
+      mvn package dockerFile:build 
+      mvn dockerfile:push
       docker-compose -f backend/docker-compose.yml --project-directory . -p docs up -d
