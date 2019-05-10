@@ -24,7 +24,7 @@ jobs:
     inputs:
       dockerFile: 'backend/Dockerfile'
       azureSubscriptionEndpoint: 'Azure for Students'
-      azureContainerRegistry: 'https://absence-management.azurewebsites.net'
+      azureContainerRegistry: 'absencemanagementacr'
 
   - script:
       dockerFile:build 
