@@ -1,0 +1,33 @@
+trigger:
+- master
+
+resources:
+- repo: self
+
+jobs:
+
+- job: BuildImage
+  displayName: Build
+
+  pool:
+    vmImage: 'ubuntu-latest'
+  
+  steps:
+  - task: Docker@1
+    displayName: 'Build and push an image'
+    inputs:
+      dockerFile: 'backend/Dockerfile'
+
+  - script:
+      mvn package dockerFile:build
+      mvn dockerfile:push
+      docker-compose -f backend/docker-compose.yml --project-directory . -p docs up -d
+
+  # - task: DockerCompose@0
+  #   displayName: Push services
+  #   inputs:
+  #     action: Push services
+  #     azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
+  #     azureContainerRegistry: $(azureContainerRegistry)
+  #     dockerComposeFile: docker-compose.yml
+  #     projectName: $(Build.Repository.Name)
