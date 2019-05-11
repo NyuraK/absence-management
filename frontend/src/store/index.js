@@ -3,6 +3,7 @@ import Vue from 'vue'
 import axios from 'axios'
 import {instance} from '../Api'
 import jwt from 'jsonwebtoken'
+import acl from '../acl'
 
 Vue.use(Vuex);
 
@@ -14,7 +15,8 @@ const store = new Vuex.Store({
         userTeam: {
             teamId: 0,
             name: ''
-        }
+        },
+        team_msg: ''
     },
 
     mutations: {
@@ -25,6 +27,10 @@ const store = new Vuex.Store({
 
         teamSuccess(state, team) {
             state.userTeam = team;
+        },
+
+        teamFailure(state, msg) {
+            state.team_msg = msg;
         },
 
         authLogout(state) {
@@ -49,7 +55,6 @@ const store = new Vuex.Store({
                         let decodedValue = jwt.decode(ca, {algorithm: 'HS512'});
                         localStorage.setItem('user', decodedValue.authorities);
                         localStorage.setItem('username', decodedValue.sub);
-                        console.log(accessToken);
                         resolve(response);
                     })
                     .catch((error) => {
@@ -66,8 +71,12 @@ const store = new Vuex.Store({
                 }
             }).then((resp) => {
                 commit('teamSuccess', resp.data);
+            }).catch((err) => {
+                if (err.response.status === 500)
+                    commit('teamFailure', err.response.data);
             });
         },
+
         userLogOut({commit}) {
             commit('authLogout');
             localStorage.removeItem('token');
@@ -80,7 +89,8 @@ const store = new Vuex.Store({
         isAuthenticated: state => !!state.token,
         isToken: state => state.token,
         teamId: state => state.userTeam.teamId,
-        team: state => state.userTeam
+        team: state => state.userTeam,
+        team_msg: state => state.team_msg
     },
 });
 

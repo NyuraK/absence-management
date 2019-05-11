@@ -287,11 +287,7 @@
                 console.log(err);
             });
 
-            instance.get("/users/restdays", {
-                params: {
-                    name: name
-                }
-            }).then((resp)=>{
+            instance.get("/users/restdays").then((resp)=>{
                 this.vacantDays = resp.data;
             });
         },
