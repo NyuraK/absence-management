@@ -108,10 +108,10 @@ public class UsersController {
         service.deleteUser(id);
     }
 
-    @PreAuthorize("@Security.isAllowed(#username)")
     @GetMapping("/team")
-    public TeamDTO getUserTeam(@RequestParam @P("username") String username) {
-        return service.getUserTeam(username);
+    public ResponseEntity<?> getUserTeam(HttpServletRequest request) {
+        String username = Util.extractLoginFromRequest(request);
+        return ResponseEntity.accepted().body(service.getUserTeam(username));
     }
 
     @GetMapping("/restdays")

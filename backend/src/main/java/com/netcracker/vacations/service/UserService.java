@@ -6,6 +6,7 @@ import com.netcracker.vacations.domain.UserEntity;
 import com.netcracker.vacations.domain.enums.Role;
 import com.netcracker.vacations.dto.TeamDTO;
 import com.netcracker.vacations.dto.UserDTO;
+import com.netcracker.vacations.exception.NoTeamException;
 import com.netcracker.vacations.repository.TeamRepository;
 import com.netcracker.vacations.repository.UserRepository;
 import com.netcracker.vacations.security.MyUserPrincipal;
@@ -15,8 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -257,8 +260,10 @@ public class UserService {
         mailSender.send(mailMessage);
     }
 
-    public TeamDTO getUserTeam(String username) {
+    @PreAuthorize("@Security.isAllowed(#username)")
+    public TeamDTO getUserTeam(@P("username") String username) {
         TeamEntity team = userRepository.findByLogin(username).get(0).getTeam();
+        if (team == null) throw new NoTeamException("You are not a member of any team");
         return new TeamDTO().setTeamId(team.getTeamsId()).setName(team.getName());
     }
 
