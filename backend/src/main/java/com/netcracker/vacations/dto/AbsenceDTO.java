@@ -3,7 +3,7 @@ package com.netcracker.vacations.dto;
 public class AbsenceDTO {
 
     private String name;
-    private String familyName;
+    private String surname;
     private String type;
     private String begin;
     private String end;
@@ -17,12 +17,12 @@ public class AbsenceDTO {
         this.name = name;
     }
 
-    public String getFamilyName() {
-        return familyName;
+    public String getSurname() {
+        return surname;
     }
 
-    public void setFamilyName(String familyName) {
-        this.familyName = familyName;
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
 
     public String getType() {

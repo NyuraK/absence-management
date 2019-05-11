@@ -20,6 +20,7 @@ public class UserDTO {
     private String teamName;
     private String activationCode;
     private Integer departmentId;
+    private String subordinateTeams;
 
     public Integer getDepartmentId() {
         return departmentId;
@@ -98,7 +99,7 @@ public class UserDTO {
     }
 
     public void setFamilyName(String familyName) {
-        this.familyName = familyName;
+            this.familyName = familyName;
     }
 
     public String getPhoneNumber() {
@@ -147,5 +148,13 @@ public class UserDTO {
 
     public void setActivationCode(String activationCode) {
         this.activationCode = activationCode;
+    }
+
+    public String getSubordinateTeams() {
+        return subordinateTeams;
+    }
+
+    public void setSubordinateTeams(String subordinateTeams) {
+        this.subordinateTeams = subordinateTeams;
     }
 }

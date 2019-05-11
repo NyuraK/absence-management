@@ -123,7 +123,7 @@ public class CalendarService {
         return null;
     }
 
-    public List<Date> getDatesBetween(Date startDate, Date endDate) {
+    private List<Date> getDatesBetween(Date startDate, Date endDate) {
         List<Date> datesInRange = new ArrayList<>();
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(startDate);
@@ -144,7 +144,7 @@ public class CalendarService {
         return datesInRange;
     }
 
-    public UserDTO toDTO(UserEntity entity) {
+    private UserDTO toDTO(UserEntity entity) {
         UserDTO userDTO = new UserDTO();
         userDTO.setUserId(entity.getUsersId());
         userDTO.setDescription(entity.getDescription());

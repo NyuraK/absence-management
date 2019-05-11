@@ -4,9 +4,11 @@ import com.netcracker.vacations.domain.RequestEntity;
 import com.netcracker.vacations.domain.RequestTypeEntity;
 import com.netcracker.vacations.domain.TeamEntity;
 import com.netcracker.vacations.domain.UserEntity;
+import com.netcracker.vacations.domain.enums.RequestType;
 import com.netcracker.vacations.domain.enums.Role;
 import com.netcracker.vacations.domain.enums.Status;
 import com.netcracker.vacations.dto.RequestDTO;
+import com.netcracker.vacations.exception.TooManyDaysException;
 import com.netcracker.vacations.repository.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 @Service
@@ -41,7 +44,7 @@ public class RequestService {
         this.teamRepository = teamRepository;
         this.departmentRepository = departmentRepository;
         this.userService = userService;
-        this.methodService=methodService;
+        this.methodService = methodService;
     }
 
     public void saveRequest(RequestDTO request) {
@@ -50,10 +53,22 @@ public class RequestService {
         if (!type.getNeedApproval()) {
             status = Status.ACCEPTED;
         }
+
+        UserEntity user = userRepository.findByLogin(request.getUsername()).get(0);
+        Date begin = request.getStart();
+        Date end = request.getEnd();
+        if (type.getName().equals(RequestType.VACATION.getName())) {
+            long diffInMillies = Math.abs(begin.getTime() - end.getTime());
+            long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+            if (diffInDays > user.getRestDays()) {
+                throw new TooManyDaysException("You took too many days");
+            }
+        }
+
         RequestEntity requestEntity = new RequestEntity(
-                userRepository.findByLogin(request.getUsername()).get(0),
-                request.getStart(),
-                request.getEnd(),
+                user,
+                begin,
+                end,
                 type,
                 status
         );
@@ -67,8 +82,22 @@ public class RequestService {
         for (Integer id : requests) {
             RequestEntity entity = requestRepository.findById(id).get();
             entity.setStatus(status);
+            if (status.equals(Status.ACCEPTED)
+                    && entity.getTypeOfRequest().getName().equals(RequestType.VACATION.getName()))
+                decrementRestDays(entity);
             requestRepository.save(entity);
         }
+    }
+
+    private void decrementRestDays(RequestEntity entity) {
+        UserEntity user = entity.getUser();
+        Date begin = entity.getBeginning();
+        Date end = entity.getEnding();
+        long diffInMillies = Math.abs(begin.getTime() - end.getTime());
+        long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+        Integer restDays = user.getRestDays();
+        user.setRestDays(restDays - (int) diffInDays);
+        userRepository.save(user);
     }
 
 
@@ -145,9 +174,9 @@ public class RequestService {
         requestDTO.setId(entity.getRequestsId());
         String name = entity.getUser().getName();
         String familyName = entity.getUser().getFamilyName();
-        if ((name == null || name.isEmpty() ) && (familyName == null || familyName.isEmpty())) {
+        if ((name == null || name.isEmpty()) && (familyName == null || familyName.isEmpty())) {
             requestDTO.setName("-");
-        } else if (familyName == null || familyName.isEmpty() ) {
+        } else if (familyName == null || familyName.isEmpty()) {
             requestDTO.setName(entity.getUser().getName());
         } else if (name == null || name.isEmpty()) {
             requestDTO.setName(entity.getUser().getFamilyName());

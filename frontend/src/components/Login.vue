@@ -1,4 +1,4 @@
-    <template>
+<template>
     <div id="login-form">
         <b-form>
             <b-form-group
@@ -12,7 +12,7 @@
                         type="text"
                         v-model="username"
                         required
-                        placeholder="Enter email" />
+                        placeholder="Enter username"/>
             </b-form-group>
 
             <b-form-group id="exampleInputGroup2" label="Your password:" label-for="exampleInput2">
@@ -21,20 +21,29 @@
                         type="password"
                         v-model="password"
                         required
-                        placeholder="Enter password" />
+                        placeholder="Enter password"/>
             </b-form-group>
 
         </b-form>
         <b-button type="submit" variant="primary" v-on:click="check">Log in</b-button>
-
+        <b-row>
+            <b-col></b-col>
+            <b-col cols="10">
+                <SendByEmail></SendByEmail>
+            </b-col>
+            <b-col></b-col>
+        </b-row>
     </div>
 </template>
 
 <script>
 
+    import SendByEmail from "./SendByEmail";
+
     export default {
+        components: {SendByEmail},
         name: "Login",
-        data () {
+        data() {
             return {
                 username: '',
                 password: '',
@@ -42,15 +51,15 @@
         },
         methods: {
             check: function () {
-                this.$store.dispatch('login',{username:this.username, password:this.password}).then(()=>{
+                this.$store.dispatch('login', {username: this.username, password: this.password}).then(() => {
                     this.$acl.change(localStorage.getItem('user'));
+                    this.$store.dispatch('getTeam');
                     this.$router.push('/home');
-                }).catch((err)=>{
+                }).catch((err) => {
                     console.log(err);
                 });
-
-                this.username='';
-                this.password='';
+                this.username = '';
+                this.password = '';
             }
         },
     }

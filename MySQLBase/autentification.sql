@@ -24,7 +24,7 @@ DROP TABLE IF EXISTS `calendar_entity`;
  SET character_set_client = utf8mb4 ;
 CREATE TABLE `calendar_entity` (
   `id_of_employe` int(11) NOT NULL,
-  `familyName` varchar(255) DEFAULT NULL,
+  `surname` varchar(255) DEFAULT NULL,
   `first_name` varchar(255) DEFAULT NULL,
   `login` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
@@ -101,7 +101,7 @@ DROP TABLE IF EXISTS `user_entity`;
 CREATE TABLE `user_entity` (
   `id_of_employe` int(11) NOT NULL,
   `email` varchar(255) DEFAULT NULL,
-  `familyName` varchar(255) DEFAULT NULL,
+  `surname` varchar(255) DEFAULT NULL,
   `first_name` varchar(255) DEFAULT NULL,
   `hire_date` varchar(255) DEFAULT NULL,
   `login` varchar(255) DEFAULT NULL,

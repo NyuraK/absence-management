@@ -32,6 +32,12 @@
             <b-button type="submit" variant="primary">Submit</b-button>
             <b-button type="reset" variant="danger">Reset</b-button>
         </b-form>
+
+        <b-modal ref="my-modal" hide-footer>
+            <div class="d-block text-center">
+                <h3>{{error_msg}}</h3>
+            </div>
+        </b-modal>
     </div>
 </template>
 
@@ -50,9 +56,10 @@
                 show: true,
                 isManagerOnRest: false,
                 range: {
-                    start: new Date(2019, 3, 16),
-                    end: new Date(2019, 3, 19)
-                }
+                    start: new Date(),
+                    end: new Date()
+                },
+                error_msg: ''
             }
         },
         created() {
@@ -86,7 +93,10 @@
                 };
                 instance.post("/requests", msg).then(res => {
                 }).catch(err=> {
-                    console.log(err);
+                    if (err.response.status === 406) {
+                        this.error_msg = err.response.data;
+                        this.$refs['my-modal'].show();
+                    }
                 });
                 this.form.absType = null;
                 this.form.text = '';

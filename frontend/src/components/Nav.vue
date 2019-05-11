@@ -7,14 +7,18 @@
         <b-collapse id="nav-collapse" is-nav>
             <b-navbar-nav>
                 <b-nav-item href="/home">Profile</b-nav-item>
-                <b-nav-item href="/timeline">Timeline</b-nav-item>
-                <b-nav-item href="/requests" v-if="$acl.check('isManager')">
-                    Requests
+                <b-nav-item>
+                    <router-link tag="li" :to="'/timeline/' + this.$store.getters.teamId">
+                        Timeline
+                    </router-link>
                 </b-nav-item>
+                <b-nav-item href="/requests" v-if="$acl.check('isManager')">Requests</b-nav-item>
                 <b-nav-item href="/users" v-if="$acl.check('isAdmin')">Manage users</b-nav-item>
                 <b-nav-item href="/teams" v-if="$acl.check('isAdmin')">Manage teams</b-nav-item>
+                <b-nav-item href="/departments" v-if="$acl.check('isAdmin')">Manage departments</b-nav-item>
             </b-navbar-nav>
             <b-navbar-nav class="ml-auto">
+                <b-nav-item href="/mypage">{{userName}}</b-nav-item>
                 <b-nav-item v-b-modal="'modal-sm'">Logout</b-nav-item>
                 <b-modal id="modal-sm" size="sm" @ok="exit">Are you sure?</b-modal>
             </b-navbar-nav>
@@ -23,10 +27,24 @@
 </template>
 
 <script>
+    import {instance} from "../Api";
+
     export default {
         name: "Nav",
-        created() {
-            this.$acl.change(localStorage.getItem('user'));
+        data(){
+            return{
+                userName: "",
+            }
+        },
+        created(){
+            instance.get("/users/name").then(res => {
+                this.userName = res.data;
+            }).catch(err => {
+                console.log(err);
+            });
+        },
+        mounted() {
+            this.$store.dispatch('getTeam');
         },
         methods: {
             exit(evt) {
@@ -35,7 +53,7 @@
                     this.$acl.change(localStorage.getItem('user'));
                     this.$router.push('/');
                 });
-            }
+            },
         },
     }
 </script>

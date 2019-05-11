@@ -13,7 +13,6 @@
                     <v-select :items="roles" label="Role" v-model="role"></v-select>
                     <v-text-field v-model="email" :rules="[rules.required, rules.email]" label="E-mail"></v-text-field>
                     <v-text-field label="Login" v-model="login"></v-text-field>
-                    <v-text-field label="Password" v-model="password"></v-text-field>
                     <v-select :items="teams" label="Team" v-model="team" item-text="name" return-object></v-select>
                     <v-text-field label="Rest Days" v-model="restDays"></v-text-field>
                     <v-text-field label="Hire date" type="date" v-model="hireDate"></v-text-field>
@@ -60,7 +59,6 @@
                 hireDate: '',
                 phoneNumber: '',
                 description: '',
-                password: '',
                 teams: [],
                 team: []
             }
@@ -71,7 +69,6 @@
                 var newUser = {
                     user: this.user,
                     login: this.login,
-                    password: this.password,
                     name: this.name,
                     surname: this.surname,
                     familyName: this.familyName,

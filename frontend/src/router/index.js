@@ -7,6 +7,8 @@ import Activation from "../components/Activation";
 import NotFound from "../components/NotFound";
 import Requests from "../components/Requests"
 import store from "../store/index"
+import UsersPage from "../components/UsersPage";
+
 
 import Users from "../components/usersControl/Users";
 import UserEdit from "../components/usersControl/UserEdit";
@@ -89,9 +91,15 @@ const router = new VueRouter({
             meta: {rule: 'isManager'}
         },
         {
-            path: '/timeline',
+            path: '/timeline/:id',
             name: 'Timeline',
             component: Timeline,
+            meta: {rule: 'isLoggedUser'}
+        },
+        {
+            path: '/mypage',
+            name: 'UsersPage',
+            component: UsersPage,
             meta: {rule: 'isLoggedUser'}
         },
         {
