@@ -1,5 +1,5 @@
 FROM maven:3.5-jdk-8 AS build
-COPY /app/absence-management .
+COPY /home/vsts/work/1/s/absence-management .
 RUN mvn clean package
 
 FROM openjdk:8-jdk-alpine
