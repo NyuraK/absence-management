@@ -1,5 +1,6 @@
 package com.netcracker.vacations.service;
 
+import com.netcracker.vacations.Util;
 import com.netcracker.vacations.domain.TeamEntity;
 import com.netcracker.vacations.domain.UserEntity;
 import com.netcracker.vacations.domain.enums.Role;
@@ -19,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,16 +75,15 @@ public class UserService {
         return response;
     }
 
-    public String getUsersName() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        final UserEntity currentUser = ((MyUserPrincipal) authentication.getPrincipal()).getUser();
+    public String getUsersName(HttpServletRequest request) {
+        String name = Util.extractLoginFromRequest(request);
+        UserEntity currentUser = userRepository.findByLogin(name).get(0);
         String output = (currentUser.getRole().getName() + ": " + currentUser.getName() + " " + currentUser.getSurname());
         return output;
     }
 
-    public UserDTO getUserInfo() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String login = ((MyUserPrincipal) authentication.getPrincipal()).getUser().getLogin();
+    public UserDTO getUserInfo(HttpServletRequest request) {
+        String login = Util.extractLoginFromRequest(request);
         UserEntity currentUser = userRepository.findByLogin(login).get(0);
         UserDTO user = toDTO(currentUser);
         if (currentUser.getRole().equals(Role.MANAGER)) {
@@ -98,16 +99,16 @@ public class UserService {
                 user.setSubordinateTeams(teams);
             }
         }
-        if (currentUser.getFamilyName().isEmpty()) {
+        if (currentUser.getFamilyName()==null||currentUser.getFamilyName().isEmpty()) {
             user.setFamilyName("-");
         }
         if (currentUser.getTeam() == null) {
             user.setTeamName("-");
         }
-        if (currentUser.getPhoneNumber().isEmpty()) {
+        if (currentUser.getPhoneNumber()==null||currentUser.getPhoneNumber().isEmpty()) {
             user.setPhoneNumber("-");
         }
-        if (currentUser.getDescription().isEmpty()) {
+        if (currentUser.getDescription()==null||currentUser.getDescription().isEmpty()) {
             user.setDescription("-");
         }
         return user;

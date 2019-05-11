@@ -11,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 
@@ -47,8 +48,8 @@ public class RequestController {
     }
 
     @GetMapping("/managerVac")
-    public boolean isManagerOnWork(@RequestParam String name) {
-        return reqService.isManagerOnRest(name);
+    public boolean isManagerOnWork(HttpServletRequest request) {
+        return reqService.isManagerOnRest(request);
     }
 
     @GetMapping("/types")
