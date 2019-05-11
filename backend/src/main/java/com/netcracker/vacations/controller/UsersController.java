@@ -7,7 +7,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -85,9 +84,9 @@ public class UsersController {
         service.deleteUser(id);
     }
 
-    @PreAuthorize("@Security.isAllowed(#username)")
     @GetMapping("/team")
-    public ResponseEntity<?> getUserTeam(@RequestParam @P("username") String username) {
+    public ResponseEntity<?> getUserTeam(HttpServletRequest request) {
+        String username = Util.extractLoginFromRequest(request);
         return ResponseEntity.accepted().body(service.getUserTeam(username));
     }
 

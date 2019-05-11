@@ -1,5 +1,6 @@
 package com.netcracker.vacations.controller;
 
+import com.netcracker.vacations.Util;
 import com.netcracker.vacations.dto.AbsenceDTO;
 import com.netcracker.vacations.dto.TeamDTO;
 import com.netcracker.vacations.service.TeamService;
@@ -7,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,12 +23,9 @@ public class TeamsController {
         this.teamService = service;
     }
 
-    @PreAuthorize("hasAnyRole('DIRECTOR', 'ADMIN') or @Security.isAllowed(#username)")
+    @PreAuthorize("hasAnyRole('DIRECTOR', 'ADMIN')")
     @GetMapping
-    public List<TeamDTO> teams(@RequestParam @P("username") Optional<String> username,
-                               @RequestParam(name = "departmentId" , required = false) Integer departmentId) {
-        if (username.isPresent())
-            return teamService.getManagerTeams(username.get());
+    public List<TeamDTO> teams(@RequestParam(name = "departmentId", required = false) Integer departmentId) {
         if (departmentId != null) {
             return teamService.getTeamsFromDepartment(departmentId);
         }
@@ -60,21 +59,27 @@ public class TeamsController {
         teamService.deleteTeam(id);
     }
 
-    @PreAuthorize("@Security.isTeamMember(#username, #teamId)")
     @GetMapping(value = {"/members", "/members/{id}"})
-    public List<AbsenceDTO> getTeamMembers(@RequestParam @P("username") String username,
-                                           @PathVariable(value = "id") @P("teamId") Optional<Integer> teamId) {
+    public List<AbsenceDTO> getTeamMembers(HttpServletRequest request,
+                                           @PathVariable(value = "id") Optional<Integer> teamId) {
+        String username = Util.extractLoginFromRequest(request);
         if (teamId.isPresent())
-            return teamService.getTeamMembers(teamId.get());
+            return teamService.getTeamMembers(username, teamId.get());
         else return teamService.getTeamMembers(username);
 
     }
 
-    @PreAuthorize("@Security.isTeamMember(#username, #teamID)")
     @GetMapping("/absences/{id}")
-    public List<AbsenceDTO> getTeamAbsences(@RequestParam @P("username") String username,
+    public List<AbsenceDTO> getTeamAbsences(HttpServletRequest request,
                                             @PathVariable("id") @P("teamID") Integer teamID) {
+        String username = Util.extractLoginFromRequest(request);
         return teamService.getTeamAbsences(username, teamID);
+    }
+
+    @GetMapping("/my")
+    public List<TeamDTO> getManagerTeams(HttpServletRequest request) {
+        String username = Util.extractLoginFromRequest(request);
+        return teamService.getManagerTeams(username);
     }
 
 }

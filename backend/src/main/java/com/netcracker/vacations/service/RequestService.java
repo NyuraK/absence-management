@@ -13,6 +13,8 @@ import com.netcracker.vacations.repository.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,8 +79,8 @@ public class RequestService {
         requestRepository.save(requestEntity);
     }
 
-
-    public void updateRequest(Status status, List<Integer> requests) {
+    @PreAuthorize("@Security.isTeamMember(#username, null)")
+    public void updateRequest(Status status, List<Integer> requests, @P("username") String username) {
         for (Integer id : requests) {
             RequestEntity entity = requestRepository.findById(id).get();
             entity.setStatus(status);
@@ -100,8 +102,8 @@ public class RequestService {
         userRepository.save(user);
     }
 
-
-    public List<RequestDTO> getActiveRequests(String name) {
+    @PreAuthorize("@Security.isTeamMember(#name, null)")
+    public List<RequestDTO> getActiveRequests(@P("name") String name) {
         List<RequestDTO> response = new ArrayList<>();
         UserEntity user = userRepository.findByLogin(name).get(0);
         if (user.getRole().equals(Role.ADMIN)) {
@@ -134,7 +136,8 @@ public class RequestService {
         return response;
     }
 
-    public List<RequestDTO> getResolvedRequests(String name) {
+    @PreAuthorize("@Security.isTeamMember(#name, null)")
+    public List<RequestDTO> getResolvedRequests(@P("name") String name) {
         List<RequestDTO> response = new ArrayList<>();
         UserEntity user = userRepository.findByLogin(name).get(0);
         if (user.getRole().equals(Role.ADMIN)) {

@@ -1,16 +1,15 @@
 package com.netcracker.vacations.controller;
 
+import com.netcracker.vacations.Util;
 import com.netcracker.vacations.domain.enums.RequestType;
 import com.netcracker.vacations.domain.enums.Status;
 import com.netcracker.vacations.dto.RequestDTO;
 import com.netcracker.vacations.service.RequestService;
-import com.netcracker.vacations.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 
@@ -21,7 +20,7 @@ public class RequestController {
     private RequestService reqService;
 
     @Autowired
-    public RequestController(RequestService reqService, UserService userService) {
+    public RequestController(RequestService reqService) {
         this.reqService = reqService;
     }
 
@@ -34,16 +33,16 @@ public class RequestController {
         return ResponseEntity.ok("Requests is sent");
     }
 
-    @PreAuthorize("@Security.isTeamMember(#name, null)")
     @GetMapping("/active")
-    public List<RequestDTO> getActiveRequests(@RequestParam String name) {
-        return reqService.getActiveRequests(name);
+    public List<RequestDTO> getActiveRequests(HttpServletRequest request) {
+        String username = Util.extractLoginFromRequest(request);
+        return reqService.getActiveRequests(username);
     }
 
-    @PreAuthorize("@Security.isTeamMember(#name, null)")
     @GetMapping("/resolved")
-    public List<RequestDTO> getResolvedRequests(@RequestParam @P("name") String name) {
-        return reqService.getResolvedRequests(name);
+    public List<RequestDTO> getResolvedRequests(HttpServletRequest request) {
+        String username = Util.extractLoginFromRequest(request);
+        return reqService.getResolvedRequests(username);
     }
 
     @GetMapping("/managerVac")
@@ -56,16 +55,16 @@ public class RequestController {
         return RequestType.getNames();
     }
 
-    @PreAuthorize("@Security.isTeamMember(#name, null)")
     @PatchMapping("/decline")
-    public void declineRequest(@RequestBody List<Integer> requests, @RequestParam @P("name") String name) {
-        reqService.updateRequest(Status.DECLINED, requests);
+    public void declineRequest(@RequestBody List<Integer> requests, HttpServletRequest request) {
+        String username = Util.extractLoginFromRequest(request);
+        reqService.updateRequest(Status.DECLINED, requests, username);
     }
 
-    @PreAuthorize("@Security.isTeamMember(#name, null)")
     @PatchMapping("/approve")
-    public void approveRequest(@RequestBody List<Integer> requests, @RequestParam @P("name") String name) {
-        reqService.updateRequest(Status.ACCEPTED, requests);
+    public void approveRequest(@RequestBody List<Integer> requests, HttpServletRequest request) {
+        String username = Util.extractLoginFromRequest(request);
+        reqService.updateRequest(Status.ACCEPTED, requests, username);
     }
 
 }

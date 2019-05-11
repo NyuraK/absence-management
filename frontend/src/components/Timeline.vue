@@ -66,11 +66,7 @@
         created() {
             this.$acl.change(localStorage.getItem('user'));
             this.userTeam = this.$store.getters.team;
-            instance.get('/teams', {
-                params: {
-                    username: localStorage.getItem('username')
-                }
-            }).then((res) => {
+            instance.get('/teams').then((res) => {
                 this.teams = parseTeam(res.data);
                 this.showSelector = true;
             });
@@ -91,18 +87,15 @@
                 this.absences = [];
                 this.showChart = false;
                 this.$router.replace({name: "Timeline", params: {id: id}});
-                instance.get('/teams/members/'
-                    + id,
-                    {params: {username: localStorage.getItem('username')}}
-                ).then((res) => {
-                    this.members = extractMembers(res.data);
-                }).catch((err) => {
+                instance.get('/teams/members/' + id)
+                    .then((res) => {
+                        this.members = extractMembers(res.data);
+                    }).catch((err) => {
                     console.log(err);
                 });
 
                 instance.get('/teams/absences/'
-                    + id,
-                    {params: {username: localStorage.getItem('username')}}
+                    + id
                 ).then((res) => {
                     this.absences = extractMembers(res.data);
                     if (this.absences.length > 0) {
@@ -114,21 +107,19 @@
                     console.log(err);
                 });
             },
+
             showChartForEmployee(callback) {
-                instance.get('/teams/members',
-                    {params: {username: localStorage.getItem('username')}}
-                ).then((res) => {
-                    this.members = extractMembers(res.data);
-                    callback(this.userTeam.teamId);
-                }).catch((err) => {
+                instance.get('/teams/members')
+                    .then((res) => {
+                        this.members = extractMembers(res.data);
+                        callback(this.userTeam.teamId);
+                    }).catch((err) => {
                     console.log(err);
                 });
             },
 
             showAbsences(id) {
-                instance.get('/teams/absences/' + id,
-                    {params: {username: localStorage.getItem('username')}}
-                ).then((res) => {
+                instance.get('/teams/absences/' + id).then((res) => {
                     this.absences = extractMembers(res.data);
                     if (this.absences.length > 0) {
                         Array.prototype.push.apply(this.absences, this.members);

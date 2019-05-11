@@ -65,13 +65,10 @@ const store = new Vuex.Store({
             })
         },
         getTeam({commit}) {
-            instance.get('/users/team', {
-                params: {
-                    username: localStorage.getItem('username')
-                }
-            }).then((resp) => {
-                commit('teamSuccess', resp.data);
-            }).catch((err) => {
+            instance.get('/users/team')
+                .then((resp) => {
+                    commit('teamSuccess', resp.data);
+                }).catch((err) => {
                 if (err.response.status === 500)
                     commit('teamFailure', err.response.data);
             });

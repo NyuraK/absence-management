@@ -163,20 +163,12 @@
             }).catch(err => {
                 console.log(err);
             });
-            instance.get("/requests/active", {
-                params: {
-                    name: name
-                }
-            }).then((resp) => {
+            instance.get("/requests/active").then((resp) => {
                 this.items = resp.data;
             }).catch(err => {
                 console.log(err);
             });
-            instance.get("/requests/resolved", {
-                params: {
-                    name: name
-                }
-            }).then((resp) => {
+            instance.get("/requests/resolved").then((resp) => {
                 this.itemsResolved = resp.data;
             }).catch(err => {
                 console.log(err);
@@ -195,26 +187,14 @@
 
             approve() {
                 let name = localStorage.getItem('username');
-                instance.patch("/requests/approve", this.selected, {
-                    params: {
-                        name: name
-                    }
-                }).then(() => {
-                    instance.get("/requests/active", {
-                        params: {
-                            name: name
-                        }
-                    }).then((resp) => {
+                instance.patch("/requests/approve", this.selected).then(() => {
+                    instance.get("/requests/active").then((resp) => {
                         this.items = resp.data;
                     }).catch(err => {
                             console.log(err);
                         });
 
-                    instance.get("/requests/resolved", {
-                        params: {
-                            name: name
-                        }
-                    }).then((resp) => {
+                    instance.get("/requests/resolved").then((resp) => {
                         this.itemsResolved = resp.data;
                     }).catch(err => {
                         console.log(err);
@@ -224,25 +204,13 @@
 
             decline() {
                 let name = localStorage.getItem('username');
-                instance.patch("/requests/decline", this.selected, {
-                    params: {
-                        name: name
-                    }
-                }).then(() => {
-                    instance.get("/requests/active", {
-                        params: {
-                            name: name
-                        }
-                    }).then((resp) => {
+                instance.patch("/requests/decline", this.selected).then(() => {
+                    instance.get("/requests/active").then((resp) => {
                         this.items = resp.data;
                     }).catch(err => {
                         console.log(err);
                     });
-                    instance.get("/requests/resolved", {
-                        params: {
-                            name: name
-                        }
-                    }).then((resp) => {
+                    instance.get("/requests/resolved").then((resp) => {
                         this.itemsResolved = resp.data;
                     }).catch(err => {
                         console.log(err);

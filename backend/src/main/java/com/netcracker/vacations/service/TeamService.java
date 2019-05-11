@@ -11,6 +11,8 @@ import com.netcracker.vacations.repository.RequestRepository;
 import com.netcracker.vacations.repository.TeamRepository;
 import com.netcracker.vacations.repository.UserRepository;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -102,14 +104,16 @@ public class TeamService {
         return teamDTO;
     }
 
-    public List<AbsenceDTO> getTeamMembers(Integer id) {
+    @PreAuthorize("@Security.isTeamMember(#username, #teamId)")
+    public List<AbsenceDTO> getTeamMembers(String username, @P("teamId") Integer teamId) {
         List<AbsenceDTO> res = new ArrayList<>();
-        for (UserEntity user : userRepository.findAllByTeamTeamsId(id)) {
+        for (UserEntity user : userRepository.findAllByTeamTeamsId(teamId)) {
             res.add(toAbsenceDTO(user, new RequestEntity()));
         }
         return res;
     }
 
+    @PreAuthorize("@Security.isTeamMember(#username, null)")
     public List<AbsenceDTO> getTeamMembers(String username) {
         List<AbsenceDTO> res = new ArrayList<>();
         Integer teamsId = userRepository.findByLogin(username).get(0).getTeam().getTeamsId();
@@ -121,7 +125,8 @@ public class TeamService {
         return res;
     }
 
-    public List<TeamDTO> getManagerTeams(String username) {
+    @PreAuthorize("@Security.isAllowed(#username)")
+    public List<TeamDTO> getManagerTeams(@P("username") String username) {
         UserEntity manager = userRepository.findByLogin(username).get(0);
         List<TeamDTO> teams = new ArrayList<>();
         for (TeamEntity team : teamRepository.findAllByManager(manager))
@@ -130,7 +135,8 @@ public class TeamService {
         return teams;
     }
 
-    public List<AbsenceDTO> getTeamAbsences(String username, Integer teamID) {
+    @PreAuthorize("@Security.isTeamMember(#username, #teamID)")
+    public List<AbsenceDTO> getTeamAbsences(@P("username") String username, Integer teamID) {
         List<UserEntity> team = userRepository.findAllByTeamTeamsId(teamID);
         List<RequestEntity> requests = requestRepository.findAllByStatus(Status.ACCEPTED);
 

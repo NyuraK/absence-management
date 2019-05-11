@@ -134,7 +134,7 @@ public class UserService {
     }
 
     public String getUserByCode(String code) {
-        if(userRepository.findByActivationCode(code).get(0)!=null){
+        if (userRepository.findByActivationCode(code).get(0) != null) {
             return userRepository.findByActivationCode(code).get(0).getLogin();
         }
         return null;
@@ -173,9 +173,10 @@ public class UserService {
         mailSender.send(mailMessage);
     }
 
-    public TeamDTO getUserTeam(String username) {
+    @PreAuthorize("@Security.isAllowed(#username)")
+    public TeamDTO getUserTeam(@P("username") String username) {
         TeamEntity team = userRepository.findByLogin(username).get(0).getTeam();
-        if (team==null) throw new NoTeamException("You are not a member of any team");
+        if (team == null) throw new NoTeamException("You are not a member of any team");
         return new TeamDTO().setTeamId(team.getTeamsId()).setName(team.getName());
     }
 
