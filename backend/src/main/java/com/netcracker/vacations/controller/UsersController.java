@@ -1,18 +1,23 @@
 package com.netcracker.vacations.controller;
 
-import com.netcracker.vacations.dto.TeamDTO;
+import com.netcracker.vacations.Util;
 import com.netcracker.vacations.dto.UserDTO;
 import com.netcracker.vacations.service.UserService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
 public class UsersController {
+    private static final Logger logger = LogManager.getLogger(UsersController.class);
+
 
     private UserService service;
 
@@ -46,7 +51,7 @@ public class UsersController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/addUser")
     public UserDTO addUser(@RequestBody UserDTO userDTO) {
-        userDTO = service.sendMailPassword(userDTO);
+//        userDTO = service.sendMailPassword(userDTO);
         return service.addUser(userDTO);
     }
 
@@ -86,10 +91,10 @@ public class UsersController {
         return ResponseEntity.accepted().body(service.getUserTeam(username));
     }
 
-    @PreAuthorize("@Security.isAllowed(#name)")
     @GetMapping("/restdays")
-    public ResponseEntity<?> getRestDays(@RequestParam @P("name") String name) {
-        return ResponseEntity.ok(service.getRestDays(name));
+    public ResponseEntity<?> getRestDays(HttpServletRequest request) {
+        String username = Util.extractLoginFromRequest(request);
+        return ResponseEntity.ok(service.getRestDays(username));
     }
 
 }

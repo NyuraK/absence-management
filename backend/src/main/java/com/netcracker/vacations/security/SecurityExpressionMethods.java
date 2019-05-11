@@ -54,7 +54,6 @@ public class SecurityExpressionMethods {
     public boolean isAllowed(Optional<String> username) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         final UserEntity currentUser = ((MyUserPrincipal) authentication.getPrincipal()).getUser();
-        logger.info("current user = " + currentUser.getLogin() + ' ' + "username = " + username);
         return username.isPresent() && currentUser.getLogin().equals(username.get());
     }
 

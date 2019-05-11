@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -177,7 +179,8 @@ public class UserService {
         return new TeamDTO().setTeamId(team.getTeamsId()).setName(team.getName());
     }
 
-    public Integer getRestDays(String username) {
+    @PreAuthorize("@Security.isAllowed(#username)")
+    public Integer getRestDays(@P("username") String username) {
         return userRepository.findByLogin(username).get(0).getRestDays();
     }
 }

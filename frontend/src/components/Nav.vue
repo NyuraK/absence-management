@@ -6,18 +6,34 @@
 
         <b-collapse id="nav-collapse" is-nav>
             <b-navbar-nav>
-                <b-nav-item href="/home">Profile</b-nav-item>
+                <b-nav-item>
+                    <router-link tag="li" :to="'/home'">Profile</router-link>
+                </b-nav-item>
                 <b-nav-item>
                     <router-link tag="li" :to="'/timeline/' + this.$store.getters.teamId">
                         Timeline
                     </router-link>
                 </b-nav-item>
-                <b-nav-item href="/requests" v-if="$acl.check('isManager')">
-                    Requests
+                <b-nav-item v-if="$acl.check('isManager')">
+                    <router-link tag="li" :to="'/requests'">
+                        Requests
+                    </router-link>
                 </b-nav-item>
-                <b-nav-item href="/users" v-if="$acl.check('isAdmin')">Manage users</b-nav-item>
-                <b-nav-item href="/teams" v-if="$acl.check('isAdmin')">Manage teams</b-nav-item>
-                <b-nav-item href="/departments" v-if="$acl.check('isAdmin')">Manage departments</b-nav-item>
+                <b-nav-item v-if="$acl.check('isAdmin')">
+                    <router-link tag="li" :to="'/users'">
+                        Manage users
+                    </router-link>
+                </b-nav-item>
+                <b-nav-item v-if="$acl.check('isAdmin')">
+                    <router-link tag="li" :to="'/teams'">
+                        Manage teams
+                    </router-link>
+                </b-nav-item>
+                <b-nav-item v-if="$acl.check('isAdmin')">
+                    <router-link tag="li" :to="'/departments'">
+                        Manage departments
+                    </router-link>
+                </b-nav-item>
             </b-navbar-nav>
             <b-navbar-nav class="ml-auto">
                 <b-nav-item v-b-modal="'modal-sm'">Logout</b-nav-item>
