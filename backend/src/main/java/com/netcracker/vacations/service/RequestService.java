@@ -1,6 +1,5 @@
 package com.netcracker.vacations.service;
 
-import com.netcracker.vacations.Util;
 import com.netcracker.vacations.domain.RequestEntity;
 import com.netcracker.vacations.domain.RequestTypeEntity;
 import com.netcracker.vacations.domain.TeamEntity;
@@ -11,6 +10,7 @@ import com.netcracker.vacations.domain.enums.Status;
 import com.netcracker.vacations.dto.RequestDTO;
 import com.netcracker.vacations.exception.TooManyDaysException;
 import com.netcracker.vacations.repository.*;
+import com.netcracker.vacations.security.SecurityExpressionMethods;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,6 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -208,8 +207,8 @@ public class RequestService {
     }
 
 
-    public boolean isManagerOnRest(HttpServletRequest request) {
-        String login = Util.extractLoginFromRequest(request);
+    public boolean isManagerOnRest() {
+        String login = SecurityExpressionMethods.currentUserLogin();
         boolean answer = false;
         UserEntity user = userRepository.findByLogin(login).get(0);
         if (user.getTeam() != null) {

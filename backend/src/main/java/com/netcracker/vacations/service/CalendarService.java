@@ -1,16 +1,15 @@
 package com.netcracker.vacations.service;
 
-import com.netcracker.vacations.Util;
 import com.netcracker.vacations.domain.RequestEntity;
 import com.netcracker.vacations.domain.TeamEntity;
 import com.netcracker.vacations.domain.UserEntity;
 import com.netcracker.vacations.domain.enums.Status;
 import com.netcracker.vacations.dto.UserDTO;
 import com.netcracker.vacations.repository.*;
+import com.netcracker.vacations.security.SecurityExpressionMethods;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,12 +33,12 @@ public class CalendarService {
         this.typeRepo = typeRepo;
     }
 
-    public List<List<String>> getVacationsPerDay(String mode, String purpose, HttpServletRequest request) {
+    public List<List<String>> getVacationsPerDay(String mode, String purpose) {
         List<Date> dates;
         List<RequestEntity> teamReqs;
         List<UserEntity> teamUsers;
 
-        String name = Util.extractLoginFromRequest(request);
+        String name = SecurityExpressionMethods.currentUserLogin();
         UserEntity user = userRepo.findByLogin(name).get(0);
         List<TeamEntity> teams = new ArrayList<>();
         List<List<String>> occupiedAll = new ArrayList<>();
@@ -166,9 +165,8 @@ public class CalendarService {
         return userDTO;
     }
 
-    public List<String> getVacations(String status, HttpServletRequest request) {
-        String name = Util.extractLoginFromRequest(request);
-
+    public List<String> getVacations(String status) {
+        String name = SecurityExpressionMethods.currentUserLogin();
         UserEntity user = userRepo.findByLogin(name).get(0);
         List<RequestEntity> reqs = reqRepo.findAllByUser(user);
         List<RequestEntity> business = new ArrayList<RequestEntity>();

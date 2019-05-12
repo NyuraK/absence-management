@@ -1,6 +1,5 @@
 package com.netcracker.vacations.service;
 
-import com.netcracker.vacations.Util;
 import com.netcracker.vacations.domain.TeamEntity;
 import com.netcracker.vacations.domain.UserEntity;
 import com.netcracker.vacations.domain.enums.Role;
@@ -10,7 +9,7 @@ import com.netcracker.vacations.exception.NoTeamException;
 import com.netcracker.vacations.repository.TeamRepository;
 import com.netcracker.vacations.repository.UserRepository;
 import com.netcracker.vacations.security.MyUserPrincipal;
-import org.hibernate.engine.spi.Status;
+import com.netcracker.vacations.security.SecurityExpressionMethods;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,10 +22,8 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -78,15 +75,15 @@ public class UserService {
         return response;
     }
 
-    public String getUsersName(HttpServletRequest request) {
-        String name = Util.extractLoginFromRequest(request);
+    public String getUsersName() {
+        String name = SecurityExpressionMethods.currentUserLogin();
         UserEntity currentUser = userRepository.findByLogin(name).get(0);
         String output = (currentUser.getRole().getName() + ": " + currentUser.getName() + " " + currentUser.getSurname());
         return output;
     }
 
-    public UserDTO getUserInfo(HttpServletRequest request) {
-        String login = Util.extractLoginFromRequest(request);
+    public UserDTO getUserInfo() {
+        String login = SecurityExpressionMethods.currentUserLogin();
         UserEntity currentUser = userRepository.findByLogin(login).get(0);
         UserDTO user = toDTO(currentUser);
         if (currentUser.getRole().equals(Role.MANAGER)) {
@@ -119,7 +116,7 @@ public class UserService {
 
     public UserDTO addUser(UserDTO userDTO) {
         userDTO.setPassword(UUID.randomUUID().toString());
-        sendMailPassword(userDTO);
+//        sendMailPassword(userDTO);
         userRepository.save(toEntity(userDTO));
         return userDTO;
     }

@@ -1,14 +1,13 @@
 package com.netcracker.vacations.controller;
 
-import com.netcracker.vacations.Util;
 import com.netcracker.vacations.dto.AbsenceDTO;
 import com.netcracker.vacations.dto.TeamDTO;
+import com.netcracker.vacations.security.SecurityExpressionMethods;
 import com.netcracker.vacations.service.TeamService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,9 +59,8 @@ public class TeamsController {
     }
 
     @GetMapping(value = {"/members", "/members/{id}"})
-    public List<AbsenceDTO> getTeamMembers(HttpServletRequest request,
-                                           @PathVariable(value = "id") Optional<Integer> teamId) {
-        String username = Util.extractLoginFromRequest(request);
+    public List<AbsenceDTO> getTeamMembers(@PathVariable(value = "id") Optional<Integer> teamId) {
+        String username = SecurityExpressionMethods.currentUserLogin();
         if (teamId.isPresent())
             return teamService.getTeamMembers(username, teamId.get());
         else return teamService.getTeamMembers(username);
@@ -70,15 +68,14 @@ public class TeamsController {
     }
 
     @GetMapping("/absences/{id}")
-    public List<AbsenceDTO> getTeamAbsences(HttpServletRequest request,
-                                            @PathVariable("id") @P("teamID") Integer teamID) {
-        String username = Util.extractLoginFromRequest(request);
+    public List<AbsenceDTO> getTeamAbsences(@PathVariable("id") @P("teamID") Integer teamID) {
+        String username = SecurityExpressionMethods.currentUserLogin();
         return teamService.getTeamAbsences(username, teamID);
     }
 
     @GetMapping("/my")
-    public List<TeamDTO> getManagerTeams(HttpServletRequest request) {
-        String username = Util.extractLoginFromRequest(request);
+    public List<TeamDTO> getManagerTeams() {
+        String username = SecurityExpressionMethods.currentUserLogin();
         return teamService.getManagerTeams(username);
     }
 

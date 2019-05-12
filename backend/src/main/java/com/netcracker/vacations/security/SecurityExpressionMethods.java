@@ -57,5 +57,10 @@ public class SecurityExpressionMethods {
         return username.isPresent() && currentUser.getLogin().equals(username.get());
     }
 
+    public static String currentUserLogin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        final UserEntity currentUser = ((MyUserPrincipal) authentication.getPrincipal()).getUser();
+        return currentUser.getLogin();
+    }
 }
 

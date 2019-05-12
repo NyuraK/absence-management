@@ -1,15 +1,14 @@
 package com.netcracker.vacations.controller;
 
-import com.netcracker.vacations.Util;
 import com.netcracker.vacations.domain.enums.RequestType;
 import com.netcracker.vacations.domain.enums.Status;
 import com.netcracker.vacations.dto.RequestDTO;
+import com.netcracker.vacations.security.SecurityExpressionMethods;
 import com.netcracker.vacations.service.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 
@@ -34,20 +33,20 @@ public class RequestController {
     }
 
     @GetMapping("/active")
-    public List<RequestDTO> getActiveRequests(HttpServletRequest request) {
-        String username = Util.extractLoginFromRequest(request);
+    public List<RequestDTO> getActiveRequests() {
+        String username = SecurityExpressionMethods.currentUserLogin();
         return reqService.getActiveRequests(username);
     }
 
     @GetMapping("/resolved")
-    public List<RequestDTO> getResolvedRequests(HttpServletRequest request) {
-        String username = Util.extractLoginFromRequest(request);
+    public List<RequestDTO> getResolvedRequests() {
+        String username = SecurityExpressionMethods.currentUserLogin();
         return reqService.getResolvedRequests(username);
     }
 
     @GetMapping("/managerVac")
-    public boolean isManagerOnWork(HttpServletRequest request) {
-        return reqService.isManagerOnRest(request);
+    public boolean isManagerOnWork() {
+        return reqService.isManagerOnRest();
     }
 
     @GetMapping("/types")
@@ -56,14 +55,14 @@ public class RequestController {
     }
 
     @PatchMapping("/decline")
-    public void declineRequest(@RequestBody List<Integer> requests, HttpServletRequest request) {
-        String username = Util.extractLoginFromRequest(request);
+    public void declineRequest(@RequestBody List<Integer> requests) {
+        String username = SecurityExpressionMethods.currentUserLogin();
         reqService.updateRequest(Status.DECLINED, requests, username);
     }
 
     @PatchMapping("/approve")
-    public void approveRequest(@RequestBody List<Integer> requests, HttpServletRequest request) {
-        String username = Util.extractLoginFromRequest(request);
+    public void approveRequest(@RequestBody List<Integer> requests) {
+        String username = SecurityExpressionMethods.currentUserLogin();
         reqService.updateRequest(Status.ACCEPTED, requests, username);
     }
 
