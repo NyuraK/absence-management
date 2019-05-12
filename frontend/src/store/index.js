@@ -3,7 +3,6 @@ import Vue from 'vue'
 import axios from 'axios'
 import {instance} from '../Api'
 import jwt from 'jsonwebtoken'
-import acl from '../acl'
 
 Vue.use(Vuex);
 

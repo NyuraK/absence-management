@@ -1,4 +1,4 @@
-FROM openjdk:8-jdk-alpine
+FROM openjdk:8-jre-alpine
 VOLUME /tmp
 EXPOSE 8088
 ARG JAR_FILE=target/backend-0.0.1-SNAPSHOT.jar
