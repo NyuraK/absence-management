@@ -88,8 +88,6 @@ const store = new Vuex.Store({
                 commit('userSuccess', resp.data);
                 console.log("DONE "+resp.data);
             }).catch(err => {
-                if (err.response.status === 500)
-                    commit('userFailure', err.response.data);
                 console.log(err);
             });
         },
