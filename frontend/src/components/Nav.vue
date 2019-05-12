@@ -7,10 +7,10 @@
         <b-collapse id="nav-collapse" is-nav>
             <b-navbar-nav>
                 <b-nav-item>
-                    <router-link tag="li" :to="'/home'">Profile</router-link>
+                    <router-link tag="li" :to="'/home'">My calendar</router-link>
                 </b-nav-item>
                 <b-nav-item>
-                    <router-link tag="li" :to="'/timeline/' + this.$store.getters.teamId">
+                    <router-link tag="li" :to="'/timeline/' + teamId">
                         Timeline
                     </router-link>
                 </b-nav-item>
@@ -37,7 +37,7 @@
             </b-navbar-nav>
             <b-navbar-nav class="ml-auto">
                 <b-nav-item>
-                    <router-link tag="li" :to="'/mypage'">{{userName}}
+                    <router-link tag="li" :to="'/mypage'"> {{userName}}
                     </router-link>
                 </b-nav-item>
                 <b-nav-item v-b-modal="'modal-sm'">Logout</b-nav-item>
@@ -53,14 +53,15 @@
         name: "Nav",
         data() {
             return {
-                userName: '',
+                teamId : 0,
+                userName: localStorage.getItem('user_info'),
             }
         },
         created() {
             this.$acl.change(localStorage.getItem('user'));
-        },
-        mounted() {
-            this.$store.dispatch('getTeam');
+            if (localStorage.getItem('teamId') !== null) {
+                this.teamId = localStorage.getItem('teamId');
+            }
         },
         methods: {
             exit(evt) {

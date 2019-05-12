@@ -227,7 +227,7 @@
                 }
             }).then(res => {
                 let arr = res.data;
-                console.log(arr);
+
                 let busy;
                 for (let i = 0; i < arr.length; i++) {
                     busy = [];

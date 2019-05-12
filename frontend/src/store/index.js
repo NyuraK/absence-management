@@ -11,21 +11,14 @@ const store = new Vuex.Store({
     state: {
         token: localStorage.getItem('token') || '',
         isAuth: false,
-        userTeam: {
-            teamId: 0,
-            name: ''
-        },
-        team_msg: ''
+        team_msg: '',
+        user_info: 'My profile' || localStorage.getItem('user_info'),
     },
 
     mutations: {
         authSuccess(state, token) {
             state.token = token;
             state.isAuth = true;
-        },
-
-        teamSuccess(state, team) {
-            state.userTeam = team;
         },
 
         teamFailure(state, msg) {
@@ -35,9 +28,6 @@ const store = new Vuex.Store({
         authLogout(state) {
             state.token = '';
             state.isAuth = false;
-            state.userTeam.teamId = 0;
-            state.userTeam.name = '';
-
         }
     },
 
@@ -65,11 +55,24 @@ const store = new Vuex.Store({
         },
         getTeam({commit}) {
             instance.get('/users/team').then((resp) => {
-                commit('teamSuccess', resp.data);
+                localStorage.setItem('team', resp.data.name);
+                localStorage.setItem('teamId', resp.data.teamId);
             }).catch((err) => {
                 if (err.response.status === 500)
                     commit('teamFailure', err.response.data);
             });
+        },
+
+        getUserInfo({commit}) {
+            return new Promise((resolve, reject) => {
+                instance.get("/users/name").then(resp => {
+                    localStorage.setItem('user_info', resp.data);
+                    resolve(resp);
+                }).catch(err => {
+                    console.log(err);
+                    reject(err);
+                });
+            })
         },
 
         userLogOut({commit}) {
@@ -77,6 +80,9 @@ const store = new Vuex.Store({
             localStorage.removeItem('token');
             localStorage.setItem('user', 'public');
             localStorage.removeItem('username');
+            localStorage.removeItem('teamId');
+            localStorage.removeItem('team');
+            localStorage.removeItem('user_info');
         }
     },
 
@@ -85,7 +91,8 @@ const store = new Vuex.Store({
         isToken: state => state.token,
         teamId: state => state.userTeam.teamId,
         team: state => state.userTeam,
-        team_msg: state => state.team_msg
+        team_msg: state => state.team_msg,
+        user: state => state.user_info,
     },
 });
 
