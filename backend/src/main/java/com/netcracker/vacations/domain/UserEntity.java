@@ -39,10 +39,10 @@ public class UserEntity {
     @JoinColumn(name = "teams_id")
     private TeamEntity team;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "surname")
+    @Column(name = "surname", nullable = false)
     private String surname;
 
     @Column(name = "family_name")
@@ -51,7 +51,7 @@ public class UserEntity {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Column(name = "email")
+    @Column(name = "email", nullable = false)
     private String email;
 
     @Column(name = "description")
@@ -66,12 +66,15 @@ public class UserEntity {
     public UserEntity() {
     }
 
-    public UserEntity(String login, String password, Role role, Integer restDays, Date hireDate) {
+    public UserEntity(String login, String password, Role role, Integer restDays, Date hireDate, String name, String surname, String email) {
         this.login = login;
-        this.password = encode(password);
+        this.password = password;
         this.role = role;
         this.restDays = restDays;
         this.hireDate = hireDate;
+        this.name = name;
+        this.surname = surname;
+        this.email = email;
     }
 
     public Integer getUsersId() {

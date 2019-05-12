@@ -1,5 +1,6 @@
 package com.netcracker.vacations.controller;
 
+import com.netcracker.vacations.Util;
 import com.netcracker.vacations.service.CalendarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -24,42 +26,39 @@ public class CalendarController {
     }
 
     @GetMapping("/occupiedForDiscuss")
-    public List<List<String>> getOccupiedDaysForDiscuss(@RequestParam String name) {
-        return service.getVacationsPerDay("Occupied", "Discuss", name);
+    public List<List<String>> getOccupiedDaysForDiscuss(HttpServletRequest request) {
+        return service.getVacationsPerDay("Occupied", "Discuss", request);
     }
 
     @GetMapping("/busyForDiscuss")
-    public List<List<String>> getBusyDaysForDiscuss(@RequestParam String name) {
-        return service.getVacationsPerDay("Busy", "Discuss", name);
+    public List<List<String>> getBusyDaysForDiscuss(HttpServletRequest request) {
+        return service.getVacationsPerDay("Busy", "Discuss", request);
     }
 
     @GetMapping("/occupiedForSend")
-    public List<List<String>> getOccupiedDaysForSend(@RequestParam String name) {
-        return service.getVacationsPerDay("Occupied", "Send", name);
+    public List<List<String>> getOccupiedDaysForSend(HttpServletRequest request) {
+        return service.getVacationsPerDay("Occupied", "Send", request);
     }
 
     @GetMapping("/busyForSend")
-    public List<List<String>> getBusyDaysForSend(@RequestParam String name) {
-        return service.getVacationsPerDay("Busy", "Send", name);
+    public List<List<String>> getBusyDaysForSend(HttpServletRequest request) {
+        return service.getVacationsPerDay("Busy", "Send", request);
     }
 
-
-    @PreAuthorize("@Security.isAllowed(#name)")
     @GetMapping("/accepted")
-    public List<String> getAccepted(@RequestParam @P("name") String name) {
-        return service.getVacations("Accepted", name);
+    public List<String> getAccepted(HttpServletRequest request) {
+        return service.getVacations("Accepted", request);
     }
 
-    @PreAuthorize("@Security.isAllowed(#name)")
     @GetMapping("/declined")
-    public List<String> getDeclined(@RequestParam @P("name") String name) {
-        return service.getVacations("Declined", name);
+    public List<String> getDeclined(HttpServletRequest request) {
+        String name = Util.extractLoginFromRequest(request);
+        return service.getVacations("Declined", request);
     }
 
-    @PreAuthorize("@Security.isAllowed(#name)")
     @GetMapping("/consider")
-    public List<String> getConsider(@RequestParam @P("name") String name) {
-        return service.getVacations("Consider", name);
+    public List<String> getConsider(HttpServletRequest request) {
+        return service.getVacations("Consider", request);
     }
 
 }

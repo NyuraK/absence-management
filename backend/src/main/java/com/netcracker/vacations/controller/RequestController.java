@@ -46,8 +46,8 @@ public class RequestController {
     }
 
     @GetMapping("/managerVac")
-    public boolean isManagerOnWork(@RequestParam String name) {
-        return reqService.isManagerOnRest(name);
+    public boolean isManagerOnWork(HttpServletRequest request) {
+        return reqService.isManagerOnRest(request);
     }
 
     @GetMapping("/types")

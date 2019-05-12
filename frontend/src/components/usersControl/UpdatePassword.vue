@@ -4,6 +4,9 @@
         <v-dialog v-model="dialog" max-width="600px">
             <v-card>
                 <v-card-text>
+                    <v-alert v-model="mismatch" dismissible type="error" class="alert alert-danger" outline>
+                        Your password was not changed. Your current password is incorrect.
+                    </v-alert>
                     <v-alert v-model="alert" dismissible type="error" class="alert alert-danger" outline>
                         Your password was not changed. New password and repeated new password did not match.
                     </v-alert>
@@ -16,7 +19,7 @@
                                             :append-icon="show1 ? 'visibility' : 'visibility_off'"
                                             :type="show1 ? 'text' : 'password'"
                                             name="input-10-1"
-                                            label="Current password"
+                                            label="Your current password"
                                             counter
                                             @click:append="show1 = !show1"
                                     ></v-text-field>
@@ -70,6 +73,7 @@
             return {
                 alert: false,
                 dialog: false,
+                mismatch: false,
                 passwordCur: '',
                 passwordNew: '',
                 passwordNewRep: '',
@@ -81,12 +85,28 @@
 
         methods: {
             save() {
-                if (this.passwordNew === this.passwordNewRep) {
-                    instance.put('users/password/' + this.$router.currentRoute.params['id'], this.passwordNew);
-                    this.dialog = false;
-                } else {
-                    this.alert = true;
-                }
+                instance.get("users/checkPassword",{
+                        params: {
+                            password: this.passwordCur,
+                        }
+                }).then(res => {
+                    if (res.data===false){
+                        this.mismatch=true;
+                    } else if (res.data===true){
+                        if (this.passwordNew === this.passwordNewRep) {
+                            if (window.location.href==="http://localhost:8080/mypage#profile" || window.location.href==="http://localhost:8080/mypage") {
+                                instance.put('users/passwordByUser/', this.passwordNew);
+                            } else {
+                                instance.put('users/password/' + this.$router.currentRoute.params['id'], this.passwordNew);
+                            }
+                            this.dialog = false;
+                        } else {
+                            this.alert = true;
+                        }
+                    }
+                }).catch(err => {
+                    console.log(err);
+                });
             }
         }
     }

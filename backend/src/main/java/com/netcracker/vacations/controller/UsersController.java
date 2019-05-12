@@ -1,22 +1,20 @@
 package com.netcracker.vacations.controller;
 
 import com.netcracker.vacations.Util;
+import com.netcracker.vacations.dto.TeamDTO;
 import com.netcracker.vacations.dto.UserDTO;
 import com.netcracker.vacations.service.UserService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
 public class UsersController {
-    private static final Logger logger = LogManager.getLogger(UsersController.class);
-
 
     private UserService service;
 
@@ -42,19 +40,37 @@ public class UsersController {
         return service.getUser(id);
     }
 
+    @GetMapping("/name")
+    public String getUsersName(HttpServletRequest request){
+        return service.getUsersName(request);
+    }
+
+    @GetMapping("/info")
+    public UserDTO getUserInfo(HttpServletRequest request){
+        return service.getUserInfo(request);
+    }
+
+    @GetMapping("/checkPassword")
+    public boolean checkPassword(@RequestParam String password){
+        return service.checkPassword(password);
+    }
+
     @GetMapping("/userByCode/{code}")
     public String getUserByCode(@PathVariable("code") String code) {
         return service.getUserByCode(code);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/addUser")
-    public UserDTO addUser(@RequestBody UserDTO userDTO) {
-//        userDTO = service.sendMailPassword(userDTO);
-        return service.addUser(userDTO);
+    @GetMapping("/sendMailForgot")
+    public boolean sendMailForgot(@RequestParam String email){
+        return service.sendMailForgot(email);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/addUser")
+    public UserDTO addUser(@RequestBody UserDTO userDTO) {
+        return service.addUser(userDTO);
+    }
+
     @PatchMapping("/changePassword")
     public void changePassword(@RequestBody List<String> userInfo) {
         service.changePassword(userInfo);
@@ -75,8 +91,15 @@ public class UsersController {
             @PathVariable("id") Integer id,
             @RequestBody String password
     ) {
-        service.updatePassword(id, password);
+        service.updatePassword(id, password, "AdminChange");
     }
+
+    @PutMapping("/passwordByUser")
+    public void updatePassword(@RequestBody String password) {
+        service.updatePassword(0, password, "UserChange");
+    }
+
+
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
