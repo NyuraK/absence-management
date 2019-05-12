@@ -63,7 +63,7 @@ const store = new Vuex.Store({
             });
         },
 
-        async getUserInfo({commit}) {
+        getUserInfo({commit}) {
             return new Promise((resolve, reject) => {
                 instance.get("/users/name").then(resp => {
                     localStorage.setItem('user_info', resp.data);
