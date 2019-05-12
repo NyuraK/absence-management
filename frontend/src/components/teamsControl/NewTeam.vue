@@ -7,12 +7,13 @@
             <v-card>
                 <v-card-text>
                     <h3 class="headline mb-0">Enter team details</h3>
-                    <v-text-field label="Name" v-model="name"></v-text-field>
-                    <v-text-field label="Quota" v-model="quota"></v-text-field>
-                    <v-select :items="departments" label="Department" v-model="department" item-text="name"
+                    <v-text-field label="Name*" :rules="[rules.required]" v-model="name"></v-text-field>
+                    <v-text-field label="Quota*" :rules="[rules.required]" v-model="quota"></v-text-field>
+                    <v-select :items="departments" :rules="[rules.required]" label="Department*" v-model="department" item-text="name"
                               return-object></v-select>
-                    <v-select :items="findManagers" label="Manager" v-model="managerId" :item-text="text"
+                    <v-select :items="findManagers" :rules="[rules.required]" label="Manager*" v-model="managerId" :item-text="text"
                               item-value="userId"></v-select>
+                    <small class="grey--text">* Required fields.</small>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn flat color="error" @click="dialog = false">Cancel</v-btn>
@@ -33,6 +34,9 @@
 
         data() {
             return {
+                rules: {
+                    required: value => !!value || 'Required.'
+                },
                 dialog: false,
                 name: '',
                 quota: '',

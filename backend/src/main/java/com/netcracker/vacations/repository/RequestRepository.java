@@ -18,6 +18,8 @@ public interface RequestRepository extends CrudRepository<RequestEntity, Integer
 
     List<RequestEntity> findByUser(UserEntity user);
 
+    List<RequestEntity> findAllByUserLogin(String login);
+
     List<RequestEntity> findAllByUser(UserEntity user);
 
     List<RequestEntity> findByBeginning(Date beginning);

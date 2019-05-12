@@ -25,7 +25,6 @@ public class UserEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
-
     private Role role;
 
     @Column(name = "rest_days", nullable = false)
@@ -60,6 +59,9 @@ public class UserEntity {
     @Column(name = "activation_code")
     private String activationCode;
 
+    @Column(name = "integrated", nullable = false)
+    private Boolean integrated = false;
+
     @Transient
     private BCryptPasswordEncoder coder;
 
@@ -75,6 +77,12 @@ public class UserEntity {
         this.name = name;
         this.surname = surname;
         this.email = email;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        if(integrated == null) //We set default value in case if the value is not set yet.
+            integrated = false;
     }
 
     public Integer getUsersId() {
@@ -179,6 +187,14 @@ public class UserEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Boolean getIntegrated() {
+        return integrated;
+    }
+
+    public void setIntegrated(Boolean integrated) {
+        this.integrated = integrated;
     }
 
     public String getActivationCode() {
