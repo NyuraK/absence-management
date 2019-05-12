@@ -65,7 +65,8 @@
         },
         created() {
             this.$acl.change(localStorage.getItem('user'));
-            this.userTeam = this.$store.getters.team;
+            this.userTeam.teamId = localStorage.getItem('teamId');
+            this.userTeam.name = localStorage.getItem('team');
             instance.get('/teams').then((res) => {
                 this.teams = parseTeam(res.data);
                 this.showSelector = true;
