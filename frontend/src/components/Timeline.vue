@@ -2,7 +2,7 @@
     <div>
         <Nav></Nav>
         <b-container>
-            <h3 v-if="userTeam.name !== ''">You are a member of {{userTeam.name}} team</h3>
+            <h3 v-if="userTeam.name !== null">You are a member of {{userTeam.name}} team</h3>
             <h3 v-else>{{this.$store.getters.team_msg}}</h3>
             <v-slider v-if="showChart"
                       id="slider"
@@ -65,8 +65,9 @@
         },
         created() {
             this.$acl.change(localStorage.getItem('user'));
-            this.userTeam = this.$store.getters.team;
-            instance.get('/teams').then((res) => {
+            this.userTeam.teamId = localStorage.getItem('teamId') == null ? 0 : localStorage.getItem('teamId');
+            this.userTeam.name = localStorage.getItem('team');
+            instance.get('/teams/my').then((res) => {
                 this.teams = parseTeam(res.data);
                 this.showSelector = true;
             });

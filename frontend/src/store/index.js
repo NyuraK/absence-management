@@ -11,13 +11,8 @@ const store = new Vuex.Store({
     state: {
         token: localStorage.getItem('token') || '',
         isAuth: false,
-        userTeam: {
-            teamId: 0,
-            name: ''
-        },
         team_msg: '',
-        user_info: 'My profile',
-
+        user_info: 'My profile' || localStorage.getItem('user_info'),
     },
 
     mutations: {
@@ -26,27 +21,13 @@ const store = new Vuex.Store({
             state.isAuth = true;
         },
 
-        teamSuccess(state, team) {
-            state.userTeam = team;
-        },
-
         teamFailure(state, msg) {
             state.team_msg = msg;
         },
 
-        userSuccess(state, info) {
-            state.user_info = info;
-            console.log("INFO "+state.user_info);
-        },
-
-
-
         authLogout(state) {
             state.token = '';
             state.isAuth = false;
-            state.userTeam.teamId = 0;
-            state.userTeam.name = '';
-
         }
     },
 
@@ -74,20 +55,24 @@ const store = new Vuex.Store({
         },
         getTeam({commit}) {
             instance.get('/users/team').then((resp) => {
-                commit('teamSuccess', resp.data);
+                localStorage.setItem('team', resp.data.name);
+                localStorage.setItem('teamId', resp.data.teamId);
             }).catch((err) => {
                 if (err.response.status === 500)
                     commit('teamFailure', err.response.data);
             });
         },
 
-        getUserInfo({commit}) {
-            instance.get("/users/name").then(resp => {
-                commit('userSuccess', resp.data);
-                console.log("DONE "+resp.data);
-            }).catch(err => {
-                console.log(err);
-            });
+        async getUserInfo({commit}) {
+            return new Promise((resolve, reject) => {
+                instance.get("/users/name").then(resp => {
+                    localStorage.setItem('user_info', resp.data);
+                    resolve(resp);
+                }).catch(err => {
+                    console.log(err);
+                    reject(err);
+                });
+            })
         },
 
         userLogOut({commit}) {
@@ -95,6 +80,9 @@ const store = new Vuex.Store({
             localStorage.removeItem('token');
             localStorage.setItem('user', 'public');
             localStorage.removeItem('username');
+            localStorage.removeItem('teamId');
+            localStorage.removeItem('team');
+            localStorage.removeItem('user_info');
         }
     },
 

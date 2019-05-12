@@ -26,16 +26,10 @@
                         required
                         placeholder="Enter password"/>
             </b-form-group>
-
         </b-form>
         <b-button type="submit" variant="primary" v-on:click="check">Log in</b-button>
-        <b-row>
-            <b-col></b-col>
-            <b-col cols="10">
-                <SendByEmail></SendByEmail>
-            </b-col>
-            <b-col></b-col>
-        </b-row>
+        <br><br>
+        <SendByEmail></SendByEmail>
     </div>
 </template>
 
@@ -58,8 +52,7 @@
                 this.$store.dispatch('login', {username: this.username, password: this.password}).then(() => {
                     this.$acl.change(localStorage.getItem('user'));
                     this.$store.dispatch('getTeam');
-                    this.$store.dispatch('getUserInfo');
-                    this.$router.push('/home');
+                    this.$store.dispatch('getUserInfo').then(()=>this.$router.push('/home'));
                     this.mismatch=false;
                 }).catch((err) => {
                     console.log(err);
@@ -67,7 +60,11 @@
                 });
                 this.username = '';
                 this.password = '';
-            }
+            },
+            async jj () {
+                this.$store.dispatch('getTeam');
+                this.$store.dispatch('getUserInfo');
+            },
         },
     }
 </script>

@@ -28,9 +28,9 @@
                         max-rows="6"
                 ></b-form-textarea>
             </b-form-group>
-
             <b-button type="submit" variant="primary">Submit</b-button>
             <b-button type="reset" variant="danger">Reset</b-button>
+
         </b-form>
 
         <b-modal ref="my-modal" hide-footer>
@@ -64,15 +64,15 @@
         },
         created() {
             let name = localStorage.getItem('username');
-            instance.get('/requests/types').then((resp)=> {
+            instance.get('/requests/types').then((resp) => {
                 this.absTypes = resp.data;
-            }).catch(err=> {
+            }).catch(err => {
                 console.log(err);
             });
-            instance.get('/requests/managerVac').then((resp)=> {
+            instance.get('/requests/managerVac').then((resp) => {
                 this.isManagerOnRest = resp.data;
-                console.log("Is manager on the rest "+this.isManagerOnRest);
-            }).catch(err=> {
+                console.log("Is manager on the rest " + this.isManagerOnRest);
+            }).catch(err => {
                 console.log(err);
             });
         },
@@ -88,7 +88,7 @@
                     needToEmail: this.isManagerOnRest,
                 };
                 instance.post("/requests", msg).then(res => {
-                }).catch(err=> {
+                }).catch(err => {
                     if (err.response.status === 406) {
                         this.error_msg = err.response.data;
                         this.$refs['my-modal'].show();
