@@ -58,6 +58,7 @@
                 this.$store.dispatch('login', {username: this.username, password: this.password}).then(() => {
                     this.$acl.change(localStorage.getItem('user'));
                     this.$store.dispatch('getTeam');
+                    this.$store.dispatch('getUserInfo');
                     this.$router.push('/home');
                     this.mismatch=false;
                 }).catch((err) => {

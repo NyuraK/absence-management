@@ -16,7 +16,9 @@ const store = new Vuex.Store({
             teamId: 0,
             name: ''
         },
-        team_msg: ''
+        team_msg: '',
+        user_info: 'My profile',
+
     },
 
     mutations: {
@@ -32,6 +34,13 @@ const store = new Vuex.Store({
         teamFailure(state, msg) {
             state.team_msg = msg;
         },
+
+        userSuccess(state, info) {
+            state.user_info = info;
+            console.log("INFO "+state.user_info);
+        },
+
+
 
         authLogout(state) {
             state.token = '';
@@ -74,6 +83,17 @@ const store = new Vuex.Store({
             });
         },
 
+        getUserInfo({commit}) {
+            instance.get("/users/name").then(resp => {
+                commit('userSuccess', resp.data);
+                console.log("DONE "+resp.data);
+            }).catch(err => {
+                if (err.response.status === 500)
+                    commit('userFailure', err.response.data);
+                console.log(err);
+            });
+        },
+
         userLogOut({commit}) {
             commit('authLogout');
             localStorage.removeItem('token');
@@ -87,7 +107,8 @@ const store = new Vuex.Store({
         isToken: state => state.token,
         teamId: state => state.userTeam.teamId,
         team: state => state.userTeam,
-        team_msg: state => state.team_msg
+        team_msg: state => state.team_msg,
+        user: state => state.user_info,
     },
 });
 

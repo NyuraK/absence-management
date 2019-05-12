@@ -7,9 +7,8 @@
         <b-collapse id="nav-collapse" is-nav>
             <b-navbar-nav>
                 <b-nav-item>
-                    <router-link tag="li" :to="'/home'">Profile</router-link>
+                    <router-link tag="li" :to="'/home'">My calendar</router-link>
                 </b-nav-item>
-                <b-nav-item href="/home">Profile</b-nav-item>
                 <b-nav-item>
                     <router-link tag="li" :to="'/timeline/' + this.$store.getters.teamId">
                         Timeline
@@ -51,15 +50,10 @@
         name: "Nav",
         data() {
             return {
-                userName: "",
+                userName: this.$store.getters.user,
             }
         },
         created() {
-            instance.get("/users/name").then(res => {
-                this.userName = res.data;
-            }).catch(err => {
-                console.log(err);
-            });
         },
         mounted() {
             this.$store.dispatch('getTeam');
