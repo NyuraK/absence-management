@@ -1,23 +1,32 @@
 package com.netcracker.vacations.service;
 
+import com.netcracker.vacations.Util;
 import com.netcracker.vacations.domain.TeamEntity;
 import com.netcracker.vacations.domain.UserEntity;
 import com.netcracker.vacations.domain.enums.Role;
 import com.netcracker.vacations.dto.TeamDTO;
 import com.netcracker.vacations.dto.UserDTO;
 import com.netcracker.vacations.exception.NoTeamException;
+import com.netcracker.vacations.repository.TeamRepository;
 import com.netcracker.vacations.repository.UserRepository;
+import com.netcracker.vacations.security.MyUserPrincipal;
+import org.hibernate.engine.spi.Status;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.parameters.P;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,8 +41,12 @@ public class UserService {
 
     private UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    private TeamRepository teamRepository;
+
+    @Autowired
+    public UserService(UserRepository userRepository, TeamRepository teamRepository) {
         this.userRepository = userRepository;
+        this.teamRepository = teamRepository;
     }
 
 
@@ -65,7 +78,48 @@ public class UserService {
         return response;
     }
 
+    public String getUsersName(HttpServletRequest request) {
+        String name = Util.extractLoginFromRequest(request);
+        UserEntity currentUser = userRepository.findByLogin(name).get(0);
+        String output = (currentUser.getRole().getName() + ": " + currentUser.getName() + " " + currentUser.getSurname());
+        return output;
+    }
+
+    public UserDTO getUserInfo(HttpServletRequest request) {
+        String login = Util.extractLoginFromRequest(request);
+        UserEntity currentUser = userRepository.findByLogin(login).get(0);
+        UserDTO user = toDTO(currentUser);
+        if (currentUser.getRole().equals(Role.MANAGER)) {
+            List<String> subordinateTeamsLines = new ArrayList<>();
+            List<TeamEntity> subordinateTeams = teamRepository.findAllByManager(currentUser);
+            if (subordinateTeams.isEmpty()) {
+                user.setSubordinateTeams("-");
+            } else {
+                for (TeamEntity team : subordinateTeams) {
+                    subordinateTeamsLines.add(team.getName());
+                }
+                String teams = String.join(", ", subordinateTeamsLines);
+                user.setSubordinateTeams(teams);
+            }
+        }
+        if (currentUser.getFamilyName()==null||currentUser.getFamilyName().isEmpty()) {
+            user.setFamilyName("-");
+        }
+        if (currentUser.getTeam() == null) {
+            user.setTeamName("-");
+        }
+        if (currentUser.getPhoneNumber()==null||currentUser.getPhoneNumber().isEmpty()) {
+            user.setPhoneNumber("-");
+        }
+        if (currentUser.getDescription()==null||currentUser.getDescription().isEmpty()) {
+            user.setDescription("-");
+        }
+        return user;
+    }
+
     public UserDTO addUser(UserDTO userDTO) {
+        userDTO.setPassword(UUID.randomUUID().toString());
+        sendMailPassword(userDTO);
         userRepository.save(toEntity(userDTO));
         return userDTO;
     }
@@ -81,9 +135,28 @@ public class UserService {
         return userDTO;
     }
 
-    public void updatePassword(Integer id, String password) {
-        UserEntity userEntity = userRepository.findByUsersId(id).get(0);
-        userEntity.setPassword(password);
+    public void updatePassword(Integer id, String password, String mode) {
+        UserEntity userEntity;
+        if (mode.equals("UserChange")) {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String login = ((MyUserPrincipal) authentication.getPrincipal()).getUser().getLogin();
+            List<UserEntity> users = userRepository.findByLogin(login);
+            if (!users.isEmpty()) {
+                userEntity = users.get(0);
+                userEntity.setPassword(password);
+            }
+        } else {
+            userEntity = userRepository.findByUsersId(id).get(0);
+            userEntity.setPassword(password);
+        }
+    }
+
+    public boolean checkPassword(String password) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String login = ((MyUserPrincipal) authentication.getPrincipal()).getUser().getLogin();
+        UserEntity currentUser = userRepository.findByLogin(login).get(0);
+        BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
+        return bcrypt.matches(password, currentUser.getPassword());
     }
 
     private UserEntity toEntity(UserDTO userDTO) {
@@ -151,12 +224,26 @@ public class UserService {
         }
     }
 
+    public boolean sendMailForgot(String email) {
+        boolean isSent = false;
+        if (email != null) {
+            List<UserEntity> users = userRepository.findByEmail(email);
+            if(!users.isEmpty()) {
+                UserEntity user=users.get(0);
+                user.setActivationCode(UUID.randomUUID().toString());
+                String message = String.format("Dear " + user.getName() + " " + user.getSurname() + ",\n" + "if you can not use your old password, you can pick a new one. " +
+                        "For doing this visit next link: http://localhost:8080/activation/"+user.getActivationCode());
+                send(email, "Changing your password.", message);
+                isSent=true;
+            }
+        }
+        return isSent;
+    }
+
     public UserDTO sendMailPassword(UserDTO user) {
-        String code = UUID.randomUUID().toString();
         if (user.getEmail() != null) {
-            user.setActivationCode(code);
             String message = String.format("Dear " + user.getName() + " " + user.getSurname() + ",\n" + "you successfully registered your account. " +
-                    "Now your password is \"" + user.getPassword() + "\". For changing your password visit next link: http://localhost:8080/activation/" + code);
+                    "Now your username is \"" + user.getLogin() + "\" and your password is \"" + user.getPassword() + "\". You can change your password on your account. For authorisation visit next link: http://localhost:8080");
             send(user.getEmail(), "Account activation, password changing.", message);
         }
         return user;
@@ -180,8 +267,7 @@ public class UserService {
         return new TeamDTO().setTeamId(team.getTeamsId()).setName(team.getName());
     }
 
-    @PreAuthorize("@Security.isAllowed(#username)")
-    public Integer getRestDays(@P("username") String username) {
+    public Integer getRestDays(String username) {
         return userRepository.findByLogin(username).get(0).getRestDays();
     }
 }

@@ -17,7 +17,7 @@
                 </v-flex>
                 Family name:
                 <v-flex xs10 sm5>
-                    <v-text-field v-model="user.surname" label="family name" solo></v-text-field>
+                    <v-text-field v-model="user.familyName" label="family name" solo></v-text-field>
                 </v-flex>
                 Role:
                 <v-flex xs10 sm5>

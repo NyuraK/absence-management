@@ -42,6 +42,9 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .antMatchers("/api/departments").hasAuthority("ROLE_" + Role.ADMIN)
+                .antMatchers("/api/users/sendMailForgot/**").permitAll()
+                .antMatchers("/api/users/userByCode/**").permitAll()
+                .antMatchers("/api/users/changePassword").permitAll()
                 .antMatchers("/api/**").hasAnyAuthority("ROLE_" + Role.EMPLOYEE, "ROLE_" + Role.ADMIN, "ROLE_" + Role.MANAGER, "ROLE_" + Role.DIRECTOR)
                 .antMatchers("/**").permitAll()
                 .and()

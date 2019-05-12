@@ -69,13 +69,9 @@
             }).catch(err=> {
                 console.log(err);
             });
-            instance.get('/requests/managerVac', {
-                params: {
-                    name: name
-                }
-            }).then((resp)=> {
+            instance.get('/requests/managerVac').then((resp)=> {
                 this.isManagerOnRest = resp.data;
-                console.log(this.isManagerOnRest);
+                console.log("Is manager on the rest "+this.isManagerOnRest);
             }).catch(err=> {
                 console.log(err);
             });

@@ -1,0 +1,161 @@
+<template>
+    <div>
+        <Nav></Nav>
+        <b-container>
+
+            <div class="container emp-profile">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="profile-head">
+                                <h5>
+                                    {{fields.name}} {{fields.surname}}
+                                </h5>
+                                <h6>
+                                    {{fields.role}}
+                                </h6>
+                            </div>
+                            <b-tabs content-class="mt-3">
+                                <b-tab title="About" active>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="tab-content profile-tab" id="myTabContent">
+                                                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <label>Login</label>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <p>{{fields.login}}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <label>Name</label>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <p>{{fields.name}}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <label>Surname</label>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <p>{{fields.surname}}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <label>Patronymic</label>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <p>{{fields.familyName}}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <label>Email</label>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <p>{{fields.email}}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <label>Hire date</label>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <p>{{fields.hireDate}}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <label>Phone number</label>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <p>{{fields.phoneNumber}}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <label>Other information</label>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <p>{{fields.description}}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <label>Work team</label>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <p>{{fields.teamName}}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <label>Subordinate teams</label>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <p>{{fields.subordinateTeams}}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </b-tab>
+                                <b-tab title="Options">
+                                    <UpdatePassword></UpdatePassword>
+                                </b-tab>
+                            </b-tabs>
+                        </div>
+                    </div>
+
+            </div>
+        </b-container>
+    </div>
+</template>
+
+<script>
+    import Nav from "./Nav";
+    import {instance} from "../Api";
+    import UpdatePassword from "./usersControl/UpdatePassword";
+
+    export default {
+        name: "UsersPage",
+        components: {UpdatePassword, Nav},
+        data() {
+            return {
+                fields: [
+                    {key: "login"},
+                    {key: "role"},
+                    {key: "name"},
+                    {key: "surname"},
+                    {key: "familyName"},
+                    {key: "email"},
+                    {key: "phoneNumber"},
+                    {key: "description"},
+                    {key: "teamName"},
+                    {key: "subordinateTeams"},
+                    {}
+                ],
+            }
+        },
+        created(){
+            instance.get("/users/info").then((resp) => {
+                this.fields = resp.data;
+                console.log(this.fields);
+                console.log(this.fields.login);
+            }).catch(err => {
+                console.log(err);
+            })
+        },
+        mounted() {
+        }
+    }
+</script>
+
+<style scoped>
+
+</style>
