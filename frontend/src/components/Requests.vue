@@ -145,11 +145,7 @@
             }).catch(err => {
                 console.log(err);
             });
-            instance.get("/calendar/busyForDiscuss", {
-                params: {
-                    name: name
-                }
-            }).then(res => {
+            instance.get("/calendar/busyForDiscuss").then(res => {
                 let arr = res.data;
                 let busy;
                 for (let i = 0; i < arr.length; i++) {
