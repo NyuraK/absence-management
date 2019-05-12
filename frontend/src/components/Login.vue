@@ -1,5 +1,8 @@
 <template>
     <div id="login-form">
+        <v-alert v-model="mismatch" dismissible type="error" class="alert alert-danger" outline>
+            Sorry, but your password or your surname is incorrect.
+        </v-alert>
         <b-form>
             <b-form-group
                     id="exampleInputGroup1"
@@ -47,6 +50,7 @@
             return {
                 username: '',
                 password: '',
+                mismatch: false,
             }
         },
         methods: {
@@ -55,8 +59,10 @@
                     this.$acl.change(localStorage.getItem('user'));
                     this.$store.dispatch('getTeam');
                     this.$router.push('/home');
+                    this.mismatch=false;
                 }).catch((err) => {
                     console.log(err);
+                    this.mismatch=true;
                 });
                 this.username = '';
                 this.password = '';
