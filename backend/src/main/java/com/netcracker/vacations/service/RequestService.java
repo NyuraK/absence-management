@@ -58,8 +58,8 @@ public class RequestService {
         }
 
         UserEntity user = userRepository.findByLogin(request.getUsername()).get(0);
-        Date begin = request.getStart();
-        Date end = request.getEnd();
+        Date begin = prepareDate(request.getStart());
+        Date end = prepareDate(request.getEnd());
         if (type.getName().equals(RequestType.VACATION.getName())) {
             long diffInMillies = Math.abs(begin.getTime() - end.getTime());
             long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
@@ -79,6 +79,7 @@ public class RequestService {
         requestEntity.setDescription(request.getDescription());
         requestRepository.save(requestEntity);
     }
+
 
     @PreAuthorize("@Security.isTeamMember(#username, null)")
     public void updateRequest(Status status, List<Integer> requests, @P("username") String username) {
@@ -250,4 +251,10 @@ public class RequestService {
             }
         }
     }
+
+    private Date prepareDate(Date start) {
+        long timeadj = 24 * 60 * 60 * 1000;
+        return new Date(start.getTime() + timeadj);
+    }
+
 }

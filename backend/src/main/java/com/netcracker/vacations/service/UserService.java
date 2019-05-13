@@ -116,7 +116,7 @@ public class UserService {
 
     public UserDTO addUser(UserDTO userDTO) {
         userDTO.setPassword(UUID.randomUUID().toString());
-//        sendMailPassword(userDTO);
+        sendMailPassword(userDTO);
         userRepository.save(toEntity(userDTO));
         return userDTO;
     }
