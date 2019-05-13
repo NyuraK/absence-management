@@ -33,6 +33,9 @@ public class RequestEntity {
     @Temporal(TemporalType.DATE)
     private Date ending;
 
+    @Column(name = "google_id", unique = true)
+    private String googleId;
+
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinColumn(name = "type_of_request_id", referencedColumnName = "type_of_requests_id")
     private RequestTypeEntity typeOfRequest;
@@ -122,5 +125,14 @@ public class RequestEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+
+    public String getGoogleId() {
+        return googleId;
+    }
+
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
     }
 }

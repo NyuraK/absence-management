@@ -195,6 +195,7 @@ public class UserService {
         userDTO.setRole(entity.getRole().getName());
         userDTO.setLogin(entity.getLogin());
         userDTO.setRestDays(entity.getRestDays());
+        userDTO.setIntegrated(entity.getIntegrated());
         userDTO.setTeamId(entity.getTeam() == null ? null : entity.getTeam().getTeamsId());
         userDTO.setTeamName(entity.getTeam() == null ? null : entity.getTeam().getName());
         userDTO.setDepartmentId(entity.getTeam() == null ? null :
