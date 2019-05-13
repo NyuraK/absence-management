@@ -53,6 +53,7 @@
                 </ul>
             </v-container>
         </v-content>
+        <Footer></Footer>
     </div>
 </template>
 
@@ -61,10 +62,11 @@
     import {instance} from "../../Api";
     import Nav from "../Nav";
     import ChangeDirector from "./ChangeDirector";
+    import Footer from "../Footer";
 
     export default {
         name: "DepartmentEdit",
-        components: {ChangeDirector, Nav},
+        components: {Footer, ChangeDirector, Nav},
 
         data() {
             return {

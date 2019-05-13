@@ -33,6 +33,7 @@
                 Nothing to show
             </p>
         </b-container>
+        <Footer></Footer>
     </div>
 </template>
 
@@ -40,9 +41,10 @@
     import Nav from "./Nav";
     import {GChart} from 'vue-google-charts'
     import {instance} from "../Api";
+    import Footer from "./Footer";
 
     export default {
-        components: {Nav, GChart},
+        components: {Footer, Nav, GChart},
         name: "Timeline",
         data() {
             return {

@@ -47,6 +47,7 @@
                 </v-layout>
             </v-container>
         </v-content>
+        <Footer></Footer>
     </div>
 </template>
 
@@ -55,10 +56,11 @@
     import {instance} from '../../Api.js';
     import Nav from "../Nav";
     import NewDepartment from "./NewDepartment";
+    import Footer from "../Footer";
 
     export default {
         name: "Departments",
-        components: {NewDepartment, Nav},
+        components: {Footer, NewDepartment, Nav},
         data() {
             return {
                 search: '',

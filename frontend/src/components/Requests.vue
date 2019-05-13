@@ -58,16 +58,18 @@
                 </b-col>
             </b-row>
         </b-container>
+        <Footer></Footer>
     </div>
 </template>
 
 <script>
     import Nav from "./Nav";
     import {instance} from "../Api";
+    import Footer from "./Footer";
 
     export default {
         name: "Requests",
-        components: {Nav},
+        components: {Footer, Nav},
         data() {
             return {
                 modes: ['multi', 'single'],
