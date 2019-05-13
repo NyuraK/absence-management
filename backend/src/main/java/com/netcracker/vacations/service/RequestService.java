@@ -64,7 +64,7 @@ public class RequestService {
             long diffInMillies = Math.abs(begin.getTime() - end.getTime());
             long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
             if (diffInDays > user.getRestDays()) {
-                throw new TooManyDaysException("You took too many days");
+                throw new TooManyDaysException("You took too many days. You have only " + user.getRestDays() + " vacant days");
             }
         }
 

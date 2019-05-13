@@ -42,19 +42,7 @@
                     <v-checkbox v-model="remote" label="Remote work" color="cyan" @change="showVac()"
                                 :disabled="isAllActive" hide-details></v-checkbox>
                 </b-col>
-                <b-col cols="2">
-                    <v-card id="days">
-                        <v-container fill-height>
-                            <v-layout fill-height>
-                                <v-flex xs12 align-end>
-                                    <span class="headline">Amount of vacant days: </span>
-                                    <span class="headline">{{vacantDays}}</span>
-                                </v-flex>
-                            </v-layout>
-                        </v-container>
-                    </v-card>
-                </b-col>
-                <b-col>
+                <b-col cols="3">
                     <div style="text-align: center">
                         <p>Occupied days for {{team}} team:</p>
                         <v-calendar

@@ -132,7 +132,8 @@ public class UserService {
         return userDTO;
     }
 
-    public void updatePassword(Integer id, String password, String mode) {
+    @PreAuthorize("@Security.isAllowed(#username)")
+    public void updatePassword(Integer id, String password, String mode, @P("username") String username) {
         UserEntity userEntity;
         if (mode.equals("UserChange")) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
