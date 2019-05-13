@@ -88,12 +88,14 @@ public class UsersController {
             @PathVariable("id") Integer id,
             @RequestBody String password
     ) {
-        service.updatePassword(id, password, "AdminChange");
+        String username = SecurityExpressionMethods.currentUserLogin();
+        service.updatePassword(id, password, "AdminChange", username);
     }
 
     @PutMapping("/passwordByUser")
     public void updatePassword(@RequestBody String password) {
-        service.updatePassword(0, password, "UserChange");
+        String username = SecurityExpressionMethods.currentUserLogin();
+        service.updatePassword(0, password, "UserChange", username);
     }
 
 

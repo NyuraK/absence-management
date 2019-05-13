@@ -73,9 +73,11 @@
                         this.success=false;
                     } else if (res.data===true){
                         this.success= true;
+                        this.email = '';
                     }
                 }).catch(err => {
                     console.log(err);
+                    this.email = '';
                 });
             }
         }
