@@ -74,6 +74,7 @@
                 </ul>
             </v-container>
         </v-content>
+        <Footer></Footer>
     </div>
 </template>
 
@@ -82,10 +83,11 @@
     import {instance} from "../../Api";
     import Nav from "../Nav";
     import AddUserToTeam from "./AddUserToTeam";
+    import Footer from "../Footer";
 
     export default {
         name: "TeamEdit",
-        components: {AddUserToTeam, Nav},
+        components: {Footer, AddUserToTeam, Nav},
         data() {
             return {
                 teamName: '',

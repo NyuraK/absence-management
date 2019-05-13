@@ -1,44 +1,48 @@
 <template>
-    <div id="login-form">
-        <v-alert v-model="mismatch" dismissible type="error" class="alert alert-danger" outline>
-            Sorry, but your password or your surname is incorrect.
-        </v-alert>
-        <b-form>
-            <b-form-group
-                    id="exampleInputGroup1"
-                    label="Username:"
-                    label-for="exampleInput1"
-                    description="Enter your username"
-            >
-                <b-form-input
-                        id="exampleInput1"
-                        type="text"
-                        v-model="username"
-                        required
-                        placeholder="Enter username"/>
-            </b-form-group>
+    <div>
+        <div id="login-form">
+            <v-alert v-model="mismatch" dismissible type="error" class="alert alert-danger" outline>
+                Sorry, but your password or your surname is incorrect.
+            </v-alert>
+            <b-form>
+                <b-form-group
+                        id="exampleInputGroup1"
+                        label="Username:"
+                        label-for="exampleInput1"
+                        description="Enter your username"
+                >
+                    <b-form-input
+                            id="exampleInput1"
+                            type="text"
+                            v-model="username"
+                            required
+                            placeholder="Enter username"/>
+                </b-form-group>
 
-            <b-form-group id="exampleInputGroup2" label="Your password:" label-for="exampleInput2">
-                <b-form-input
-                        id="exampleInput2"
-                        type="password"
-                        v-model="password"
-                        required
-                        placeholder="Enter password"/>
-            </b-form-group>
-        </b-form>
-        <b-button type="submit" variant="primary" v-on:click="check">Log in</b-button>
-        <br><br>
-        <SendByEmail></SendByEmail>
+                <b-form-group id="exampleInputGroup2" label="Your password:" label-for="exampleInput2">
+                    <b-form-input
+                            id="exampleInput2"
+                            type="password"
+                            v-model="password"
+                            required
+                            placeholder="Enter password"/>
+                </b-form-group>
+            </b-form>
+            <b-button type="submit" variant="primary" v-on:click="check">Log in</b-button>
+            <br><br>
+            <SendByEmail></SendByEmail>
+        </div>
+            <Footer></Footer>
     </div>
 </template>
 
 <script>
 
     import SendByEmail from "./SendByEmail";
+    import Footer from "./Footer";
 
     export default {
-        components: {SendByEmail},
+        components: {Footer, SendByEmail},
         name: "Login",
         data() {
             return {
@@ -52,16 +56,16 @@
                 this.$store.dispatch('login', {username: this.username, password: this.password}).then(() => {
                     this.$acl.change(localStorage.getItem('user'));
                     this.$store.dispatch('getTeam');
-                    this.$store.dispatch('getUserInfo').then(()=>this.$router.push('/home'));
-                    this.mismatch=false;
+                    this.$store.dispatch('getUserInfo').then(() => this.$router.push('/home'));
+                    this.mismatch = false;
                 }).catch((err) => {
                     console.log(err);
-                    this.mismatch=true;
+                    this.mismatch = true;
                 });
                 this.username = '';
                 this.password = '';
             },
-            async jj () {
+            async jj() {
                 this.$store.dispatch('getTeam');
                 this.$store.dispatch('getUserInfo');
             },

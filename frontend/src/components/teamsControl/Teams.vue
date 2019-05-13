@@ -44,6 +44,7 @@
                 </v-layout>
             </v-container>
         </v-content>
+        <Footer></Footer>
     </div>
 </template>
 
@@ -53,10 +54,11 @@
     import NewTeam from "./NewTeam";
     import Nav from "../Nav";
     import AddUserToTeam from "./AddUserToTeam";
+    import Footer from "../Footer";
 
     export default {
         name: "Teams",
-        components: {AddUserToTeam, Nav, NewTeam},
+        components: {Footer, AddUserToTeam, Nav, NewTeam},
         data() {
             return {
                 search: '',

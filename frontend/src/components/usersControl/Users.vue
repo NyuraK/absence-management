@@ -59,6 +59,7 @@
                 </v-layout>
             </v-container>
         </v-content>
+        <Footer></Footer>
     </div>
 </template>
 
@@ -67,10 +68,11 @@
     import {instance} from '../../Api.js';
     import NewUser from "./NewUser";
     import Nav from "../Nav";
+    import Footer from "../Footer";
 
 
     export default {
-        components: {Nav, NewUser},
+        components: {Footer, Nav, NewUser},
         data() {
             return {
                 alert: false,
