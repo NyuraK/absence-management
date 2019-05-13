@@ -1,6 +1,6 @@
 package com.netcracker.vacations.controller;
 
-import com.netcracker.vacations.service.IntegrationService2;
+import com.netcracker.vacations.service.IntegrationService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,9 +11,9 @@ import org.springframework.web.servlet.view.RedirectView;
 @RequestMapping("callback")
 public class IntegrationCallbackController {
 
-    private IntegrationService2 integrationService;
+    private IntegrationService integrationService;
 
-    public IntegrationCallbackController(IntegrationService2 integrationService) {
+    public IntegrationCallbackController(IntegrationService integrationService) {
         this.integrationService = integrationService;
     }
 

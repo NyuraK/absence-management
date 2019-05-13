@@ -21,6 +21,15 @@ public class UserDTO {
     private String activationCode;
     private Integer departmentId;
     private String subordinateTeams;
+    private Boolean integrated;
+
+    public Boolean getIntegrated() {
+        return integrated;
+    }
+
+    public void setIntegrated(Boolean integrated) {
+        this.integrated = integrated;
+    }
 
     public Integer getDepartmentId() {
         return departmentId;

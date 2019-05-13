@@ -37,12 +37,12 @@ import java.util.List;
 
 @Service
 @Transactional
-public class IntegrationService2 {
+public class IntegrationService {
 
     private RequestRepository requestRepository;
     private UserRepository userRepository;
 
-    public IntegrationService2(RequestRepository requestRepository, UserRepository userRepository) {
+    public IntegrationService(RequestRepository requestRepository, UserRepository userRepository) {
 
         this.requestRepository = requestRepository;
         this.userRepository = userRepository;
@@ -88,20 +88,6 @@ public class IntegrationService2 {
         }
     }
 
-//    public void insertEventsAfterApproval(Integer requests) throws Exception {
-//        RequestEntity requestEntity = requestRepository.findByRequestsId(requests).get(0);
-//        String login = requestEntity.getUser().getLogin();
-//        Credential credential = getStoredCredential(login);
-//        if (credential != null) {
-//            Calendar service = new Calendar.Builder(httpTransport, JSON_FACTORY, credential)
-//                    .setApplicationName(APPLICATION_NAME)
-//                    .build();
-//            String calendarId = "primary";
-//            Event event = service.events().insert(calendarId, makeEvent(requestEntity)).execute();
-//            requestEntity.setGoogleId(event.getId());
-//            requestRepository.save(requestEntity);
-//        }
-//    }
 
     public void insertEvents(String code) throws Exception {
         Calendar service = getCalendarService(code);
@@ -128,7 +114,6 @@ public class IntegrationService2 {
                         requestRepository.save(entity);
                     }
                     duplicate = false;
-
                 }
             }
         }
@@ -162,7 +147,6 @@ public class IntegrationService2 {
         event.setColorId("3");
         return event;
     }
-
 
     public Calendar getCalendarService(String code) throws Exception {
         return new Calendar.Builder(httpTransport, JSON_FACTORY, getCredential(code))
