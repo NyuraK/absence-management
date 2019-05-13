@@ -7,18 +7,18 @@
             <v-card>
                 <v-card-text>
                     <h3 class="headline mb-0">Enter user details</h3>
-                    <v-text-field label="First name" v-model="name"></v-text-field>
-                    <v-text-field label="Surname" v-model="surname"></v-text-field>
+                    <v-text-field label="First name*" :rules="[rules.required]" v-model="name"></v-text-field>
+                    <v-text-field label="Surname*" :rules="[rules.required]"   v-model="surname"></v-text-field>
                     <v-text-field label="Family name" v-model="familyName"></v-text-field>
-                    <v-select :items="roles" label="Role" v-model="role"></v-select>
-                    <v-text-field v-model="email" :rules="[rules.required, rules.email]" label="E-mail"></v-text-field>
-                    <v-text-field label="Login" v-model="login"></v-text-field>
+                    <v-select :items="roles" label="Role*" :rules="[rules.required]" v-model="role"></v-select>
+                    <v-text-field v-model="email" :rules="[rules.required, rules.email]" label="E-mail*"></v-text-field>
+                    <v-text-field label="Login*" :rules="[rules.required]" v-model="login"></v-text-field>
                     <v-select :items="teams" label="Team" v-model="team" item-text="name" return-object></v-select>
-                    <v-text-field label="Rest Days" v-model="restDays"></v-text-field>
-                    <v-text-field label="Hire date" type="date" v-model="hireDate"></v-text-field>
+                    <v-text-field label="Rest Days*" :rules="[rules.required]" v-model="restDays"></v-text-field>
+                    <v-text-field label="Hire date*" :rules="[rules.required]" type="date" v-model="hireDate"></v-text-field>
                     <v-text-field label="Phone number" v-model="phoneNumber" mask="+# (###) ###-##-##"></v-text-field>
                     <v-text-field label="Description" v-model="description"></v-text-field>
-                    <!--                    <small class="grey&#45;&#45;text">* This doesn't actually save.</small>-->
+                    <small class="grey--text">* Required fields.</small>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn flat color="error" @click="dialog = false">Cancel</v-btn>

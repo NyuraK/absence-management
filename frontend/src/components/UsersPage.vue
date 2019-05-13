@@ -107,6 +107,10 @@
                                 </b-tab>
                                 <b-tab title="Options">
                                     <UpdatePassword></UpdatePassword>
+                                    <div>
+                                        <v-btn dark color="teal lighten-1" v-on:click="integrate" v-if="!integrated">google calendar integration</v-btn>
+                                        <v-btn dark color="teal lighten-1" v-on:click="cancelIntegration" v-else>cancel google calendar integration</v-btn>
+                                    </div>
                                 </b-tab>
                             </b-tabs>
                         </div>
@@ -140,19 +144,36 @@
                     {key: "subordinateTeams"},
                     {}
                 ],
+                integrated: ''
             }
         },
         created(){
             instance.get("/users/info").then((resp) => {
                 this.fields = resp.data;
+                this.integrated = resp.data.integrated;
                 console.log(this.fields);
                 console.log(this.fields.login);
             }).catch(err => {
                 console.log(err);
             })
         },
+
         mounted() {
-        }
+        },
+
+        methods: {
+            integrate() {
+                instance.get('integration')
+                    .then(response => {
+                        window.open(response.data, '_blank');
+                    });
+
+            },
+            cancelIntegration() {
+                instance.put('integration');
+                location.reload();
+            },
+        },
     }
 </script>
 

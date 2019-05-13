@@ -4,6 +4,7 @@ import com.netcracker.vacations.domain.enums.RequestType;
 import com.netcracker.vacations.domain.enums.Status;
 import com.netcracker.vacations.dto.RequestDTO;
 import com.netcracker.vacations.security.SecurityExpressionMethods;
+import com.netcracker.vacations.service.IntegrationService;
 import com.netcracker.vacations.service.RequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +18,13 @@ import java.util.List;
 public class RequestController {
 
     private RequestService reqService;
+    private IntegrationService integrationService;
 
     @Autowired
-    public RequestController(RequestService reqService) {
+    public RequestController(RequestService reqService, IntegrationService integrationService) {
+
         this.reqService = reqService;
+        this.integrationService = integrationService;
     }
 
     @PostMapping
@@ -61,10 +65,10 @@ public class RequestController {
     }
 
     @PatchMapping("/approve")
-    public void approveRequest(@RequestBody List<Integer> requests) {
+    public void approveRequest(@RequestBody List<Integer> requests) throws Exception {
         String username = SecurityExpressionMethods.currentUserLogin();
         reqService.updateRequest(Status.ACCEPTED, requests, username);
+        integrationService.insertEventsAfterApproval(requests);
     }
-
 }
 
