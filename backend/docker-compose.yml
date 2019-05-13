@@ -1,4 +1,4 @@
-version: '3.7'
+version: '2.1'
 services:
   absence-management-database:
     image: mysql:latest
@@ -11,14 +11,15 @@ services:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       interval: 2s
       timeout: 5s
-      retries: 30
+      retries: 5
   absence-management-service:
     image: sivuha/absence-management:0.0.1-SNAPSHOT
     ports:
       - 8088:8088
     depends_on:
-      - absence-management-database
-    links: 
+      absence-management-database:
+        condition: service_healthy
+    links:
       - absence-management-database
 #     environment:
 #       - SPRING_DATASOURCE_URL=jdbc:mysql://absence-management-database:3306/absence_management?useUnicode=true&useJDBCCompliantTimezoneShift=true&serverTimezone=UTC&useLegacyDatetimeCode=false
