@@ -18,6 +18,7 @@ import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.EventReminder;
 import com.netcracker.vacations.domain.RequestEntity;
 import com.netcracker.vacations.domain.UserEntity;
+import com.netcracker.vacations.repository.GoogleCredentialRepository;
 import com.netcracker.vacations.repository.RequestRepository;
 import com.netcracker.vacations.repository.UserRepository;
 import com.netcracker.vacations.security.MyUserPrincipal;
@@ -41,11 +42,15 @@ public class IntegrationService {
 
     private RequestRepository requestRepository;
     private UserRepository userRepository;
+    private GoogleCredentialRepository googleCredentialRepository;
 
-    public IntegrationService(RequestRepository requestRepository, UserRepository userRepository) {
+    public IntegrationService(RequestRepository requestRepository,
+                              UserRepository userRepository,
+                              GoogleCredentialRepository googleCredentialRepository) {
 
         this.requestRepository = requestRepository;
         this.userRepository = userRepository;
+        this.googleCredentialRepository = googleCredentialRepository;
     }
 
     @Value("${google.client.client-id}")
@@ -55,8 +60,7 @@ public class IntegrationService {
     @Value("${google.client.redirectUri}")
     private String redirectURI;
 
-    private static final String TOKENS_DIRECTORY_PATH = "tokens";
-    private static final List<String> SCOPES = Collections.singletonList(CalendarScopes.CALENDAR);
+    private static final List<String> SCOPES = Collections.singletonList("https://www.googleapis.com/auth/calendar.events");
     private static final String APPLICATION_NAME = "Vacations-app";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static HttpTransport httpTransport;
@@ -160,12 +164,11 @@ public class IntegrationService {
             currentUser.setIntegrated(true);
             userRepository.save(currentUser);
         }
-        if (flow.loadCredential(login) != null) {
-            System.out.println("!!! not null !!!");
-            return flow.loadCredential(login);
-        }
+//        if (flow.loadCredential(login) != null) {
+//            System.out.println("!!! not null !!!");
+//            return flow.loadCredential(login);
+//        }
         TokenResponse response = flow.newTokenRequest(code).setRedirectUri(redirectURI).execute();
-        System.out.println("!!! NULL !!!");
         return flow.createAndStoreCredential(response, login);
     }
 
@@ -185,10 +188,9 @@ public class IntegrationService {
             // Build flow and trigger user authorization request.
             flow = new GoogleAuthorizationCodeFlow.Builder(
                     httpTransport, JSON_FACTORY, clientSecrets, SCOPES)
-                    .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
+                    .setDataStoreFactory(new MySqlDataStoreFactory(googleCredentialRepository))
                     .setAccessType("offline")
                     .build();
-            System.out.println("!!! flow is null !!!");
         }
         AuthorizationCodeRequestUrl authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI);
         return authorizationUrl.build();
