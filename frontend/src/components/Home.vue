@@ -64,6 +64,7 @@
                 </b-col>
             </b-row>
         </b-container>
+        <Footer></Footer>
     </div>
 </template>
 
@@ -71,6 +72,7 @@
     import AbsRequest from "./AbsRequest";
     import Nav from "./Nav";
     import {instance} from "../Api";
+    import Footer from "./Footer";
 
     export default {
         name: "Home",
@@ -191,7 +193,7 @@
             }
 
         },
-        components: {AbsRequest, Nav},
+        components: {Footer, AbsRequest, Nav},
         created() {
             this.$acl.change(localStorage.getItem('user'));
             let name = localStorage.getItem('username');

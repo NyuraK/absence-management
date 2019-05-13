@@ -59,6 +59,7 @@
                 </v-flex>
             </v-container>
         </v-content>
+        <Footer></Footer>
     </div>
 </template>
 
@@ -67,10 +68,11 @@
     import {instance} from '../../Api.js';
     import Nav from "../Nav";
     import UpdatePassword from "./UpdatePassword";
+    import Footer from "../Footer";
 
     export default {
         name: "UserEdit",
-        components: {UpdatePassword, Nav},
+        components: {Footer, UpdatePassword, Nav},
         data() {
             return {
                 roles: ['Director', 'Manager', 'Employee', 'Administrator'],
