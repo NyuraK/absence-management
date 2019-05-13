@@ -6,7 +6,7 @@ services:
       - 8088:8088
     depends_on:
       - absence-management-database
-    environment:
+#     environment:
 #       - SPRING_DATASOURCE_URL=jdbc:mysql://absence-management-database:3306/absence_management?useUnicode=true&useJDBCCompliantTimezoneShift=true&serverTimezone=UTC&useLegacyDatetimeCode=false
 #       - SPRING_DATASOURCE_USERNAME=root
 #       - SPRING_DATASOURCE_PASSWORD=root
