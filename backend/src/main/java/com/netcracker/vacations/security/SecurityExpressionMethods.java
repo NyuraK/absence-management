@@ -50,7 +50,6 @@ public class SecurityExpressionMethods {
         return currentUser.getLogin().equals(username);
     }
 
-    //TODO probably should rename
     public boolean isAllowed(Optional<String> username) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         final UserEntity currentUser = ((MyUserPrincipal) authentication.getPrincipal()).getUser();
