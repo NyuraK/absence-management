@@ -17,6 +17,7 @@ import static java.util.stream.Collectors.toSet;
 
 @Component("Security")
 public class SecurityExpressionMethods {
+    //TODO s4fj loggerFactory.getLogger();
     private static final Logger logger = LogManager.getLogger(SecurityExpressionMethods.class);
 
     private TeamRepository teamRepository;

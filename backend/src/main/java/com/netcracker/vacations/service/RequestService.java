@@ -68,13 +68,7 @@ public class RequestService {
             }
         }
 
-        RequestEntity requestEntity = new RequestEntity(
-                user,
-                begin,
-                end,
-                type,
-                status
-        );
+        RequestEntity requestEntity = new RequestEntity(user, begin, end, type, status);
 
         requestEntity.setDescription(request.getDescription());
         requestRepository.save(requestEntity);
@@ -97,8 +91,8 @@ public class RequestService {
         UserEntity user = entity.getUser();
         Date begin = entity.getBeginning();
         Date end = entity.getEnding();
-        long diffInMillies = Math.abs(begin.getTime() - end.getTime());
-        long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+        long diffInMillis = Math.abs(begin.getTime() - end.getTime());
+        long diffInDays = TimeUnit.DAYS.convert(diffInMillis, TimeUnit.MILLISECONDS);
         Integer restDays = user.getRestDays();
         user.setRestDays(restDays - (int) diffInDays);
         userRepository.save(user);

@@ -6,6 +6,8 @@ import com.netcracker.vacations.dto.RequestDTO;
 import com.netcracker.vacations.security.SecurityExpressionMethods;
 import com.netcracker.vacations.service.IntegrationService;
 import com.netcracker.vacations.service.RequestService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/requests")
 public class RequestController {
+
+    private static final Logger logger = LogManager.getLogger(RequestController.class);
 
     private RequestService reqService;
     private IntegrationService integrationService;
@@ -29,6 +33,7 @@ public class RequestController {
 
     @PostMapping
     public ResponseEntity<?> addRequest(@RequestBody RequestDTO request) {
+        logger.info(request.getStart() + " " + request.getEnd());
         reqService.saveRequest(request);
         if (request.getNeedToEmail()) {
             reqService.sendMailRequest(request);
