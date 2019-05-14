@@ -1,8 +1,11 @@
 package com.netcracker.vacations.domain;
 
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 
 @Entity
@@ -14,6 +17,7 @@ public class GoogleCredential {
     private String valueId;
 
     @Column(name = "value")
+    @Type(type = "text")
     private String value;
 
     public String getValueId() {
