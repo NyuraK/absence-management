@@ -123,12 +123,12 @@ public class IntegrationService {
                 .setSummary(requestEntity.getTypeOfRequest().getName())
                 .setDescription(requestEntity.getDescription());
 
-        DateTime startDateTime = new DateTime(requestEntity.getBeginning().toString());
+        DateTime startDateTime = new DateTime(requestEntity.getBeginning().plusDays(1).toString());
         EventDateTime start = new EventDateTime()
                 .setDate(startDateTime);
         event.setStart(start);
 
-        DateTime endDateTime = new DateTime(requestEntity.getEnding().toString());
+        DateTime endDateTime = new DateTime(requestEntity.getEnding().plusDays(1).toString());
         EventDateTime end = new EventDateTime()
                 .setDate(endDateTime);
         event.setEnd(end);
