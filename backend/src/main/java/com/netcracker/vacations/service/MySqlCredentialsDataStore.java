@@ -3,15 +3,16 @@ package com.netcracker.vacations.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.auth.oauth2.StoredCredential;
 import com.google.api.client.util.store.AbstractDataStore;
+import com.google.api.client.util.store.DataStore;
 import com.google.api.client.util.store.DataStoreFactory;
 import com.netcracker.vacations.domain.GoogleCredential;
 import com.netcracker.vacations.repository.GoogleCredentialRepository;
+import java.util.Base64;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.*;
 
-public class MySqlCredentialsDataStore<V extends Serializable> extends AbstractDataStore<V> {
+public class MySqlCredentialsDataStore extends AbstractDataStore<StoredCredential> {
 
     private GoogleCredentialRepository googleCredentialRepository;
 
@@ -19,15 +20,15 @@ public class MySqlCredentialsDataStore<V extends Serializable> extends AbstractD
      * @param dataStoreFactory data store factory
      * @param id               data store ID
      */
-    protected MySqlCredentialsDataStore(DataStoreFactory dataStoreFactory, String id,
-                                        GoogleCredentialRepository googleCredentialRepository) {
+    MySqlCredentialsDataStore(DataStoreFactory dataStoreFactory, String id,
+                              GoogleCredentialRepository googleCredentialRepository) {
         super(dataStoreFactory, id);
         this.googleCredentialRepository = googleCredentialRepository;
     }
 
 
     @Override
-    public Set<String> keySet() throws IOException {
+    public Set<String> keySet() {
         Iterable<GoogleCredential> list = googleCredentialRepository.findAll();
         Set<String> result = new HashSet<>();
         for (GoogleCredential credential : list) {
@@ -37,49 +38,52 @@ public class MySqlCredentialsDataStore<V extends Serializable> extends AbstractD
     }
 
     @Override
-    public Collection<V> values() throws IOException {
+    public Collection<StoredCredential> values() throws IOException {
         Iterable<GoogleCredential> list = googleCredentialRepository.findAll();
-        List<V> result = new ArrayList<>();
+        List<StoredCredential> result = new ArrayList<>();
         ObjectMapper mapper = new ObjectMapper();
         for (GoogleCredential credential : list) {
 //            result.add(mapper.readValue(credential.getValue(), new TypeReference<V>(){}));
-            result.add((V) mapper.readValue(credential.getValue(), StoredCredential.class));
+            result.add(mapper.readValue(credential.getValue(), StoredCredential.class));
         }
         return Collections.unmodifiableList(result);
     }
 
     @Override
-    public V get(String key) throws IOException {
+    public StoredCredential get(String key) throws IOException {
         if (key == null) {
             return null;
         }
-        GoogleCredential googleCredential = googleCredentialRepository.findAllByValueId(key).get(0);
-        if (googleCredential == null) return null;
-        String jsonStr = googleCredential.getValue();
+        List<GoogleCredential> credList = googleCredentialRepository.findAllByValueId(key);
+        if (credList.isEmpty()) return null;
+        GoogleCredential googleCredential = credList.get(0);
+        String encodedString = googleCredential.getValue();
+        byte[] decodedBytes = Base64.getDecoder().decode(encodedString);
+        String jsonStr = new String(decodedBytes);
         ObjectMapper mapper = new ObjectMapper();
-        StoredCredential storedCredential = mapper.readValue(jsonStr, StoredCredential.class);
-        return (V) storedCredential;
+        return mapper.readValue(jsonStr, StoredCredential.class);
     }
 
     @Override
-    public com.google.api.client.util.store.DataStore<V> set(String key, V value) throws IOException {
+    public DataStore<StoredCredential> set(String key, StoredCredential value) throws IOException {
         GoogleCredential googleCredential = new GoogleCredential();
         googleCredential.setValueId(key);
         ObjectMapper mapper = new ObjectMapper();
         String jsonStr = mapper.writeValueAsString(value);
-        googleCredential.setValue(jsonStr);
+        String encodedString = Base64.getEncoder().encodeToString(jsonStr.getBytes());
+        googleCredential.setValue(encodedString);
         googleCredentialRepository.save(googleCredential);
         return this;
     }
 
     @Override
-    public com.google.api.client.util.store.DataStore<V> clear() throws IOException {
+    public com.google.api.client.util.store.DataStore<StoredCredential> clear(){
         googleCredentialRepository.deleteAll();
         return this;
     }
 
     @Override
-    public com.google.api.client.util.store.DataStore<V> delete(String key) throws IOException {
+    public com.google.api.client.util.store.DataStore<StoredCredential> delete(String key) {
         googleCredentialRepository.deleteById(key);
         return this;
     }
