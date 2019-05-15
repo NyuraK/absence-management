@@ -46,7 +46,6 @@ public class RequestDTO {
         this.teamName = teamName;
     }
 
-
     public String getType() {
         return type;
     }

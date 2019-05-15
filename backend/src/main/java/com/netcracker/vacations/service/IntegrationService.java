@@ -30,7 +30,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 
@@ -59,7 +58,7 @@ public class IntegrationService {
     private String redirectURI;
 
     private static final List<String> SCOPES = Collections.singletonList("https://www.googleapis.com/auth/calendar.events");
-    private static final String APPLICATION_NAME = "Vacations-app";
+    private static final String APPLICATION_NAME = "Absence Management-app";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final String CALENDAR_ID = "primary";
     private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
@@ -124,12 +123,12 @@ public class IntegrationService {
                 .setSummary(requestEntity.getTypeOfRequest().getName())
                 .setDescription(requestEntity.getDescription());
 
-        DateTime startDateTime = new DateTime(DATE_FORMAT.format(requestEntity.getBeginning()));
+        DateTime startDateTime = new DateTime(requestEntity.getBeginning().toString());
         EventDateTime start = new EventDateTime()
                 .setDate(startDateTime);
         event.setStart(start);
 
-        DateTime endDateTime = new DateTime(DATE_FORMAT.format(new Date(requestEntity.getEnding().getTime() + 86400000)));
+        DateTime endDateTime = new DateTime(requestEntity.getEnding().toString());
         EventDateTime end = new EventDateTime()
                 .setDate(endDateTime);
         event.setEnd(end);
@@ -188,4 +187,5 @@ public class IntegrationService {
         AuthorizationCodeRequestUrl authorizationUrl = flow.newAuthorizationUrl().setRedirectUri(redirectURI);
         return authorizationUrl.build();
     }
+
 }

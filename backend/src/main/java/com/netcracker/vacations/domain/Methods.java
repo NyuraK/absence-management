@@ -43,16 +43,16 @@ public class Methods {
         typeRepo.deleteById(type.getTypeOfRequest());
     }
 
-    public List<RequestEntity> findByDates(Date begin, Date end, RequestRepository requestsRepo) {
-        List<RequestEntity> requests = requestsRepo.findAllByStatus(Status.ACCEPTED);
-        List<RequestEntity> result = new ArrayList<RequestEntity>();
-        for (RequestEntity request : requests) {
-            if ((((request.getBeginning()).after(begin)) || (request.getBeginning().equals(begin))) && ((((request.getEnding()).before(end)) || (request.getEnding().equals(end))))) {
-                result.add(request);
-            }
-        }
-        return result;
-    }
+//    public List<RequestEntity> findByDates(Date begin, Date end, RequestRepository requestsRepo) {
+//        List<RequestEntity> requests = requestsRepo.findAllByStatus(Status.ACCEPTED);
+//        List<RequestEntity> result = new ArrayList<RequestEntity>();
+//        for (RequestEntity request : requests) {
+//            if ((((request.getBeginning()).after(begin)) || (request.getBeginning().equals(begin))) && ((((request.getEnding()).before(end)) || (request.getEnding().equals(end))))) {
+//                result.add(request);
+//            }
+//        }
+//        return result;
+//    }
 
     public void /*Map<Date,String>*/ ColorMonth(int year, int month/*, TeamEntity team*/) {
         Calendar calendar = new GregorianCalendar(year, month - 1, 1);

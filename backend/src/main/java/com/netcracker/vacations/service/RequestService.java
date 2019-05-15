@@ -19,11 +19,13 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 
 @Service
@@ -58,12 +60,13 @@ public class RequestService {
         }
 
         UserEntity user = userRepository.findByLogin(request.getUsername()).get(0);
-        Date begin = prepareDate(request.getStart());
-        Date end = prepareDate(request.getEnd());
+        LocalDate begin = convertToLocalDateViaInstant(request.getStart());
+        LocalDate end = convertToLocalDateViaInstant(request.getEnd());
+        Period intervalPeriod = Period.between(begin, end);
         if (type.getName().equals(RequestType.VACATION.getName())) {
-            long diffInMillies = Math.abs(begin.getTime() - end.getTime());
-            long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-            if (diffInDays > user.getRestDays()) {
+//            long diffInMillies = Math.abs(begin.getTime() - end.getTime());
+//            long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+            if (intervalPeriod.getDays() > user.getRestDays()) {
                 throw new TooManyDaysException("You took too many days. You have only " + user.getRestDays() + " vacant days");
             }
         }
@@ -89,12 +92,11 @@ public class RequestService {
 
     private void decrementRestDays(RequestEntity entity) {
         UserEntity user = entity.getUser();
-        Date begin = entity.getBeginning();
-        Date end = entity.getEnding();
-        long diffInMillis = Math.abs(begin.getTime() - end.getTime());
-        long diffInDays = TimeUnit.DAYS.convert(diffInMillis, TimeUnit.MILLISECONDS);
+        LocalDate begin = entity.getBeginning();
+        LocalDate end = entity.getEnding();
+        Period intervalPeriod = Period.between(begin, end);
         Integer restDays = user.getRestDays();
-        user.setRestDays(restDays - (int) diffInDays);
+        user.setRestDays(restDays - intervalPeriod.getDays());
         userRepository.save(user);
     }
 
@@ -194,8 +196,8 @@ public class RequestService {
         }
         requestDTO.setName(entity.getUser().getName() + " " + entity.getUser().getFamilyName());
         requestDTO.setDescription(entity.getDescription());
-        requestDTO.setStart(entity.getBeginning());
-        requestDTO.setEnd(entity.getEnding());
+        requestDTO.setStart(convertToDateViaSqlDate(entity.getBeginning()));
+        requestDTO.setEnd(convertToDateViaSqlDate(entity.getEnding()));
         requestDTO.setType(entity.getTypeOfRequest().getName());
         requestDTO.setStatus(entity.getStatus().getName());
         return requestDTO;
@@ -219,9 +221,10 @@ public class RequestService {
             boolean sameDayBegin = calCurrent.get(Calendar.DAY_OF_YEAR) == calBegin.get(Calendar.DAY_OF_YEAR) && calCurrent.get(Calendar.YEAR) == calBegin.get(Calendar.YEAR);
             boolean sameDayEnd = calCurrent.get(Calendar.DAY_OF_YEAR) == calEnd.get(Calendar.DAY_OF_YEAR) && calCurrent.get(Calendar.YEAR) == calEnd.get(Calendar.YEAR);
             for (RequestEntity req : requests) {
-                calBegin.setTime(req.getBeginning());
-                calEnd.setTime(req.getEnding());
-                if ((((req.getBeginning()).before(currentDate)) || sameDayBegin) && ((((req.getEnding()).after(currentDate)) || sameDayEnd))) {
+                calBegin.setTime(convertToDateViaSqlDate(req.getBeginning()));
+                calEnd.setTime(convertToDateViaSqlDate(req.getEnding()));
+                if ((((convertToDateViaSqlDate(req.getBeginning()).before(currentDate)) || sameDayBegin) && ((((convertToDateViaSqlDate(req.getEnding()).after(currentDate)) || sameDayEnd)))))
+                {
                     if (req.getTypeOfRequest().getInfluenceOnVr()) {
                         answer = true;
                         break;
@@ -231,6 +234,7 @@ public class RequestService {
         }
         return answer;
     }
+
 
     public void sendMailRequest(RequestDTO request) {
         UserEntity user = userRepository.findByLogin(request.getUsername()).get(0);
@@ -246,9 +250,14 @@ public class RequestService {
         }
     }
 
-    private Date prepareDate(Date start) {
-        long timeadj = 24 * 60 * 60 * 1000;
-        return new Date(start.getTime() + timeadj);
+    private Date convertToDateViaSqlDate(LocalDate dateToConvert) {
+        return java.sql.Date.valueOf(dateToConvert);
+    }
+
+    public LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
+        return dateToConvert.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
     }
 
 }

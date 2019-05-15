@@ -8,7 +8,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "requests")
@@ -26,12 +26,10 @@ public class RequestEntity {
     private UserEntity user;
 
     @Column(name = "begin_date", nullable = false)
-    @Temporal(TemporalType.DATE)
-    private Date beginning;
+    private LocalDate beginning;
 
     @Column(name = "end_date", nullable = false)
-    @Temporal(TemporalType.DATE)
-    private Date ending;
+    private LocalDate ending;
 
     @Column(name = "google_id", unique = true)
     private String googleId;
@@ -50,12 +48,12 @@ public class RequestEntity {
     public RequestEntity() {
     }
 
-    public RequestEntity(UserEntity user, Date beginning, Date ending, RequestTypeEntity typeOfRequest, Status status) throws EndingBeforeBeginningException {
+    public RequestEntity(UserEntity user, LocalDate beginning, LocalDate ending, RequestTypeEntity typeOfRequest, Status status) throws EndingBeforeBeginningException {
         this.user = user;
         this.typeOfRequest = typeOfRequest;
         this.status = status;
 
-        if (ending.before(beginning)) {
+        if (ending.isBefore(beginning)) {
             throw new EndingBeforeBeginningException();
         } else {
             this.beginning = beginning;
@@ -79,24 +77,24 @@ public class RequestEntity {
         this.user = user;
     }
 
-    public Date getBeginning() {
+    public LocalDate getBeginning() {
         return beginning;
     }
 
-    public void setBeginning(Date beginning) throws BeginningAfterEndingException {
-        if ((beginning.after(ending)) && (ending != null)) {
+    public void setBeginning(LocalDate beginning) throws BeginningAfterEndingException {
+        if ((beginning.isAfter(ending)) && (ending != null)) {
             throw new BeginningAfterEndingException();
         } else {
             this.beginning = beginning;
         }
     }
 
-    public Date getEnding() {
+    public LocalDate getEnding() {
         return ending;
     }
 
-    public void setEnding(Date ending) throws EndingBeforeBeginningException {
-        if ((ending.before(beginning)) && (beginning != null)) {
+    public void setEnding(LocalDate ending) throws EndingBeforeBeginningException {
+        if ((ending.isBefore(beginning)) && (beginning != null)) {
             throw new EndingBeforeBeginningException();
         } else {
             this.ending = ending;
@@ -126,7 +124,6 @@ public class RequestEntity {
     public void setDescription(String description) {
         this.description = description;
     }
-
 
     public String getGoogleId() {
         return googleId;
