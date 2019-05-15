@@ -134,7 +134,8 @@ public class TeamService {
         List<TeamDTO> teams = new ArrayList<>();
         for (TeamEntity team : teamRepository.findAllByManager(manager))
             teams.add(toDTO(team));
-        teams.add(toDTO(manager.getTeam()));
+        if (manager.getTeam() != null)
+            teams.add(toDTO(manager.getTeam()));
         return teams;
     }
 

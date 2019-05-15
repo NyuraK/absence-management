@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -92,13 +93,14 @@ public class CalendarService {
                     for (Date date : dates) {
                         int counter = 0;
                         for (RequestEntity req : teamReqs) {
-
+                            Date begin = convertToDateViaSqlDate(req.getBeginning());
+                            Date end = convertToDateViaSqlDate(req.getEnding());
                             cal1.setTime(date);
-                            cal2.setTime(req.getBeginning());
-                            cal3.setTime(req.getEnding());
+                            cal2.setTime(begin);
+                            cal3.setTime(end);
                             boolean sameDayBegin = cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) && cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR);
                             boolean sameDayEnd = cal1.get(Calendar.DAY_OF_YEAR) == cal3.get(Calendar.DAY_OF_YEAR) && cal1.get(Calendar.YEAR) == cal3.get(Calendar.YEAR);
-                            if ((((req.getBeginning()).before(date)) || sameDayBegin) && ((((req.getEnding()).after(date)) || sameDayEnd))) {
+                            if ((((begin).before(date)) || sameDayBegin) && ((((end).after(date)) || sameDayEnd))) {
                                 counter++;
                             }
                         }
@@ -123,6 +125,10 @@ public class CalendarService {
             return busyAll;
         }
         return null;
+    }
+
+    private Date convertToDateViaSqlDate(LocalDate dateToConvert) {
+        return java.sql.Date.valueOf(dateToConvert);
     }
 
     private List<Date> getDatesBetween(Date startDate, Date endDate) {
@@ -179,7 +185,7 @@ public class CalendarService {
         String begin;
         String end;
         for (RequestEntity req : reqs) {
-            if (status.equals("Accepted") && req.getStatus().equals(Status.ACCEPTED)) {
+            if (status.equals("Accepted") && req.getStatus().equals(Status.ACCEPTED)) {DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 if (req.getTypeOfRequest().getName().equals("Business trip")) {
                     business.add(req);
                 } else if (req.getTypeOfRequest().getName().equals("Child care")) {
@@ -218,28 +224,28 @@ public class CalendarService {
             }
         }
         for (RequestEntity req : business) {
-            begin = formatter.format(req.getBeginning());
-            end = formatter.format(req.getEnding());
+            begin = req.getBeginning().toString();
+            end = req.getEnding().toString();
             dates.add("BU//" + begin + "//" + end);
         }
         for (RequestEntity req : child) {
-            begin = formatter.format(req.getBeginning());
-            end = formatter.format(req.getEnding());
+            begin = req.getBeginning().toString();
+            end = req.getEnding().toString();
             dates.add("CH//" + begin + "//" + end);
         }
         for (RequestEntity req : vacation) {
-            begin = formatter.format(req.getBeginning());
-            end = formatter.format(req.getEnding());
+            begin = req.getBeginning().toString();
+            end = req.getEnding().toString();
             dates.add("VA//" + begin + "//" + end);
         }
         for (RequestEntity req : sick) {
-            begin = formatter.format(req.getBeginning());
-            end = formatter.format(req.getEnding());
+            begin = req.getBeginning().toString();
+            end = req.getEnding().toString();
             dates.add("SI//" + begin + "//" + end);
         }
         for (RequestEntity req : remote) {
-            begin = formatter.format(req.getBeginning());
-            end = formatter.format(req.getEnding());
+            begin = req.getBeginning().toString();
+            end = req.getEnding().toString();
             dates.add("RE//" + begin + "//" + end);
         }
         for (String date : dates) {

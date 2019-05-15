@@ -186,11 +186,7 @@
             this.$acl.change(localStorage.getItem('user'));
             let name = localStorage.getItem('username');
 
-            instance.get("/calendar/occupiedForSend", {
-                params: {
-                    name: name
-                }
-            }).then(res => {
+            instance.get("/calendar/occupiedForSend").then(res => {
                 let arr = res.data;
                 let occ;
                 for (let i = 0; i < arr.length; i++) {
@@ -211,11 +207,7 @@
             }).catch(err => {
                 console.log(err);
             });
-            instance.get("/calendar/busyForSend", {
-                params: {
-                    name: name
-                }
-            }).then(res => {
+            instance.get("/calendar/busyForSend").then(res => {
                 let arr = res.data;
 
                 let busy;
@@ -233,11 +225,7 @@
                 console.log(err);
             });
 
-            instance.get("/calendar/accepted", {
-                params: {
-                    name: name
-                }
-            }).then(res => {
+            instance.get("/calendar/accepted").then(res => {
                 this.acceptedVacs = res.data;
                 let vac;
                 for (let i = 0; i < res.data.length; i++) {
@@ -258,20 +246,12 @@
             }).catch(err => {
                 console.log(err);
             });
-            instance.get("/calendar/declined", {
-                params: {
-                    name: name
-                }
-            }).then(res => {
+            instance.get("/calendar/declined").then(res => {
                 this.declinedVacs = res.data;
             }).catch(err => {
                 console.log(err);
             });
-            instance.get("/calendar/consider", {
-                params: {
-                    name: name
-                }
-            }).then(res => {
+            instance.get("/calendar/consider").then(res => {
                 this.considerVacs = res.data;
             }).catch(err => {
                 console.log(err);
