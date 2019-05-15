@@ -17,9 +17,9 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 window.user = localStorage.getItem('user');
 window.username = localStorage.getItem('username');
 
-// Use v-calendar, v-date-picker & v-popover components
 Vue.use(VCalendar, {
-  firstDayOfWeek: 2, // Monday
+    firstDayOfWeek: 2,
+    locale: 'en-EN'
 });
 Vue.use(Vuetify);
 Vue.use(BootstrapVue);
@@ -27,7 +27,7 @@ Vue.use(BootstrapVue);
 Vue.config.productionTip = false;
 
 new Vue({
-  render: h => h(App),
-  router, store, instance, acl
+    render: h => h(App),
+    router, store, instance, acl
 }).$mount('#app');
 

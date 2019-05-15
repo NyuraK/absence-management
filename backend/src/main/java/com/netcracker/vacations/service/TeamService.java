@@ -44,7 +44,10 @@ public class TeamService {
 
 
     public TeamDTO getTeam(Integer id) {
-        return toDTO(teamRepository.findById(id).get());
+        if (teamRepository.findById(id).isPresent()) {
+            return toDTO(teamRepository.findById(id).get());
+        };
+        return null;
     }
 
     public List<TeamDTO> getTeamsFromDepartment(Integer id) {
@@ -105,7 +108,7 @@ public class TeamService {
     }
 
     @PreAuthorize("@Security.isTeamMember(#username, #teamId)")
-    public List<AbsenceDTO> getTeamMembers(String username, @P("teamId") Integer teamId) {
+    public List<AbsenceDTO> getTeamMembers(@P("username") String username, @P("teamId") Integer teamId) {
         List<AbsenceDTO> res = new ArrayList<>();
         for (UserEntity user : userRepository.findAllByTeamTeamsId(teamId)) {
             res.add(toAbsenceDTO(user, new RequestEntity()));
@@ -114,7 +117,7 @@ public class TeamService {
     }
 
     @PreAuthorize("@Security.isTeamMember(#username, null)")
-    public List<AbsenceDTO> getTeamMembers(String username) {
+    public List<AbsenceDTO> getTeamMembers(@P("username") String username) {
         List<AbsenceDTO> res = new ArrayList<>();
         Integer teamsId = userRepository.findByLogin(username).get(0).getTeam().getTeamsId();
         for (UserEntity user : userRepository.findAllByTeamTeamsId(teamsId)) {
@@ -131,7 +134,8 @@ public class TeamService {
         List<TeamDTO> teams = new ArrayList<>();
         for (TeamEntity team : teamRepository.findAllByManager(manager))
             teams.add(toDTO(team));
-        teams.add(toDTO(manager.getTeam()));
+        if (manager.getTeam() != null)
+            teams.add(toDTO(manager.getTeam()));
         return teams;
     }
 

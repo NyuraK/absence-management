@@ -1,9 +1,14 @@
 package com.netcracker.vacations.exception;
 
 public class ApiException extends RuntimeException {
-    public final static String message = "Date of request is incorrect";
+    protected String msg;
 
     public ApiException(String message){
         super(message);
+        this.msg = message;
+    }
+
+    public String getMsg() {
+        return msg;
     }
 }
