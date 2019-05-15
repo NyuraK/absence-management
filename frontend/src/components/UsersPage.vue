@@ -2,7 +2,6 @@
     <div>
         <Nav></Nav>
         <b-container>
-
             <div class="container emp-profile">
                 <div class="row">
                     <div class="col-md-6">
@@ -145,7 +144,6 @@
                         </b-tabs>
                     </div>
                 </div>
-
             </div>
         </b-container>
         <Footer></Footer>
@@ -197,13 +195,17 @@
             integrate() {
                 instance.get('integration')
                     .then(response => {
-                        window.open(response.data, '_blank');
+                        window.open(response.data, '_self');
                     });
 
             },
             cancelIntegration() {
-                instance.put('integration');
-                location.reload();
+                instance.put('integration')
+                    .then(response => instance.get("/users/info").then((resp) => {
+                        this.fields = resp.data;
+                        this.integrated = resp.data.integrated;
+                    }));
+
             },
         },
     }
