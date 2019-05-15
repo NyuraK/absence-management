@@ -2,8 +2,10 @@ package com.netcracker.vacations.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netcracker.vacations.config.JwtConfig;
+import com.netcracker.vacations.service.UserService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,10 +28,13 @@ public class JwtLoginTokenFilter extends AbstractAuthenticationProcessingFilter 
 
     private final JwtConfig jwtConfig;
 
-    public JwtLoginTokenFilter(String url, AuthenticationManager authManager, JwtConfig jwtConfig) {
+    private UserService userService;
+
+    public JwtLoginTokenFilter(String url, AuthenticationManager authManager, JwtConfig jwtConfig, UserService userService) {
         super(new AntPathRequestMatcher(url));
         this.authManager = authManager;
         this.jwtConfig = jwtConfig;
+        this.userService = userService;
     }
 
     @Override
@@ -67,6 +72,8 @@ public class JwtLoginTokenFilter extends AbstractAuthenticationProcessingFilter 
                 .signWith(SignatureAlgorithm.HS512, jwtConfig.getSecret())
                 .compact();
         response.addHeader(jwtConfig.getHeader(), jwtConfig.getPrefix() + token);
+
+        userService.restDaysRecounting(auth.getName());
     }
 
     private static class UserCredentials {

@@ -14,7 +14,6 @@
                     <v-text-field v-model="email" :rules="[rules.required, rules.email]" label="E-mail*"></v-text-field>
                     <v-text-field label="Login*" :rules="[rules.required]" v-model="login"></v-text-field>
                     <v-select :items="teams" label="Team" v-model="team" item-text="name" return-object></v-select>
-                    <v-text-field label="Rest Days*" :rules="[rules.required]" v-model="restDays"></v-text-field>
                     <v-text-field label="Hire date*" :rules="[rules.required]" type="date" v-model="hireDate"></v-text-field>
                     <v-text-field label="Phone number" v-model="phoneNumber" mask="+# (###) ###-##-##"></v-text-field>
                     <v-text-field label="Description" v-model="description"></v-text-field>
@@ -55,7 +54,6 @@
                 email: '',
                 role: '',
                 login: '',
-                restDays: '',
                 hireDate: '',
                 phoneNumber: '',
                 description: '',
@@ -75,7 +73,6 @@
                     email: this.email,
                     role: this.role,
                     teamId: this.team.teamId,
-                    restDays: this.restDays,
                     hireDate: this.hireDate,
                     phoneNumber: this.phoneNumber,
                     description: this.description

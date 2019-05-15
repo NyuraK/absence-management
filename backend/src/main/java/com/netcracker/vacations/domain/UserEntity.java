@@ -5,7 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "users")
@@ -27,12 +27,11 @@ public class UserEntity {
     @Column(name = "role", nullable = false)
     private Role role;
 
-    @Column(name = "rest_days", nullable = false)
-    private Integer restDays;
+    @Column(name = "rest_days", nullable = false, precision=8, scale=2)
+    private Double restDays = 0.0;
 
     @Column(name = "hire_date", nullable = false)
-    @Temporal(TemporalType.DATE)
-    private Date hireDate;
+    private LocalDate hireDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teams_id")
@@ -62,13 +61,17 @@ public class UserEntity {
     @Column(name = "integrated", nullable = false)
     private Boolean integrated = false;
 
+    @Column(name = "last_visit")
+    private LocalDate lastVisit;
+
+
     @Transient
     private BCryptPasswordEncoder coder;
 
     public UserEntity() {
     }
 
-    public UserEntity(String login, String password, Role role, Integer restDays, Date hireDate, String name, String surname, String email) {
+    public UserEntity(String login, String password, Role role, Double restDays, LocalDate hireDate, String name, String surname, String email) {
         this.login = login;
         this.password = password;
         this.role = role;
@@ -81,8 +84,19 @@ public class UserEntity {
 
     @PrePersist
     public void prePersist() {
-        if(integrated == null) //We set default value in case if the value is not set yet.
+        if (integrated == null) //We set default value in case if the value is not set yet.
             integrated = false;
+        if (restDays == null) {
+            restDays = 0.0;
+        }
+    }
+
+    public LocalDate getLastVisit() {
+        return lastVisit;
+    }
+
+    public void setLastVisit(LocalDate lastVisit) {
+        this.lastVisit = lastVisit;
     }
 
     public Integer getUsersId() {
@@ -117,19 +131,19 @@ public class UserEntity {
         this.role = role;
     }
 
-    public Integer getRestDays() {
+    public Double getRestDays() {
         return restDays;
     }
 
-    public void setRestDays(Integer restDays) {
+    public void setRestDays(Double restDays) {
         this.restDays = restDays;
     }
 
-    public Date getHireDate() {
+    public LocalDate getHireDate() {
         return hireDate;
     }
 
-    public void setHireDate(Date hireDate) {
+    public void setHireDate(LocalDate hireDate) {
         this.hireDate = hireDate;
     }
 

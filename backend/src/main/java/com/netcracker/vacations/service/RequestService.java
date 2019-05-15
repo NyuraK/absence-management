@@ -95,8 +95,8 @@ public class RequestService {
         LocalDate begin = entity.getBeginning();
         LocalDate end = entity.getEnding();
         Period intervalPeriod = Period.between(begin, end);
-        Integer restDays = user.getRestDays();
-        user.setRestDays(restDays - intervalPeriod.getDays());
+        Double restDays = user.getRestDays();
+        user.setRestDays(restDays - intervalPeriod.getDays() - 1);
         userRepository.save(user);
     }
 
