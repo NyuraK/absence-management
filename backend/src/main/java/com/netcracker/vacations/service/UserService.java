@@ -23,6 +23,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -157,6 +159,25 @@ public class UserService {
         return bcrypt.matches(password, currentUser.getPassword());
     }
 
+    public void restDaysRecounting(String login) {
+        UserEntity user = userRepository.findByLogin(login).get(0);
+        LocalDate today = LocalDate.now();
+        LocalDate hireDate = user.getHireDate();
+        LocalDate lastVisit = user.getLastVisit();
+        long elapsedMonths;
+        if (lastVisit == null) {
+            elapsedMonths = ChronoUnit.MONTHS.between(hireDate, today);
+        } else if (ChronoUnit.MONTHS.between(today, lastVisit) != 0 ) {
+            elapsedMonths = ChronoUnit.MONTHS.between(hireDate, lastVisit);
+        } else {
+           return;
+        }
+        double profit = elapsedMonths * 7.0 / 3.0;
+        user.setRestDays(user.getRestDays() + profit);
+        user.setLastVisit(today);
+        userRepository.save(user);
+    }
+
     private UserEntity toEntity(UserDTO userDTO) {
         UserEntity userEntity = new UserEntity();
         TeamEntity teamEntity = new TeamEntity();
@@ -267,6 +288,6 @@ public class UserService {
     }
 
     public Integer getRestDays(String username) {
-        return userRepository.findByLogin(username).get(0).getRestDays();
+        return userRepository.findByLogin(username).get(0).getRestDays().intValue();
     }
 }
