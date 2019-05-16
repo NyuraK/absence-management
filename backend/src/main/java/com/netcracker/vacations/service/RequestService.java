@@ -40,9 +40,10 @@ public class RequestService {
     private DepartmentRepository departmentRepository;
     private UserService userService;
     private MethodsService methodService;
+    private IntegrationService integrationService;
 
     @Autowired
-    public RequestService(RequestRepository requestRepository, RequestTypeRepository requestTypeRepository, UserRepository userRepository, TeamRepository teamRepository, DepartmentRepository departmentRepository, UserService userService, MethodsService methodService) {
+    public RequestService(RequestRepository requestRepository, RequestTypeRepository requestTypeRepository, UserRepository userRepository, TeamRepository teamRepository, DepartmentRepository departmentRepository, UserService userService, MethodsService methodService, IntegrationService integrationService) {
         this.requestRepository = requestRepository;
         this.requestTypeRepository = requestTypeRepository;
         this.userRepository = userRepository;
@@ -50,9 +51,10 @@ public class RequestService {
         this.departmentRepository = departmentRepository;
         this.userService = userService;
         this.methodService = methodService;
+        this.integrationService = integrationService;
     }
 
-    public void saveRequest(RequestDTO request) {
+    public void saveRequest(RequestDTO request) throws Exception {
         RequestTypeEntity type = requestTypeRepository.findByName(request.getType()).get(0);
         Status status = Status.CONSIDER;
         if (!type.getNeedApproval()) {
@@ -75,6 +77,9 @@ public class RequestService {
 
         requestEntity.setDescription(request.getDescription());
         requestRepository.save(requestEntity);
+        if (Status.ACCEPTED.equals(status)) {
+            integrationService.insertEventWithoutConfirm(requestEntity);
+        }
     }
 
 

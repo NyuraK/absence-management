@@ -75,15 +75,23 @@ public class IntegrationService {
     public void insertEventsAfterApproval(List<Integer> requests) throws Exception {
         for (Integer id : requests) {
             RequestEntity requestEntity = requestRepository.findByRequestsId(id).get(0);
-            Credential credential = getStoredCredential(requestEntity.getUser().getLogin());
-            if (credential != null && requestEntity.getUser().getIntegrated()) {
-                Calendar service = new Calendar.Builder(httpTransport, JSON_FACTORY, credential)
-                        .setApplicationName(APPLICATION_NAME)
-                        .build();
-                Event event = service.events().insert(CALENDAR_ID, makeEvent(requestEntity)).execute();
-                requestEntity.setGoogleId(event.getId());
-                requestRepository.save(requestEntity);
-            }
+            checkUserConsentAndInsertEvent(requestEntity);
+        }
+    }
+
+    public void insertEventWithoutConfirm(RequestEntity requestEntity) throws Exception {
+        checkUserConsentAndInsertEvent(requestEntity);
+    }
+
+    private void checkUserConsentAndInsertEvent(RequestEntity requestEntity) throws Exception {
+        Credential credential = getStoredCredential(requestEntity.getUser().getLogin());
+        if (credential != null && requestEntity.getUser().getIntegrated()) {
+            Calendar service = new Calendar.Builder(httpTransport, JSON_FACTORY, credential)
+                    .setApplicationName(APPLICATION_NAME)
+                    .build();
+            Event event = service.events().insert(CALENDAR_ID, makeEvent(requestEntity)).execute();
+            requestEntity.setGoogleId(event.getId());
+            requestRepository.save(requestEntity);
         }
     }
 
