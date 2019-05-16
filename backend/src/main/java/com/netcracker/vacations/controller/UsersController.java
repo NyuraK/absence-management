@@ -112,6 +112,12 @@ public class UsersController {
         return ResponseEntity.accepted().body(service.getUserTeam(username));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/addToTeam/{id}")
+    public void addUsersToTeam(@PathVariable("id") Integer id, @RequestBody int[] usersId) {
+        service.addUsersToTeam(id, usersId);
+    }
+
     @GetMapping("/restdays")
     public ResponseEntity<?> getRestDays() {
         String username = SecurityExpressionMethods.currentUserLogin();

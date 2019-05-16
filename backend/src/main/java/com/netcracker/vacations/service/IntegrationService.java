@@ -26,8 +26,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -61,7 +59,6 @@ public class IntegrationService {
     private static final String APPLICATION_NAME = "Absence Management-app";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final String CALENDAR_ID = "primary";
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
     private static HttpTransport httpTransport;
 
     private GoogleAuthorizationCodeFlow flow;
@@ -78,15 +75,23 @@ public class IntegrationService {
     public void insertEventsAfterApproval(List<Integer> requests) throws Exception {
         for (Integer id : requests) {
             RequestEntity requestEntity = requestRepository.findByRequestsId(id).get(0);
-            Credential credential = getStoredCredential(requestEntity.getUser().getLogin());
-            if (credential != null && requestEntity.getUser().getIntegrated()) {
-                Calendar service = new Calendar.Builder(httpTransport, JSON_FACTORY, credential)
-                        .setApplicationName(APPLICATION_NAME)
-                        .build();
-                Event event = service.events().insert(CALENDAR_ID, makeEvent(requestEntity)).execute();
-                requestEntity.setGoogleId(event.getId());
-                requestRepository.save(requestEntity);
-            }
+            checkUserConsentAndInsertEvent(requestEntity);
+        }
+    }
+
+    public void insertEventWithoutConfirm(RequestEntity requestEntity) throws Exception {
+        checkUserConsentAndInsertEvent(requestEntity);
+    }
+
+    private void checkUserConsentAndInsertEvent(RequestEntity requestEntity) throws Exception {
+        Credential credential = getStoredCredential(requestEntity.getUser().getLogin());
+        if (credential != null && requestEntity.getUser().getIntegrated()) {
+            Calendar service = new Calendar.Builder(httpTransport, JSON_FACTORY, credential)
+                    .setApplicationName(APPLICATION_NAME)
+                    .build();
+            Event event = service.events().insert(CALENDAR_ID, makeEvent(requestEntity)).execute();
+            requestEntity.setGoogleId(event.getId());
+            requestRepository.save(requestEntity);
         }
     }
 
@@ -123,7 +128,7 @@ public class IntegrationService {
                 .setSummary(requestEntity.getTypeOfRequest().getName())
                 .setDescription(requestEntity.getDescription());
 
-        DateTime startDateTime = new DateTime(requestEntity.getBeginning().plusDays(1).toString());
+        DateTime startDateTime = new DateTime(requestEntity.getBeginning().toString());
         EventDateTime start = new EventDateTime()
                 .setDate(startDateTime);
         event.setStart(start);

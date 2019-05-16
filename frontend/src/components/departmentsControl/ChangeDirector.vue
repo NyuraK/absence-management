@@ -62,9 +62,11 @@
                     }
                 }
                 this.department.directorId = this.directorId;
-                instance.put('departments/' + this.$router.currentRoute.params['id'], this.department);
+                instance.put('departments/' + this.$router.currentRoute.params['id'], this.department)
+                    .then(rest => {
+                        this.$emit("changeDirector");
+                    });
                 this.dialog = false;
-                location.reload();
             }
         },
 

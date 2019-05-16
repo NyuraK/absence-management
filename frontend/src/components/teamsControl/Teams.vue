@@ -7,7 +7,7 @@
                 <p></p>
                 <input v-model="search" class="form-control" placeholder="Search by team name...">
                 <p></p>
-                <NewTeam></NewTeam>
+                <NewTeam @newTeam="updateTeams"></NewTeam>
                 <ul class="list-group mt-1" v-for="team of findTeams" :key="team.teamId">
                     <li class="list-group-item">
                         <v-layout align-center justify-space-between row fill-height>
@@ -78,12 +78,22 @@
             deleteTeam(id) {
                 instance.delete('teams/' + id,
                 )
-                    .then(function (response) {
-                        console.log(response);
+                    .then(resp => {
+                        instance.get('teams')
+                            .then(response => {
+                                this.teams = response.data;
+                                this.teams.sort((a, b) => a.name.localeCompare(b.name));
+                            })
                     });
                 this.deleteDialog = false;
-                this.teams = this.teams.filter(x => x.teamId !== id);
             },
+            updateTeams() {
+                instance.get('teams')
+                    .then(response => {
+                        this.teams = response.data;
+                        this.teams.sort((a, b) => a.name.localeCompare(b.name));
+                    })
+            }
         },
 
         created: function () {
