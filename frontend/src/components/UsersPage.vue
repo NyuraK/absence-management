@@ -143,7 +143,7 @@
                     </b-tabs>
                 </b-col>
                 <b-col>
-                    user requests
+                    <UserRequests></UserRequests>
                 </b-col>
             </b-row>
         </b-container>
@@ -157,10 +157,11 @@
     import {instance} from "../Api";
     import UpdatePassword from "./usersControl/UpdatePassword";
     import Footer from "./Footer";
+    import UserRequests from "./usersControl/UserRequests";
 
     export default {
         name: "UsersPage",
-        components: {Footer, UpdatePassword, Nav},
+        components: {UserRequests, Footer, UpdatePassword, Nav},
         data() {
             return {
                 fields: [
@@ -174,7 +175,6 @@
                     {key: "description"},
                     {key: "teamName"},
                     {key: "subordinateTeams"},
-                    {}
                 ],
                 integrated: ''
             }

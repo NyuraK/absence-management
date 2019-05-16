@@ -9,6 +9,7 @@ import com.netcracker.vacations.domain.enums.Role;
 import com.netcracker.vacations.domain.enums.Status;
 import com.netcracker.vacations.dto.RequestDTO;
 import com.netcracker.vacations.exception.TooManyDaysException;
+import com.netcracker.vacations.exception.WrongPeriodException;
 import com.netcracker.vacations.repository.*;
 import com.netcracker.vacations.security.SecurityExpressionMethods;
 import org.slf4j.Logger;
@@ -22,10 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 @Service
@@ -66,15 +64,12 @@ public class RequestService {
         LocalDate end = convertToLocalDateViaInstant(request.getEnd());
         Period intervalPeriod = Period.between(begin, end);
         if (type.getName().equals(RequestType.VACATION.getName())) {
-//            long diffInMillies = Math.abs(begin.getTime() - end.getTime());
-//            long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
             if (intervalPeriod.getDays() > user.getRestDays()) {
                 throw new TooManyDaysException("You took too many days. You have only " + user.getRestDays() + " vacant days");
             }
         }
-
+        checkIfInterruptsOtherAbsence(user, begin, end);
         RequestEntity requestEntity = new RequestEntity(user, begin, end, type, status);
-
         requestEntity.setDescription(request.getDescription());
         requestRepository.save(requestEntity);
         if (Status.ACCEPTED.equals(status)) {
@@ -82,6 +77,15 @@ public class RequestService {
         }
     }
 
+    private void checkIfInterruptsOtherAbsence(UserEntity user, LocalDate begin, LocalDate end) {
+        for (RequestEntity entity : requestRepository.findAllByUser(user)) {
+            if (entity.getStatus().equals(Status.ACCEPTED)
+                    && ((entity.getBeginning().isBefore(begin) && entity.getEnding().isAfter(begin))
+                    || (entity.getBeginning().isBefore(end) && entity.getEnding().isAfter(end)
+                    || (entity.getBeginning().isAfter(begin) && entity.getEnding().isBefore(end)))))
+                throw new WrongPeriodException("You already have absence on selected days");
+        }
+    }
 
     @PreAuthorize("@Security.isTeamMember(#username, null)")
     public void updateRequest(Status status, List<Integer> requests, @P("username") String username) {
@@ -105,7 +109,7 @@ public class RequestService {
         userRepository.save(user);
     }
 
-    @PreAuthorize("@Security.isTeamMember(#name, null)")
+    @PreAuthorize("@Security.isTeamMember(#name, null) or hasRole('DIRECTOR') or hasRole(ADMIN)")
     public List<RequestDTO> getActiveRequests(@P("name") String name) {
         List<RequestDTO> response = new ArrayList<>();
         UserEntity user = userRepository.findByLogin(name).get(0);
@@ -262,6 +266,21 @@ public class RequestService {
         return dateToConvert.toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();
+    }
+
+    public List<RequestDTO> getUserRequests(String username) {
+        List<RequestDTO> response = new ArrayList<>();
+        for (RequestEntity entity : requestRepository.findAllByUser(userRepository.findByLogin(username).get(0))) {
+            response.add(toDTO(entity));
+        }
+        return response;
+    }
+
+    public void deleteRequest(String username, Integer id) {
+        Optional<RequestEntity> entity = requestRepository.findById(id);
+        if (entity.isPresent() && entity.get().getUser().getLogin().equals(username) && entity.get().getStatus().equals(Status.CONSIDER)) {
+            requestRepository.deleteById(id);
+        }
     }
 
 }
