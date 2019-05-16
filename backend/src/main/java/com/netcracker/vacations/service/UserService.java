@@ -236,8 +236,8 @@ public class UserService {
             if (!users.isEmpty()) {
                 UserEntity user = users.get(0);
                 user.setActivationCode(UUID.randomUUID().toString());
-                String message = String.format("Dear " + user.getName() + " " + user.getSurname() + ",\n" + "if you can not use your old password, you can pick a new one. " +
-                        "For doing this visit next link: https://absence-management.azurewebsites.net/activation/" + user.getActivationCode());
+                String message = "Dear " + user.getName() + " " + user.getSurname() + ",\n" + "if you can not use your old password, you can pick a new one. " +
+                        "For doing this visit next link: https://absence-management.azurewebsites.net/activation/" + user.getActivationCode();
                 send(email, "Changing your password.", message);
                 isSent = true;
             }
@@ -275,8 +275,8 @@ public class UserService {
     public boolean sendMailPassword(UserDTO user) {
         boolean isSent = false;
         if (user.getEmail() != null) {
-            String message = String.format("Dear " + user.getName() + " " + user.getSurname() + ",\n" + "you successfully registered your account. " +
-                    "Now your username is \"" + user.getLogin() + "\" and your password is \"" + user.getPassword() + "\". You can change your password on your account. For authorization visit next link: https://absence-management.azurewebsites.net/");
+            String message = "Dear " + user.getName() + " " + user.getSurname() + ",\n" + "you successfully registered your account. " +
+                    "Now your username is \"" + user.getLogin() + "\" and your password is \"" + user.getPassword() + "\". You can change your password on your account. For authorization visit next link: https://absence-management.azurewebsites.net/";
             send(user.getEmail(), "Account activation, password changing.", message);
             isSent = true;
         }
