@@ -101,16 +101,16 @@ public class UserService {
                 user.setSubordinateTeams(teams);
             }
         }
-        if (currentUser.getFamilyName()==null||currentUser.getFamilyName().isEmpty()) {
+        if (currentUser.getFamilyName() == null || currentUser.getFamilyName().isEmpty()) {
             user.setFamilyName("-");
         }
         if (currentUser.getTeam() == null) {
             user.setTeamName("-");
         }
-        if (currentUser.getPhoneNumber()==null||currentUser.getPhoneNumber().isEmpty()) {
+        if (currentUser.getPhoneNumber() == null || currentUser.getPhoneNumber().isEmpty()) {
             user.setPhoneNumber("-");
         }
-        if (currentUser.getDescription()==null||currentUser.getDescription().isEmpty()) {
+        if (currentUser.getDescription() == null || currentUser.getDescription().isEmpty()) {
             user.setDescription("-");
         }
         return user;
@@ -256,13 +256,13 @@ public class UserService {
         boolean isSent = false;
         if (email != null) {
             List<UserEntity> users = userRepository.findByEmail(email);
-            if(!users.isEmpty()) {
-                UserEntity user=users.get(0);
+            if (!users.isEmpty()) {
+                UserEntity user = users.get(0);
                 user.setActivationCode(UUID.randomUUID().toString());
                 String message = String.format("Dear " + user.getName() + " " + user.getSurname() + ",\n" + "if you can not use your old password, you can pick a new one. " +
-                        "For doing this visit next link: https://absence-management.azurewebsites.net/activation/"+user.getActivationCode());
+                        "For doing this visit next link: https://absence-management.azurewebsites.net/activation/" + user.getActivationCode());
                 send(email, "Changing your password.", message);
-                isSent=true;
+                isSent = true;
             }
         }
         return isSent;

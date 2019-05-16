@@ -5,7 +5,6 @@
             <b-row>
                 <b-col>
                     <div style="text-align: center">
-                        <p> {{timezone}}</p>
                         <p>Your requests:</p>
                         <v-calendar
                                 is-expanded :attributes='attributes'>
@@ -21,7 +20,7 @@
             </b-row>
             <br>
             <b-row>
-                <b-col cols="3">
+                <b-col sm="3">
                     <v-switch v-model="accepted" label="Accepted" color="indigo" @change="onAccepted()"
                               hide-details></v-switch>
                     <v-switch v-model="declined" label="Declined" color="indigo" @change="onDeclined()"
@@ -29,7 +28,7 @@
                     <v-switch v-model="consider" label="Under consider" color="indigo" @change="onConsider()"
                               hide-details></v-switch>
                 </b-col>
-                <b-col cols="3">
+                <b-col sm="3">
                     <v-checkbox v-model="all" id="all" label="All" @change="disableChecks()"
                                 hide-details></v-checkbox>
                     <v-checkbox v-model="business" label="Business trip" color="indigo" @change="showVac()"
@@ -43,7 +42,7 @@
                     <v-checkbox v-model="remote" label="Remote work" color="cyan" @change="showVac()"
                                 :disabled="isAllActive" hide-details></v-checkbox>
                 </b-col>
-                <b-col cols="3">
+                <b-col md="3">
                     <div style="text-align: center">
                         <p>Occupied days for {{team}} team:</p>
                         <v-calendar
@@ -67,7 +66,6 @@
         name: "Home",
         data() {
             return {
-                timezone: '',
                 vacantDays: '',
                 isAllActive: false,
                 accepted: true,
@@ -186,11 +184,6 @@
         components: {Footer, AbsRequest, Nav},
         created() {
             this.$acl.change(localStorage.getItem('user'));
-
-            instance.get("/calendar/current_timezone").then(res=>{
-                console.log(res.data);
-                this.timezone = res.data;
-            });
             instance.get("/calendar/occupiedForSend").then(res => {
                 let arr = res.data;
                 let occ;

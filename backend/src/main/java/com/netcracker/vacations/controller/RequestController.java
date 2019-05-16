@@ -6,8 +6,8 @@ import com.netcracker.vacations.dto.RequestDTO;
 import com.netcracker.vacations.security.SecurityExpressionMethods;
 import com.netcracker.vacations.service.IntegrationService;
 import com.netcracker.vacations.service.RequestService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping("/api/requests")
 public class RequestController {
 
-    private static final Logger logger = LogManager.getLogger(RequestController.class);
+    private static final Logger logger = LoggerFactory.getLogger(RequestController.class);
 
     private RequestService reqService;
     private IntegrationService integrationService;
@@ -33,7 +33,6 @@ public class RequestController {
 
     @PostMapping
     public ResponseEntity<?> addRequest(@RequestBody RequestDTO request) throws Exception {
-        logger.info(request.getStart() + " " + request.getEnd());
         reqService.saveRequest(request);
         if (request.getNeedToEmail()) {
             reqService.sendMailRequest(request);
@@ -74,6 +73,18 @@ public class RequestController {
         String username = SecurityExpressionMethods.currentUserLogin();
         reqService.updateRequest(Status.ACCEPTED, requests, username);
         integrationService.insertEventsAfterApproval(requests);
+    }
+
+    @GetMapping("/my")
+    public List<RequestDTO> getUserRequest() {
+        String username = SecurityExpressionMethods.currentUserLogin();
+        return reqService.getUserRequests(username);
+    }
+
+    @PatchMapping("/delete")
+    public void deleteRequest(@RequestBody Integer id) {
+        String username = SecurityExpressionMethods.currentUserLogin();
+        reqService.deleteRequest(username, id);
     }
 }
 
