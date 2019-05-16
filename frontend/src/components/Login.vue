@@ -2,7 +2,7 @@
     <div>
         <div id="login-form">
             <v-alert v-model="mismatch" dismissible type="error" class="alert alert-danger" outline>
-                Sorry, but your password or your surname is incorrect.
+                Your login or password are incorrect. Please, try again
             </v-alert>
             <b-form>
                 <b-form-group
@@ -48,7 +48,7 @@
             return {
                 username: '',
                 password: '',
-                mismatch: false,
+                mismatch: false
             }
         },
         methods: {
@@ -59,7 +59,6 @@
                     this.$store.dispatch('getUserInfo').then(() => this.$router.push('/home'));
                     this.mismatch = false;
                 }).catch((err) => {
-                    console.log(err);
                     this.mismatch = true;
                 });
                 this.username = '';

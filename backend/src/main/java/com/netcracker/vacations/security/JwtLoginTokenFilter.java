@@ -2,6 +2,7 @@ package com.netcracker.vacations.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netcracker.vacations.config.JwtConfig;
+import com.netcracker.vacations.exception.CredentialsException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,8 +40,7 @@ public class JwtLoginTokenFilter extends AbstractAuthenticationProcessingFilter 
         try {
             creds = new ObjectMapper().readValue(request.getInputStream(), UserCredentials.class);
         } catch (IOException e) {
-            //TODO handle exception: если не обработаю, то будет npe дальше. Отправлять на фронт что-нибудь, не проглатывать
-            e.printStackTrace();
+            throw new CredentialsException("Please, type your login and password");
         }
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(

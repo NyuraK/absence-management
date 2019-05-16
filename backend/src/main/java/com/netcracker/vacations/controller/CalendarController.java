@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.TimeZone;
 
 @RestController
 @RequestMapping("/api/calendar")
@@ -23,11 +22,6 @@ public class CalendarController {
     @GetMapping("/occupiedForDiscuss")
     public List<List<String>> getOccupiedDaysForDiscuss() {
         return service.getVacationsPerDay("Occupied", "Discuss");
-    }
-
-    @GetMapping("/current_timezone")
-    public String getTimezone(){
-        return TimeZone.getDefault().getDisplayName() + ' ' + TimeZone.getDefault();
     }
 
     @GetMapping("/busyForDiscuss")

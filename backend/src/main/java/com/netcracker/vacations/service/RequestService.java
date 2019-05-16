@@ -11,8 +11,8 @@ import com.netcracker.vacations.dto.RequestDTO;
 import com.netcracker.vacations.exception.TooManyDaysException;
 import com.netcracker.vacations.repository.*;
 import com.netcracker.vacations.security.SecurityExpressionMethods;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
@@ -31,7 +31,7 @@ import java.util.List;
 @Service
 @Transactional
 public class RequestService {
-    private static final Logger logger = LogManager.getLogger(RequestService.class);
+    private static final Logger logger = LoggerFactory.getLogger(RequestService.class);
 
     private RequestRepository requestRepository;
     private RequestTypeRepository requestTypeRepository;
@@ -223,8 +223,7 @@ public class RequestService {
             for (RequestEntity req : requests) {
                 calBegin.setTime(convertToDateViaSqlDate(req.getBeginning()));
                 calEnd.setTime(convertToDateViaSqlDate(req.getEnding()));
-                if ((((convertToDateViaSqlDate(req.getBeginning()).before(currentDate)) || sameDayBegin) && ((((convertToDateViaSqlDate(req.getEnding()).after(currentDate)) || sameDayEnd)))))
-                {
+                if ((((convertToDateViaSqlDate(req.getBeginning()).before(currentDate)) || sameDayBegin) && ((((convertToDateViaSqlDate(req.getEnding()).after(currentDate)) || sameDayEnd))))) {
                     if (req.getTypeOfRequest().getInfluenceOnVr()) {
                         answer = true;
                         break;
