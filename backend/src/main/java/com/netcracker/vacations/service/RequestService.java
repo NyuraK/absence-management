@@ -80,11 +80,19 @@ public class RequestService {
     private void checkIfInterruptsOtherAbsence(UserEntity user, LocalDate begin, LocalDate end) {
         for (RequestEntity entity : requestRepository.findAllByUser(user)) {
             if (entity.getStatus().equals(Status.ACCEPTED)
-                    && ((entity.getBeginning().isBefore(begin) && entity.getEnding().isAfter(begin))
-                    || (entity.getBeginning().isBefore(end) && entity.getEnding().isAfter(end)
-                    || (entity.getBeginning().isAfter(begin) && entity.getEnding().isBefore(end)))))
+                    && ((isBeforeOrEqual(entity.getBeginning(),begin) && isAfterOrEqual(entity.getEnding(), begin))
+                    || (isBeforeOrEqual(entity.getBeginning(), end) && isAfterOrEqual(entity.getEnding(), end))
+                    || (isAfterOrEqual(entity.getBeginning(), begin) && isBeforeOrEqual(entity.getEnding(), end))))
                 throw new WrongPeriodException("You already have absence on selected days");
         }
+    }
+
+    private boolean isBeforeOrEqual(LocalDate start, LocalDate end) {
+        return start.isBefore(end) || start.isEqual(end);
+    }
+
+    private boolean isAfterOrEqual(LocalDate start, LocalDate end) {
+        return start.isAfter(end) || start.isEqual(end);
     }
 
     @PreAuthorize("@Security.isTeamMember(#username, null)")
