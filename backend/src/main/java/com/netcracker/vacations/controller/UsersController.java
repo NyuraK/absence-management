@@ -121,5 +121,4 @@ public class UsersController {
         String username = SecurityExpressionMethods.currentUserLogin();
         return ResponseEntity.ok(service.getRestDays(username));
     }
-
 }

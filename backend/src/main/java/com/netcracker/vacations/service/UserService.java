@@ -28,6 +28,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Service
 @Transactional
@@ -47,7 +49,6 @@ public class UserService {
         this.userRepository = userRepository;
         this.teamRepository = teamRepository;
     }
-
 
     public List<UserDTO> getUsers() {
         List<UserDTO> response = new ArrayList<>();
@@ -118,8 +119,11 @@ public class UserService {
 
     public UserDTO addUser(UserDTO userDTO) {
         userDTO.setPassword(UUID.randomUUID().toString());
-        sendMailPassword(userDTO);
+        ExecutorService executor = Executors.newFixedThreadPool(5);
+        Runnable sender = new PasswordRunnable(userDTO, this);
         userRepository.save(toEntity(userDTO));
+        executor.execute(sender);
+
         return userDTO;
     }
 
@@ -157,33 +161,6 @@ public class UserService {
         UserEntity currentUser = userRepository.findByLogin(login).get(0);
         BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
         return bcrypt.matches(password, currentUser.getPassword());
-    }
-
-    public void restDaysRecounting(String login) {
-        UserEntity user = userRepository.findByLogin(login).get(0);
-        LocalDate today = LocalDate.now();
-        LocalDate hireDate = user.getHireDate();
-        LocalDate lastVisit = user.getLastVisit();
-        long elapsedMonths;
-        if (lastVisit == null) {
-            elapsedMonths = ChronoUnit.MONTHS.between(hireDate, today);
-        } else if (ChronoUnit.MONTHS.between(today, lastVisit) != 0 ) {
-            elapsedMonths = ChronoUnit.MONTHS.between(hireDate, lastVisit);
-        } else {
-           return;
-        }
-        double profit = elapsedMonths * 7.0 / 3.0;
-        user.setRestDays(user.getRestDays() + profit);
-        user.setLastVisit(today);
-        userRepository.save(user);
-    }
-
-    public void addUsersToTeam(Integer teamId, int[] usersId) {
-        for (Integer user : usersId) {
-            UserEntity userEntity = userRepository.findByUsersId(user).get(0);
-            userEntity.setTeam(teamRepository.findByTeamsId(teamId).get(0));
-            userRepository.save(userEntity);
-        }
     }
 
     private UserEntity toEntity(UserDTO userDTO) {
@@ -259,8 +236,8 @@ public class UserService {
             if (!users.isEmpty()) {
                 UserEntity user = users.get(0);
                 user.setActivationCode(UUID.randomUUID().toString());
-                String message = String.format("Dear " + user.getName() + " " + user.getSurname() + ",\n" + "if you can not use your old password, you can pick a new one. " +
-                        "For doing this visit next link: https://absence-management.azurewebsites.net/activation/" + user.getActivationCode());
+                String message = "Dear " + user.getName() + " " + user.getSurname() + ",\n" + "if you can not use your old password, you can pick a new one. " +
+                        "For doing this visit next link: https://absence-management.azurewebsites.net/activation/" + user.getActivationCode();
                 send(email, "Changing your password.", message);
                 isSent = true;
             }
@@ -268,13 +245,42 @@ public class UserService {
         return isSent;
     }
 
-    public UserDTO sendMailPassword(UserDTO user) {
-        if (user.getEmail() != null) {
-            String message = String.format("Dear " + user.getName() + " " + user.getSurname() + ",\n" + "you successfully registered your account. " +
-                    "Now your username is \"" + user.getLogin() + "\" and your password is \"" + user.getPassword() + "\". You can change your password on your account. For authorization visit next link: https://absence-management.azurewebsites.net/");
-            send(user.getEmail(), "Account activation, password changing.", message);
+    public void restDaysRecounting(String login) {
+        UserEntity user = userRepository.findByLogin(login).get(0);
+        LocalDate today = LocalDate.now();
+        LocalDate hireDate = user.getHireDate();
+        LocalDate lastVisit = user.getLastVisit();
+        long elapsedMonths;
+        if (lastVisit == null) {
+            elapsedMonths = ChronoUnit.MONTHS.between(hireDate, today);
+        } else if (ChronoUnit.MONTHS.between(today, lastVisit) != 0 ) {
+            elapsedMonths = ChronoUnit.MONTHS.between(hireDate, lastVisit);
+        } else {
+            return;
         }
-        return user;
+        double profit = elapsedMonths * 7.0 / 3.0;
+        user.setRestDays(user.getRestDays() + profit);
+        user.setLastVisit(today);
+        userRepository.save(user);
+    }
+
+    public void addUsersToTeam(Integer teamId, int[] usersId) {
+        for (Integer user : usersId) {
+            UserEntity userEntity = userRepository.findByUsersId(user).get(0);
+            userEntity.setTeam(teamRepository.findByTeamsId(teamId).get(0));
+            userRepository.save(userEntity);
+        }
+    }
+
+    public boolean sendMailPassword(UserDTO user) {
+        boolean isSent = false;
+        if (user.getEmail() != null) {
+            String message = "Dear " + user.getName() + " " + user.getSurname() + ",\n" + "you successfully registered your account. " +
+                    "Now your username is \"" + user.getLogin() + "\" and your password is \"" + user.getPassword() + "\". You can change your password on your account. For authorization visit next link: https://absence-management.azurewebsites.net/";
+            send(user.getEmail(), "Account activation, password changing.", message);
+            isSent = true;
+        }
+        return isSent;
     }
 
     public void send(String emailTo, String subject, String message) {
@@ -298,4 +304,5 @@ public class UserService {
     public Integer getRestDays(String username) {
         return userRepository.findByLogin(username).get(0).getRestDays().intValue();
     }
+
 }

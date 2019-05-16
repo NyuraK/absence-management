@@ -42,7 +42,6 @@ public class TeamService {
         return response;
     }
 
-
     public TeamDTO getTeam(Integer id) {
         if (teamRepository.findById(id).isPresent()) {
             return toDTO(teamRepository.findById(id).get());

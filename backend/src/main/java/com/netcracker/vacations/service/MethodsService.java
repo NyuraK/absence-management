@@ -2,17 +2,16 @@ package com.netcracker.vacations.service;
 
 import com.netcracker.vacations.domain.*;
 import com.netcracker.vacations.domain.enums.RequestType;
-import com.netcracker.vacations.domain.enums.Role;
-import com.netcracker.vacations.domain.enums.Status;
-import com.netcracker.vacations.exception.EndingBeforeBeginningException;
 import com.netcracker.vacations.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 @Service
 public class MethodsService {

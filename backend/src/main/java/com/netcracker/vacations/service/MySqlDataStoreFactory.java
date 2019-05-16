@@ -5,9 +5,6 @@ import com.google.api.client.util.store.AbstractDataStoreFactory;
 import com.google.api.client.util.store.DataStore;
 import com.netcracker.vacations.repository.GoogleCredentialRepository;
 
-import java.io.IOException;
-import java.io.Serializable;
-
 public class MySqlDataStoreFactory extends AbstractDataStoreFactory {
 
     private GoogleCredentialRepository googleCredentialRepository;

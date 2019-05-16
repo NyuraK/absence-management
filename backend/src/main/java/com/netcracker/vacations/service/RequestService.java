@@ -24,6 +24,8 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 @Service
@@ -97,6 +99,7 @@ public class RequestService {
 
     @PreAuthorize("@Security.isTeamMember(#username, null)")
     public void updateRequest(Status status, List<Integer> requests, @P("username") String username) {
+        ExecutorService executor = Executors.newFixedThreadPool(requests.size()+1);
         for (Integer id : requests) {
             RequestEntity entity = requestRepository.findById(id).get();
             entity.setStatus(status);
@@ -104,6 +107,8 @@ public class RequestService {
                     && entity.getTypeOfRequest().getName().equals(RequestType.VACATION.getName()))
                 decrementRestDays(entity);
             requestRepository.save(entity);
+            Runnable sender= new DecisionRunnable(toDTO(entity), this);
+            executor.execute(sender);
         }
     }
 
@@ -289,6 +294,17 @@ public class RequestService {
         if (entity.isPresent() && entity.get().getUser().getLogin().equals(username) && entity.get().getStatus().equals(Status.CONSIDER)) {
             requestRepository.deleteById(id);
         }
+    }
+
+    public void sendRequestDecision(RequestDTO request) {
+        System.out.println("REQNAME " + request.getUsername());
+        UserEntity user = userRepository.findByLogin(request.getUsername()).get(0);
+        if (user.getEmail() != null) {
+            String message = "Dear " + user.getName() + " " + user.getSurname() + ".\n" + "Your request's status is now \"" + request.getStatus() + "\". If you have any questions, please, ask your manager (or your director, if manager can't help you now). \n" +
+                    "||Request was sent by " + user.getName() + " " + user.getSurname() + ". Reason: " + request.getType() + " Begin date: " + request.getStart() + ". End date: " + request.getEnd() + ".||";
+            userService.send(user.getEmail(), "Decision for request by " + user.getName() + " " + user.getSurname() + ". " + request.getType() + ".", message);
+        }
+
     }
 
 }

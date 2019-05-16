@@ -7,7 +7,11 @@ import javax.persistence.*;
 
 
 @Entity
-@Table(name = "teams")
+@Table(name = "teams", indexes = {
+        @Index(columnList = "teams_id", name = "teamIndex"),
+        @Index(columnList = "managers_id", name = "managerIndex"),
+        @Index(columnList = "departments_id", name = "departmentIndex"),
+})
 public class TeamEntity {
     @Id
     @GeneratedValue(generator = "increment")

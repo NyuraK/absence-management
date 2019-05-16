@@ -6,7 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
-import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -16,35 +15,16 @@ public interface UserRepository extends CrudRepository<UserEntity, Integer> {
 
     List<UserEntity> findByLogin(String login);
 
-    List<UserEntity> findByRole(String role);
-
-    List<UserEntity> findByRestDays(Integer restDays);
-
-    List<UserEntity> findByHireDate(Date hireDate);
-
     List<UserEntity> findAllByTeam(TeamEntity team);
 
     List<UserEntity> findAllByTeamTeamsId(Integer id);
 
     List<UserEntity> findAllByTeamManagerUsersId(Integer id);
 
-    List<UserEntity> findAllByTeamDepartmentDepartmentsId(Integer id);
-
-    List<UserEntity> findByName(String name);
-
-    List<UserEntity> findBySurname(String surname);
-
-    List<UserEntity> findByFamilyName(String familyName);
-
-    List<UserEntity> findByPhoneNumber(String phoneNumber);
-
     List<UserEntity> findByEmail(String email);
-
-    List<UserEntity> findByDescription(String description);
 
     List<UserEntity> findByActivationCode(String activationCode);
 
     void deleteById(Integer usersId);
 
-    void deleteByLogin(String login);
 }

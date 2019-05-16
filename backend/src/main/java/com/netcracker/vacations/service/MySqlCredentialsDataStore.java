@@ -7,7 +7,6 @@ import com.google.api.client.util.store.DataStore;
 import com.google.api.client.util.store.DataStoreFactory;
 import com.netcracker.vacations.domain.GoogleCredential;
 import com.netcracker.vacations.repository.GoogleCredentialRepository;
-import java.util.Base64;
 
 import java.io.IOException;
 import java.util.*;
