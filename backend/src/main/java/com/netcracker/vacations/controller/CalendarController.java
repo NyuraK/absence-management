@@ -27,9 +27,6 @@ public class CalendarController {
 
     @GetMapping("/current_timezone")
     public String getTimezone(){
-
-        System.out.println(TimeZone.getDefault().getDisplayName());
-        System.out.println(TimeZone.getDefault());
         return TimeZone.getDefault().getDisplayName() + ' ' + TimeZone.getDefault();
     }
 
