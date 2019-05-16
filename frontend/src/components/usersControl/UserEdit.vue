@@ -53,8 +53,8 @@
                     <v-btn block color="primary" dark @click="save">Save</v-btn>
                 </v-flex>
                 <v-flex xs10 sm5>
-                    <v-alert v-model="alert" dismissible type="success">
-                        Profile has been successfully updated.
+                    <v-alert v-model="alert" dismissible type="error" class="alert alert-eroor" outline>
+                        Profile has not been successfully updated.
                     </v-alert>
                 </v-flex>
             </v-container>
@@ -81,7 +81,8 @@
                 userSurname: '',
                 userId: '',
                 alert: false,
-                teams: [],
+                alertParam: true,
+                teams: []
             }
         },
         created: function () {
@@ -101,10 +102,14 @@
                 instance.put('users/' + this.$router.currentRoute.params['id'],
                     this.user
                 )
-                    .then(function (response) {
-                    });
-                this.$router.push({name: 'users', query: {alert: true}});
-                this.alert = true;
+                    .then(response => {
+                        this.$router.push({name: 'users', query: {alert: true}});
+                    })
+                    .catch(function (error) {
+                        this.alert = true;
+                    })
+
+
             }
         }
     }

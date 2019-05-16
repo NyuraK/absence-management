@@ -98,8 +98,6 @@ public class UsersController {
         service.updatePassword(0, password, "UserChange", username);
     }
 
-
-
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable("id") Integer id) {
@@ -110,6 +108,12 @@ public class UsersController {
     public ResponseEntity<?> getUserTeam() {
         String username = SecurityExpressionMethods.currentUserLogin();
         return ResponseEntity.accepted().body(service.getUserTeam(username));
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/addToTeam/{id}")
+    public void addUsersToTeam(@PathVariable("id") Integer id, @RequestBody int[] usersId) {
+        service.addUsersToTeam(id, usersId);
     }
 
     @GetMapping("/restdays")

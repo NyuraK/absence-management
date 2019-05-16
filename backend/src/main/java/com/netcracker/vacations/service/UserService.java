@@ -23,6 +23,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -41,8 +43,6 @@ public class UserService {
     private UserRepository userRepository;
 
     private TeamRepository teamRepository;
-
-    private static List<String> tempPass = new ArrayList<>();
 
     @Autowired
     public UserService(UserRepository userRepository, TeamRepository teamRepository) {
@@ -245,6 +245,33 @@ public class UserService {
         return isSent;
     }
 
+    public void restDaysRecounting(String login) {
+        UserEntity user = userRepository.findByLogin(login).get(0);
+        LocalDate today = LocalDate.now();
+        LocalDate hireDate = user.getHireDate();
+        LocalDate lastVisit = user.getLastVisit();
+        long elapsedMonths;
+        if (lastVisit == null) {
+            elapsedMonths = ChronoUnit.MONTHS.between(hireDate, today);
+        } else if (ChronoUnit.MONTHS.between(today, lastVisit) != 0 ) {
+            elapsedMonths = ChronoUnit.MONTHS.between(hireDate, lastVisit);
+        } else {
+            return;
+        }
+        double profit = elapsedMonths * 7.0 / 3.0;
+        user.setRestDays(user.getRestDays() + profit);
+        user.setLastVisit(today);
+        userRepository.save(user);
+    }
+
+    public void addUsersToTeam(Integer teamId, int[] usersId) {
+        for (Integer user : usersId) {
+            UserEntity userEntity = userRepository.findByUsersId(user).get(0);
+            userEntity.setTeam(teamRepository.findByTeamsId(teamId).get(0));
+            userRepository.save(userEntity);
+        }
+    }
+
     public boolean sendMailPassword(UserDTO user) {
         boolean isSent = false;
         if (user.getEmail() != null) {
@@ -275,14 +302,7 @@ public class UserService {
     }
 
     public Integer getRestDays(String username) {
-        return userRepository.findByLogin(username).get(0).getRestDays();
+        return userRepository.findByLogin(username).get(0).getRestDays().intValue();
     }
 
-    public void setTempPass(String password) {
-        tempPass.add(password);
-    }
-
-    public String getTempPass() {
-        return tempPass.get(0);
-    }
 }

@@ -3,6 +3,9 @@
         <Nav></Nav>
         <v-content>
             <v-container>
+                <v-alert v-model="alert" dismissible type="success" class="alert alert-success" outline>
+                    Team has been successfully updated.
+                </v-alert>
                 <h4>{{teamName}}
                     <v-icon>edit</v-icon>
                 </h4>
@@ -59,7 +62,7 @@
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                 </v-flex>
-                <AddUserToTeam></AddUserToTeam>
+                <AddUserToTeam @addUserToTeam="reboot"></AddUserToTeam>
                 <ul class="list-group mt-1" v-for="user of teamUsers" :key="user.userId">
                     <li class="list-group-item">
                         <v-layout align-center justify-space-between row fill-height>
@@ -98,29 +101,45 @@
                 department: [],
                 user: [],
                 managerId: '',
+                alert: false
             }
         },
 
         methods: {
             text: item => item.name + ' ' + item.surname,
+            reboot() {
+                this.inStart();
+            },
             clear(user) {
                 user.teamId = null;
-                instance.put('users/' + user.userId, user);
-                this.teamUsers = this.teamUsers.filter(x => x.userId !== user.userId)
+                instance.put('users/' + user.userId, user)
+                    .then(resp =>{
+                        this.inStart();
+                    });
+
             },
             rename() {
-                instance.put('teams/' + this.$router.currentRoute.params['id'], this.team);
-                location.reload();
+                instance.put('teams/' + this.$router.currentRoute.params['id'], this.team)
+                    .then(resp => {
+                        this.inStart();
+                        this.alert = true;
+                    });
             },
             changeQuota() {
-                instance.put('teams/' + this.$router.currentRoute.params['id'], this.team);
-                location.reload();
+                instance.put('teams/' + this.$router.currentRoute.params['id'], this.team)
+                    .then(resp =>{
+                        this.inStart();
+                        this.alert = true;
+                    });
             },
             changeDepartmentAndManager() {
                 this.team.departmentId = this.department.departmentId;
                 this.team.managerId = this.managerId;
-                instance.put('teams/' + this.$router.currentRoute.params['id'], this.team);
-                location.reload();
+                instance.put('teams/' + this.$router.currentRoute.params['id'], this.team)
+                    .then(resp => {
+                        this.inStart();
+                        this.alert = true;
+                    });
             },
             checkUser(id) {
                 var i;
@@ -130,30 +149,33 @@
                     }
                 }
                 return true;
+            },
+            inStart() {
+                instance.get('teams/' + this.$router.currentRoute.params['id'])
+                    .then(response => {
+                        this.team = response.data;
+                        this.teamName = this.team.name;
+                    });
+                instance.get('users',
+                    {
+                        params: {
+                            teamId: this.$router.currentRoute.params['id']
+                        }
+                    })
+                    .then(response => {
+                        this.teamUsers = response.data;
+                        this.teamUsers.sort((a, b) => a.name.localeCompare(b.name))
+                    });
+                instance.get('users')
+                    .then(response => this.managers = response.data);
+                instance.get('departments')
+                    .then(response => this.departments = response.data);
             }
 
         },
 
         created: function () {
-            instance.get('teams/' + this.$router.currentRoute.params['id'])
-                .then(response => {
-                    this.team = response.data;
-                    this.teamName = this.team.name;
-                });
-            instance.get('users',
-                {
-                    params: {
-                        teamId: this.$router.currentRoute.params['id']
-                    }
-                })
-                .then(response => {
-                    this.teamUsers = response.data;
-                    this.teamUsers.sort((a, b) => a.name.localeCompare(b.name))
-                });
-            instance.get('users')
-                .then(response => this.managers = response.data);
-            instance.get('departments')
-                .then(response => this.departments = response.data);
+            this.inStart();
         },
 
         computed: {

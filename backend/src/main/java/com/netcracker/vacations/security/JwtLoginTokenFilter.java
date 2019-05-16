@@ -2,6 +2,8 @@ package com.netcracker.vacations.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netcracker.vacations.config.JwtConfig;
+import com.netcracker.vacations.exception.CredentialsException;
+import com.netcracker.vacations.service.UserService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,16 +22,20 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+
 public class JwtLoginTokenFilter extends AbstractAuthenticationProcessingFilter {
 
     private final AuthenticationManager authManager;
 
     private final JwtConfig jwtConfig;
 
-    public JwtLoginTokenFilter(String url, AuthenticationManager authManager, JwtConfig jwtConfig) {
+    private UserService userService;
+
+    public JwtLoginTokenFilter(String url, AuthenticationManager authManager, JwtConfig jwtConfig, UserService userService) {
         super(new AntPathRequestMatcher(url));
         this.authManager = authManager;
         this.jwtConfig = jwtConfig;
+        this.userService = userService;
     }
 
     @Override
@@ -39,7 +45,7 @@ public class JwtLoginTokenFilter extends AbstractAuthenticationProcessingFilter 
         try {
             creds = new ObjectMapper().readValue(request.getInputStream(), UserCredentials.class);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new CredentialsException("Please, type your login and password");
         }
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
@@ -66,6 +72,8 @@ public class JwtLoginTokenFilter extends AbstractAuthenticationProcessingFilter 
                 .signWith(SignatureAlgorithm.HS512, jwtConfig.getSecret())
                 .compact();
         response.addHeader(jwtConfig.getHeader(), jwtConfig.getPrefix() + token);
+
+        userService.restDaysRecounting(auth.getName());
     }
 
     private static class UserCredentials {

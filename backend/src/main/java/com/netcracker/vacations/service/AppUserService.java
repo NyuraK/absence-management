@@ -3,8 +3,8 @@ package com.netcracker.vacations.service;
 import com.netcracker.vacations.domain.UserEntity;
 import com.netcracker.vacations.repository.UserRepository;
 import com.netcracker.vacations.security.MyUserPrincipal;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AppUserService implements UserDetailsService {
-    private static final Logger logger = LogManager.getLogger(AppUserService.class);
+    private static final Logger logger = LoggerFactory.getLogger(AppUserService.class);
 
     private UserRepository repository;
 
@@ -23,7 +23,7 @@ public class AppUserService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) {
         UserEntity user = repository.findByLogin(username).get(0);
         if (user == null) {
             throw new UsernameNotFoundException("Username: " + username + " not found");

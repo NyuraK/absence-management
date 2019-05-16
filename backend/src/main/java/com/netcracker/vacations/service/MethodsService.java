@@ -2,17 +2,16 @@ package com.netcracker.vacations.service;
 
 import com.netcracker.vacations.domain.*;
 import com.netcracker.vacations.domain.enums.RequestType;
-import com.netcracker.vacations.domain.enums.Role;
-import com.netcracker.vacations.domain.enums.Status;
-import com.netcracker.vacations.exception.EndingBeforeBeginningException;
 import com.netcracker.vacations.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 @Service
 public class MethodsService {
@@ -68,16 +67,16 @@ public class MethodsService {
         typeRepo.deleteById(type.getTypeOfRequest());
     }
 
-    public List<RequestEntity> findByDates(Date begin, Date end) {
-        List<RequestEntity> requests = reqRepo.findAllByStatus(Status.ACCEPTED);
-        List<RequestEntity> result = new ArrayList<RequestEntity>();
-        for (RequestEntity request : requests) {
-            if ((((request.getBeginning()).after(begin)) || (request.getBeginning().equals(begin))) && ((((request.getEnding()).before(end)) || (request.getEnding().equals(end))))) {
-                result.add(request);
-            }
-        }
-        return result;
-    }
+//    public List<RequestEntity> findByDates(Date begin, Date end) {
+//        List<RequestEntity> requests = reqRepo.findAllByStatus(Status.ACCEPTED);
+//        List<RequestEntity> result = new ArrayList<RequestEntity>();
+//        for (RequestEntity request : requests) {
+//            if ((((request.getBeginning()).after(begin)) || (request.getBeginning().equals(begin))) && ((((request.getEnding()).before(end)) || (request.getEnding().equals(end))))) {
+//                result.add(request);
+//            }
+//        }
+//        return result;
+//    }
 
     public void /*Map<Date,String>*/ ColorMonth(int year, int month/*, TeamEntity team*/) {
         Calendar calendar = new GregorianCalendar(year, month - 1, 1);

@@ -52,9 +52,11 @@
                 instance.post('departments/addDepartment',
                     newDepartment
                 )
-                    .then(function (response) {
+                    .then(resp => {
+                        this.name = '';
+                        this.directorId = '';
+                        this.$emit("newDep");
                     });
-                location.reload();
                 this.dialog = false;
             }
         },

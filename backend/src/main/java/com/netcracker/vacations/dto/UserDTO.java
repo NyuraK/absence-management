@@ -1,6 +1,6 @@
 package com.netcracker.vacations.dto;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class UserDTO {
 
@@ -8,8 +8,8 @@ public class UserDTO {
     private String login;
     private String password;
     private String role;
-    private Integer restDays;
-    private Date hireDate;
+    private Double restDays;
+    private LocalDate hireDate;
     private String name;
     private String surname;
     private String familyName;
@@ -71,19 +71,19 @@ public class UserDTO {
         this.role = role;
     }
 
-    public Integer getRestDays() {
+    public Double getRestDays() {
         return restDays;
     }
 
-    public void setRestDays(Integer restDays) {
+    public void setRestDays(Double restDays) {
         this.restDays = restDays;
     }
 
-    public Date getHireDate() {
+    public LocalDate getHireDate() {
         return hireDate;
     }
 
-    public void setHireDate(Date hireDate) {
+    public void setHireDate(LocalDate hireDate) {
         this.hireDate = hireDate;
     }
 
@@ -108,7 +108,7 @@ public class UserDTO {
     }
 
     public void setFamilyName(String familyName) {
-            this.familyName = familyName;
+        this.familyName = familyName;
     }
 
     public String getPhoneNumber() {

@@ -5,11 +5,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
 
 public class MyUserPrincipal implements UserDetails {
     private final UserEntity user;
-
 
     public MyUserPrincipal(UserEntity user) {
         this.user = user;

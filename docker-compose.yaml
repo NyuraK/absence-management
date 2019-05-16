@@ -1,0 +1,22 @@
+version: '3.7'
+services:
+  absence-management-service:
+    image: sivuha/absence-management:v3
+    ports:
+      - 8088:8088
+    depends_on:
+      - absence-management-database
+    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:mysql://absence-management-database.mysql.database.azure.com:3306/absence_management?useSSL=true&requireSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false
+      - SPRING_DATASOURCE_URL=jdbc:mysql://absence-management-database:3306/absence_management?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false
+#      - SPRING_DATASOURCE_USERNAME=adminadmin@absence-management-database
+      - SPRING_DATASOURCE_USERNAME=root
+#      - SPRING_DATASOURCE_PASSWORD=pass1234!
+      - SPRING_DATASOURCE_PASSWORD=root
+  absence-management-database:
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=absence_management
+    ports:
+      - 3306:3306
