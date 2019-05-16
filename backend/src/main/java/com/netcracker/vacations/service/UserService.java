@@ -42,14 +42,13 @@ public class UserService {
 
     private TeamRepository teamRepository;
 
-    private static List<String> tempPass=new ArrayList<>();
+    private static List<String> tempPass = new ArrayList<>();
 
     @Autowired
     public UserService(UserRepository userRepository, TeamRepository teamRepository) {
         this.userRepository = userRepository;
         this.teamRepository = teamRepository;
     }
-
 
     public List<UserDTO> getUsers() {
         List<UserDTO> response = new ArrayList<>();
@@ -103,16 +102,16 @@ public class UserService {
                 user.setSubordinateTeams(teams);
             }
         }
-        if (currentUser.getFamilyName()==null||currentUser.getFamilyName().isEmpty()) {
+        if (currentUser.getFamilyName() == null || currentUser.getFamilyName().isEmpty()) {
             user.setFamilyName("-");
         }
         if (currentUser.getTeam() == null) {
             user.setTeamName("-");
         }
-        if (currentUser.getPhoneNumber()==null||currentUser.getPhoneNumber().isEmpty()) {
+        if (currentUser.getPhoneNumber() == null || currentUser.getPhoneNumber().isEmpty()) {
             user.setPhoneNumber("-");
         }
-        if (currentUser.getDescription()==null||currentUser.getDescription().isEmpty()) {
+        if (currentUser.getDescription() == null || currentUser.getDescription().isEmpty()) {
             user.setDescription("-");
         }
         return user;
@@ -121,7 +120,7 @@ public class UserService {
     public UserDTO addUser(UserDTO userDTO) {
         userDTO.setPassword(UUID.randomUUID().toString());
         ExecutorService executor = Executors.newFixedThreadPool(5);
-        Runnable sender= new PasswordRunnable(userDTO,this);
+        Runnable sender = new PasswordRunnable(userDTO, this);
         userRepository.save(toEntity(userDTO));
         executor.execute(sender);
 
@@ -234,26 +233,26 @@ public class UserService {
         boolean isSent = false;
         if (email != null) {
             List<UserEntity> users = userRepository.findByEmail(email);
-            if(!users.isEmpty()) {
-                UserEntity user=users.get(0);
+            if (!users.isEmpty()) {
+                UserEntity user = users.get(0);
                 user.setActivationCode(UUID.randomUUID().toString());
                 String message = "Dear " + user.getName() + " " + user.getSurname() + ",\n" + "if you can not use your old password, you can pick a new one. " +
-                        "For doing this visit next link: http://localhost:8080/activation/"+user.getActivationCode();
+                        "For doing this visit next link: http://localhost:8080/activation/" + user.getActivationCode();
                 send(email, "Changing your password.", message);
-                isSent=true;
+                isSent = true;
             }
-       }
+        }
         return isSent;
     }
 
     public boolean sendMailPassword(UserDTO user) {
-        boolean isSent=false;
-        if (user.getEmail()!=null){
-                String message = "Dear " + user.getName() + " " + user.getSurname() + ",\n" + "you successfully registered your account. " +
-                        "Now your username is \"" + user.getLogin() + "\" and your password is \"" + user.getPassword() + "\". You can change your password on your account. For authorisation visit next link: http://localhost:8080";
-                send(user.getEmail(), "Account activation, password changing.", message);
-                isSent = true;
-            }
+        boolean isSent = false;
+        if (user.getEmail() != null) {
+            String message = "Dear " + user.getName() + " " + user.getSurname() + ",\n" + "you successfully registered your account. " +
+                    "Now your username is \"" + user.getLogin() + "\" and your password is \"" + user.getPassword() + "\". You can change your password on your account. For authorisation visit next link: http://localhost:8080";
+            send(user.getEmail(), "Account activation, password changing.", message);
+            isSent = true;
+        }
         return isSent;
     }
 
@@ -279,11 +278,11 @@ public class UserService {
         return userRepository.findByLogin(username).get(0).getRestDays();
     }
 
-    public void setTempPass(String password){
+    public void setTempPass(String password) {
         tempPass.add(password);
     }
 
-    public String getTempPass(){
+    public String getTempPass() {
         return tempPass.get(0);
     }
 }

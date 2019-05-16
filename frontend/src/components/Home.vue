@@ -183,6 +183,27 @@
         },
         components: {Footer, AbsRequest, Nav},
         mounted() {
+            instance.get("/calendar/accepted").then(res => {
+                this.acceptedVacs = res.data;
+                let vac;
+                for (let i = 0; i < res.data.length; i++) {
+                    vac = res.data[i].split("//");
+                    if (vac[0] === "SI") {
+                        this.vacSick.push({start: new Date(vac[1]), end: new Date(vac[2])},);
+                    } else if (vac[0] === "VA") {
+                        this.vacVacation.push({start: new Date(vac[1]), end: new Date(vac[2])},);
+                        this.attributes[1].dates.push({start: new Date(vac[1]), end: new Date(vac[2])},);
+                    } else if (vac[0] === "BU") {
+                        this.vacBusiness.push({start: new Date(vac[1]), end: new Date(vac[2])},);
+                    } else if (vac[0] === "RE") {
+                        this.vacRemote.push({start: new Date(vac[1]), end: new Date(vac[2])},);
+                    } else if (vac[0] === "CH") {
+                        this.vacChild.push({start: new Date(vac[1]), end: new Date(vac[2])},);
+                    }
+                }
+            }).catch(err => {
+                console.log(err);
+            });
             this.getVacs();
         },
         methods: {
@@ -228,41 +249,38 @@
                 }
             },*/
             onAccepted() {
-                console.log("ACCEPTED");
                 if (this.accepted === true) {
                     this.declined = false;
                     this.consider = false;
                     this.clearDates();
                     this.determinateType(this.acceptedVacs);
                     this.showVac();
+                    console.log("ACCEPT");
                 } else if (this.accepted === false) {
                     this.clearDates();
                 }
             },
             onDeclined() {
-                console.log("DECLINED");
                 if (this.declined === true) {
                     this.consider = false;
                     this.accepted = false;
                     this.clearDates();
                     this.determinateType(this.declinedVacs);
                     this.showVac();
+                    console.log("DECLINE");
                 } else if (this.declined === false) {
                     this.clearDates();
                 }
 
             },
-            logged() {
-                console.log("LOGGED");
-            },
             onConsider() {
-                console.log("CONSIDER");
                 if (this.consider === true) {
                     this.declined = false;
                     this.accepted = false;
                     this.clearDates();
                     this.determinateType(this.considerVacs);
                     this.showVac();
+                    console.log("CONSIDER");
                 } else if (this.consider === false) {
                     this.clearDates();
                 }
@@ -300,60 +318,47 @@
             showVac() {
                 if (this.sick === true) {
                     this.attributes[0].dates = this.vacSick;
-                    console.log("SICK " + this.sick);
                 }
                 if (this.vacation === true) {
                     this.attributes[1].dates = this.vacVacation;
-                    console.log("VAC " + this.vacation);
                 }
                 if (this.business === true) {
                     this.attributes[2].dates = this.vacBusiness;
-                    console.log("BUS " + this.business);
                 }
                 if (this.child === true) {
                     this.attributes[3].dates = this.vacChild;
-                    console.log("CH " + this.child);
                 }
                 if (this.remote === true) {
                     this.attributes[4].dates = this.vacRemote;
-                    console.log("RE " + this.remote);
                 }
                 if (this.sick === false) {
                     this.attributes[0].dates = [];
-                    console.log("SICK " + this.sick);
                 }
                 if (this.vacation === false) {
                     this.attributes[1].dates = [];
-                    console.log("VAC " + this.vacation);
                 }
                 if (this.business === false) {
                     this.attributes[2].dates = [];
-                    console.log("BUS " + this.business);
                 }
                 if (this.child === false) {
                     this.attributes[3].dates = [];
-                    console.log("CH " + this.child);
                 }
                 if (this.remote === false) {
                     this.attributes[4].dates = [];
-                    console.log("RE " + this.remote);
                 }
             },
-            reloadReqs(){
+            reloadReqs() {
                 this.getVacs();
-                console.log("reloaded");
-                this.showVac();
-                if (this.consider===true){
+                if (this.consider === true) {
                     this.onConsider();
-                } else if (this.declined===true){
+                } else if (this.declined === true) {
                     this.onDeclined();
-                } else if (this.accepted===true){
+                } else if (this.accepted === true) {
                     this.onAccepted();
                 }
+                //this.showVac();
             },
-            getVacs(){
-                console.log("CALLED");
-                console.log("Reload");
+            getVacs() {
                 instance.get("/calendar/occupiedForSend").then(res => {
                     let arr = res.data;
                     let occ;
@@ -392,25 +397,8 @@
                 }).catch(err => {
                     console.log(err);
                 });
-
                 instance.get("/calendar/accepted").then(res => {
                     this.acceptedVacs = res.data;
-                    let vac;
-                    for (let i = 0; i < res.data.length; i++) {
-                        vac = res.data[i].split("//");
-                        if (vac[0] === "SI") {
-                            this.vacSick.push({start: new Date(vac[1]), end: new Date(vac[2])},);
-                        } else if (vac[0] === "VA") {
-                            this.vacVacation.push({start: new Date(vac[1]), end: new Date(vac[2])},);
-                            this.attributes[1].dates.push({start: new Date(vac[1]), end: new Date(vac[2])},);
-                        } else if (vac[0] === "BU") {
-                            this.vacBusiness.push({start: new Date(vac[1]), end: new Date(vac[2])},);
-                        } else if (vac[0] === "RE") {
-                            this.vacRemote.push({start: new Date(vac[1]), end: new Date(vac[2])},);
-                        } else if (vac[0] === "CH") {
-                            this.vacChild.push({start: new Date(vac[1]), end: new Date(vac[2])},);
-                        }
-                    }
                 }).catch(err => {
                     console.log(err);
                 });

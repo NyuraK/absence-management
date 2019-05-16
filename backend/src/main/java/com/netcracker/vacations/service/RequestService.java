@@ -56,11 +56,7 @@ public class RequestService {
         RequestTypeEntity type = requestTypeRepository.findByName(request.getType()).get(0);
         Status status = Status.CONSIDER;
         if (!type.getNeedApproval()) {
-            ExecutorService executor = Executors.newFixedThreadPool(2);
             status = Status.ACCEPTED;
-            request.setStatus(Status.ACCEPTED.getName());
-            Runnable sender=new DecisionRunnable(request, this);
-            executor.execute(sender);
         }
 
         UserEntity user = userRepository.findByLogin(request.getUsername()).get(0);

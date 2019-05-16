@@ -87,7 +87,7 @@
                     needToEmail: this.isManagerOnRest,
                 };
                 instance.post("/requests", msg).then(res => {
-
+                    this.$emit("addRequest");
                 }).catch(err => {
                     if (err.response.status === 406) {
                         this.error_msg = err.response.data;
@@ -96,7 +96,7 @@
                 });
                 this.form.absType = null;
                 this.form.text = '';
-                this.$emit("addRequest");
+
             },
             onReset(evt) {
                 evt.preventDefault();
