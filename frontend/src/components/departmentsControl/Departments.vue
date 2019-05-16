@@ -7,7 +7,7 @@
                 <p></p>
                 <input v-model="search" class="form-control" placeholder="Search by department name...">
                 <p></p>
-                <NewDepartment></NewDepartment>
+                <NewDepartment @newDep="reboot"></NewDepartment>
                 <ul class="list-group mt-1" v-for="department of findDepartments" :key="department.departmentId">
                     <li class="list-group-item">
                         <v-layout align-center justify-space-between row fill-height>
@@ -78,10 +78,23 @@
                 this.deleteName = name;
             },
             deleteDepartment(id) {
-                instance.delete('departments/' + id,);
+                instance.delete('departments/' + id,)
+                    .then(resp => {
+                        instance.get('departments')
+                            .then(response => {
+                                this.departments = response.data;
+                                this.departments.sort((a, b) => a.name.localeCompare(b.name));
+                            })
+                    });
                 this.deleteDialog = false;
-                this.departments = this.departments.filter(x => x.departmentId !== id);
             },
+            reboot() {
+                instance.get('departments')
+                    .then(response => {
+                        this.departments = response.data;
+                        this.departments.sort((a, b) => a.name.localeCompare(b.name));
+                    })
+            }
         },
 
         created: function () {
