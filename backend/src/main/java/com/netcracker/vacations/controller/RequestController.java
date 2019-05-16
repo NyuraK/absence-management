@@ -32,7 +32,7 @@ public class RequestController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addRequest(@RequestBody RequestDTO request) {
+    public ResponseEntity<?> addRequest(@RequestBody RequestDTO request) throws Exception {
         logger.info(request.getStart() + " " + request.getEnd());
         reqService.saveRequest(request);
         if (request.getNeedToEmail()) {
