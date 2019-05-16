@@ -5,7 +5,10 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "departments")
+@Table(name = "departments", indexes = {
+        @Index(columnList = "departments_id", name = "idIndex"),
+        @Index(columnList = "directors_id", name = "directorIndex"),
+})
 public class DepartmentEntity {
 
     @Id

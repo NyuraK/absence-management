@@ -11,7 +11,12 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "requests")
+@Table(name = "requests", indexes = {
+        @Index(columnList = "request_id", name = "idIndex"),
+        @Index(columnList = "user_id", name = "userIndex"),
+        @Index(columnList = "type_of_request_id", name = "typeIndex"),
+        @Index(columnList = "status", name = "statusIndex"),
+})
 public class RequestEntity {
 
     @Id

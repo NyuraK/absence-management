@@ -82,9 +82,10 @@
                 };
                 instance.post('users/addUser',
                     newUser
-                )
-                    .then(function (response) {
-                    });
+                ).then(function (response) {
+                }).catch(err => {
+                    console.log(err);
+                });
                 location.reload();
                 this.dialog = false;
             }

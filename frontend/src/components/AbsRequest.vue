@@ -42,7 +42,7 @@
 </template>
 
 <script>
-    import {instance} from "../Api"
+    import {instance} from "../Api";
 
     export default {
         name: "AbsRequest",
@@ -63,7 +63,6 @@
             }
         },
         created() {
-            let name = localStorage.getItem('username');
             instance.get('/requests/types').then((resp) => {
                 this.absTypes = resp.data;
             }).catch(err => {
@@ -88,6 +87,7 @@
                     needToEmail: this.isManagerOnRest,
                 };
                 instance.post("/requests", msg).then(res => {
+
                 }).catch(err => {
                     if (err.response.status === 406) {
                         this.error_msg = err.response.data;
@@ -96,6 +96,7 @@
                 });
                 this.form.absType = null;
                 this.form.text = '';
+                this.$emit("addRequest");
             },
             onReset(evt) {
                 evt.preventDefault();

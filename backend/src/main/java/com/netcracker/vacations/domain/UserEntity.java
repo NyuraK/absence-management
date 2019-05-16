@@ -8,7 +8,13 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", indexes = {
+        @Index(columnList = "users_id", name = "idIndex"),
+        @Index(columnList = "login", name = "loginIndex"),
+        @Index(columnList = "teams_id", name = "teamIndex"),
+        @Index(columnList = "email", name = "emailIndex"),
+        @Index(columnList = "activation_code", name = "codeIndex"),
+})
 public class UserEntity {
 
     @Id

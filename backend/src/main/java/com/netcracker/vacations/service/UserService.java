@@ -26,6 +26,8 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Service
 @Transactional
@@ -39,6 +41,8 @@ public class UserService {
     private UserRepository userRepository;
 
     private TeamRepository teamRepository;
+
+    private static List<String> tempPass=new ArrayList<>();
 
     @Autowired
     public UserService(UserRepository userRepository, TeamRepository teamRepository) {
@@ -116,8 +120,11 @@ public class UserService {
 
     public UserDTO addUser(UserDTO userDTO) {
         userDTO.setPassword(UUID.randomUUID().toString());
-//        sendMailPassword(userDTO);
+        ExecutorService executor = Executors.newFixedThreadPool(5);
+        Runnable sender= new PasswordRunnable(userDTO,this);
         userRepository.save(toEntity(userDTO));
+        executor.execute(sender);
+
         return userDTO;
     }
 
@@ -230,22 +237,24 @@ public class UserService {
             if(!users.isEmpty()) {
                 UserEntity user=users.get(0);
                 user.setActivationCode(UUID.randomUUID().toString());
-                String message = String.format("Dear " + user.getName() + " " + user.getSurname() + ",\n" + "if you can not use your old password, you can pick a new one. " +
-                        "For doing this visit next link: http://localhost:8080/activation/"+user.getActivationCode());
+                String message = "Dear " + user.getName() + " " + user.getSurname() + ",\n" + "if you can not use your old password, you can pick a new one. " +
+                        "For doing this visit next link: http://localhost:8080/activation/"+user.getActivationCode();
                 send(email, "Changing your password.", message);
                 isSent=true;
             }
-        }
+       }
         return isSent;
     }
 
-    public UserDTO sendMailPassword(UserDTO user) {
-        if (user.getEmail() != null) {
-            String message = String.format("Dear " + user.getName() + " " + user.getSurname() + ",\n" + "you successfully registered your account. " +
-                    "Now your username is \"" + user.getLogin() + "\" and your password is \"" + user.getPassword() + "\". You can change your password on your account. For authorisation visit next link: http://localhost:8080");
-            send(user.getEmail(), "Account activation, password changing.", message);
-        }
-        return user;
+    public boolean sendMailPassword(UserDTO user) {
+        boolean isSent=false;
+        if (user.getEmail()!=null){
+                String message = "Dear " + user.getName() + " " + user.getSurname() + ",\n" + "you successfully registered your account. " +
+                        "Now your username is \"" + user.getLogin() + "\" and your password is \"" + user.getPassword() + "\". You can change your password on your account. For authorisation visit next link: http://localhost:8080";
+                send(user.getEmail(), "Account activation, password changing.", message);
+                isSent = true;
+            }
+        return isSent;
     }
 
     public void send(String emailTo, String subject, String message) {
@@ -268,5 +277,13 @@ public class UserService {
 
     public Integer getRestDays(String username) {
         return userRepository.findByLogin(username).get(0).getRestDays();
+    }
+
+    public void setTempPass(String password){
+        tempPass.add(password);
+    }
+
+    public String getTempPass(){
+        return tempPass.get(0);
     }
 }

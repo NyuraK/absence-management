@@ -18,19 +18,12 @@ public interface TeamRepository extends CrudRepository<TeamEntity, Integer> {
 
     List<TeamEntity> findAllByManager(UserEntity manager);
 
-    List<TeamEntity> findByQuota(Integer quota);
-
-    List<TeamEntity> findByDepartment(DepartmentEntity department);
-
     List<TeamEntity> findAllByDepartment(DepartmentEntity department);
 
     List<TeamEntity> findAllByDepartmentDepartmentsId(Integer id);
-
-    List<TeamEntity> findByName(String name);
 
     List<TeamEntity> findAll();
 
     void deleteByTeamsId(Integer teamsId);
 
-    void deleteByName(String name);
 }

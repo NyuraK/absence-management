@@ -14,7 +14,7 @@
                 <b-col>
                     <div>
                         <p>Send new request</p>
-                        <AbsRequest></AbsRequest>
+                        <AbsRequest @addRequest="reloadReqs"></AbsRequest>
                     </div>
                 </b-col>
             </b-row>
@@ -182,115 +182,19 @@
 
         },
         components: {Footer, AbsRequest, Nav},
-        created() {
-            this.$acl.change(localStorage.getItem('user'));
-            let name = localStorage.getItem('username');
-
-            instance.get("/calendar/occupiedForSend", {
-                params: {
-                    name: name
-                }
-            }).then(res => {
-                let arr = res.data;
-                let occ;
-                for (let i = 0; i < arr.length; i++) {
-                    occ = [];
-                    for (let j = 1; j < arr[i].length; j++) {
-                        occ.push(arr[i][j]);
-                    }
-                    this.occupiedDays[arr[i][0]] = occ;
-                    if (arr[0][0] != null) {
-                        this.team = arr[0][0];
-                    } else {
-                        this.team = '';
-                    }
-                }
-                this.attr[0].dates = this.occupiedDays[arr[0][0]].map(dateString => new Date(dateString));
-
-
-            }).catch(err => {
-                console.log(err);
-            });
-            instance.get("/calendar/busyForSend", {
-                params: {
-                    name: name
-                }
-            }).then(res => {
-                let arr = res.data;
-
-                let busy;
-                for (let i = 0; i < arr.length; i++) {
-                    busy = [];
-
-                    for (let j = 1; j < arr[i].length; j++) {
-                        busy.push(arr[i][j]);
-                    }
-                    this.busyDays[arr[i][0]] = busy;
-                }
-                this.attr[1].dates = this.busyDays[arr[0][0]].map(dateString => new Date(dateString));
-                console.log(this.busyDays);
-            }).catch(err => {
-                console.log(err);
-            });
-
-            instance.get("/calendar/accepted", {
-                params: {
-                    name: name
-                }
-            }).then(res => {
-                this.acceptedVacs = res.data;
-                let vac;
-                for (let i = 0; i < res.data.length; i++) {
-                    vac = res.data[i].split("//");
-                    if (vac[0] === "SI") {
-                        this.vacSick.push({start: new Date(vac[1]), end: new Date(vac[2])},);
-                    } else if (vac[0] === "VA") {
-                        this.vacVacation.push({start: new Date(vac[1]), end: new Date(vac[2])},);
-                        this.attributes[1].dates.push({start: new Date(vac[1]), end: new Date(vac[2])},);
-                    } else if (vac[0] === "BU") {
-                        this.vacBusiness.push({start: new Date(vac[1]), end: new Date(vac[2])},);
-                    } else if (vac[0] === "RE") {
-                        this.vacRemote.push({start: new Date(vac[1]), end: new Date(vac[2])},);
-                    } else if (vac[0] === "CH") {
-                        this.vacChild.push({start: new Date(vac[1]), end: new Date(vac[2])},);
-                    }
-                }
-            }).catch(err => {
-                console.log(err);
-            });
-            instance.get("/calendar/declined", {
-                params: {
-                    name: name
-                }
-            }).then(res => {
-                this.declinedVacs = res.data;
-            }).catch(err => {
-                console.log(err);
-            });
-            instance.get("/calendar/consider", {
-                params: {
-                    name: name
-                }
-            }).then(res => {
-                this.considerVacs = res.data;
-            }).catch(err => {
-                console.log(err);
-            });
-
-            instance.get("/users/restdays").then((resp)=>{
-                this.vacantDays = resp.data;
-            });
+        mounted() {
+            this.getVacs();
         },
         methods: {
             disableChecks() {
-                if (this.isAllActive == true) {
+                if (this.isAllActive === true) {
                     this.isAllActive = false;
                     this.business = false;
                     this.child = false;
                     this.vacation = false;
                     this.remote = false;
                     this.sick = false;
-                } else if (this.isAllActive == false) {
+                } else if (this.isAllActive === false) {
                     this.isAllActive = true;
                     this.business = true;
                     this.child = true;
@@ -298,13 +202,13 @@
                     this.remote = true;
                     this.sick = true;
                 }
-                if (this.all == true) {
+                if (this.all === true) {
                     this.attributes[0].dates = this.vacSick;
                     this.attributes[1].dates = this.vacVacation;
                     this.attributes[2].dates = this.vacBusiness;
                     this.attributes[3].dates = this.vacChild;
                     this.attributes[4].dates = this.vacRemote;
-                } else if (this.all == false) {
+                } else if (this.all === false) {
                     this.attributes[0].dates = [];
                     this.attributes[1].dates = [];
                     this.attributes[2].dates = [];
@@ -324,36 +228,42 @@
                 }
             },*/
             onAccepted() {
-                if (this.accepted == true) {
+                console.log("ACCEPTED");
+                if (this.accepted === true) {
                     this.declined = false;
                     this.consider = false;
                     this.clearDates();
                     this.determinateType(this.acceptedVacs);
                     this.showVac();
-                } else if (this.accepted == false) {
+                } else if (this.accepted === false) {
                     this.clearDates();
                 }
             },
             onDeclined() {
-                if (this.declined == true) {
+                console.log("DECLINED");
+                if (this.declined === true) {
                     this.consider = false;
                     this.accepted = false;
                     this.clearDates();
                     this.determinateType(this.declinedVacs);
                     this.showVac();
-                } else if (this.declined == false) {
+                } else if (this.declined === false) {
                     this.clearDates();
                 }
 
             },
+            logged() {
+                console.log("LOGGED");
+            },
             onConsider() {
-                if (this.consider == true) {
+                console.log("CONSIDER");
+                if (this.consider === true) {
                     this.declined = false;
                     this.accepted = false;
                     this.clearDates();
                     this.determinateType(this.considerVacs);
                     this.showVac();
-                } else if (this.consider == false) {
+                } else if (this.consider === false) {
                     this.clearDates();
                 }
             },
@@ -388,47 +298,137 @@
                 }
             },
             showVac() {
-                if (this.sick == true) {
+                if (this.sick === true) {
                     this.attributes[0].dates = this.vacSick;
                     console.log("SICK " + this.sick);
                 }
-                if (this.vacation == true) {
+                if (this.vacation === true) {
                     this.attributes[1].dates = this.vacVacation;
                     console.log("VAC " + this.vacation);
                 }
-                if (this.business == true) {
+                if (this.business === true) {
                     this.attributes[2].dates = this.vacBusiness;
                     console.log("BUS " + this.business);
                 }
-                if (this.child == true) {
+                if (this.child === true) {
                     this.attributes[3].dates = this.vacChild;
                     console.log("CH " + this.child);
                 }
-                if (this.remote == true) {
+                if (this.remote === true) {
                     this.attributes[4].dates = this.vacRemote;
                     console.log("RE " + this.remote);
                 }
-                if (this.sick == false) {
+                if (this.sick === false) {
                     this.attributes[0].dates = [];
                     console.log("SICK " + this.sick);
                 }
-                if (this.vacation == false) {
+                if (this.vacation === false) {
                     this.attributes[1].dates = [];
                     console.log("VAC " + this.vacation);
                 }
-                if (this.business == false) {
+                if (this.business === false) {
                     this.attributes[2].dates = [];
                     console.log("BUS " + this.business);
                 }
-                if (this.child == false) {
+                if (this.child === false) {
                     this.attributes[3].dates = [];
                     console.log("CH " + this.child);
                 }
-                if (this.remote == false) {
+                if (this.remote === false) {
                     this.attributes[4].dates = [];
                     console.log("RE " + this.remote);
                 }
             },
+            reloadReqs(){
+                this.getVacs();
+                console.log("reloaded");
+                this.showVac();
+                if (this.consider===true){
+                    this.onConsider();
+                } else if (this.declined===true){
+                    this.onDeclined();
+                } else if (this.accepted===true){
+                    this.onAccepted();
+                }
+            },
+            getVacs(){
+                console.log("CALLED");
+                console.log("Reload");
+                instance.get("/calendar/occupiedForSend").then(res => {
+                    let arr = res.data;
+                    let occ;
+                    for (let i = 0; i < arr.length; i++) {
+                        occ = [];
+                        for (let j = 1; j < arr[i].length; j++) {
+                            occ.push(arr[i][j]);
+                        }
+                        this.occupiedDays[arr[i][0]] = occ;
+                        if (arr[0][0] != null) {
+                            this.team = arr[0][0];
+                        } else {
+                            this.team = '';
+                        }
+                    }
+                    this.attr[0].dates = this.occupiedDays[arr[0][0]].map(dateString => new Date(dateString));
+
+
+                }).catch(err => {
+                    console.log(err);
+                });
+                instance.get("/calendar/busyForSend").then(res => {
+                    let arr = res.data;
+
+                    let busy;
+                    for (let i = 0; i < arr.length; i++) {
+                        busy = [];
+
+                        for (let j = 1; j < arr[i].length; j++) {
+                            busy.push(arr[i][j]);
+                        }
+                        this.busyDays[arr[i][0]] = busy;
+                    }
+                    this.attr[1].dates = this.busyDays[arr[0][0]].map(dateString => new Date(dateString));
+                    console.log(this.busyDays);
+                }).catch(err => {
+                    console.log(err);
+                });
+
+                instance.get("/calendar/accepted").then(res => {
+                    this.acceptedVacs = res.data;
+                    let vac;
+                    for (let i = 0; i < res.data.length; i++) {
+                        vac = res.data[i].split("//");
+                        if (vac[0] === "SI") {
+                            this.vacSick.push({start: new Date(vac[1]), end: new Date(vac[2])},);
+                        } else if (vac[0] === "VA") {
+                            this.vacVacation.push({start: new Date(vac[1]), end: new Date(vac[2])},);
+                            this.attributes[1].dates.push({start: new Date(vac[1]), end: new Date(vac[2])},);
+                        } else if (vac[0] === "BU") {
+                            this.vacBusiness.push({start: new Date(vac[1]), end: new Date(vac[2])},);
+                        } else if (vac[0] === "RE") {
+                            this.vacRemote.push({start: new Date(vac[1]), end: new Date(vac[2])},);
+                        } else if (vac[0] === "CH") {
+                            this.vacChild.push({start: new Date(vac[1]), end: new Date(vac[2])},);
+                        }
+                    }
+                }).catch(err => {
+                    console.log(err);
+                });
+                instance.get("/calendar/declined").then(res => {
+                    this.declinedVacs = res.data;
+                }).catch(err => {
+                    console.log(err);
+                });
+                instance.get("/calendar/consider").then(res => {
+                    this.considerVacs = res.data;
+                }).catch(err => {
+                    console.log(err);
+                });
+
+                instance.get("/users/restdays").then((resp) => {
+                    this.vacantDays = resp.data;
+                });
+            }
         }
     }
 </script>

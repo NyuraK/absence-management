@@ -7,7 +7,9 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "types_of_request")
+@Table(name = "types_of_request", indexes = {
+        @Index(columnList = "name", name = "nameIndex"),
+})
 public class RequestTypeEntity {
     @Id
     @GeneratedValue(generator = "increment")

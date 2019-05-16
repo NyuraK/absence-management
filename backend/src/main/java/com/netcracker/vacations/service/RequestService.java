@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 
@@ -54,7 +56,11 @@ public class RequestService {
         RequestTypeEntity type = requestTypeRepository.findByName(request.getType()).get(0);
         Status status = Status.CONSIDER;
         if (!type.getNeedApproval()) {
+            ExecutorService executor = Executors.newFixedThreadPool(2);
             status = Status.ACCEPTED;
+            request.setStatus(Status.ACCEPTED.getName());
+            Runnable sender=new DecisionRunnable(request, this);
+            executor.execute(sender);
         }
 
         UserEntity user = userRepository.findByLogin(request.getUsername()).get(0);
@@ -82,6 +88,7 @@ public class RequestService {
 
     @PreAuthorize("@Security.isTeamMember(#username, null)")
     public void updateRequest(Status status, List<Integer> requests, @P("username") String username) {
+        ExecutorService executor = Executors.newFixedThreadPool(requests.size()+1);
         for (Integer id : requests) {
             RequestEntity entity = requestRepository.findById(id).get();
             entity.setStatus(status);
@@ -89,6 +96,8 @@ public class RequestService {
                     && entity.getTypeOfRequest().getName().equals(RequestType.VACATION.getName()))
                 decrementRestDays(entity);
             requestRepository.save(entity);
+            Runnable sender= new DecisionRunnable(toDTO(entity), this);
+            executor.execute(sender);
         }
     }
 
@@ -115,26 +124,23 @@ public class RequestService {
             }
         } else if (user.getRole().equals(Role.DIRECTOR)) {
             List<TeamEntity> directorsTeams = teamRepository.findAllByDepartment(departmentRepository.findByDirector(user).get(0));
-            for (RequestEntity entity : requestRepository.findAll()) {
-                for (TeamEntity team : directorsTeams) {
-                    if ((entity.getStatus().equals(Status.CONSIDER)) && (team.equals(entity.getUser().getTeam()))) {
-                        response.add(toDTO(entity));
-                        break;
-                    }
-                }
-            }
+            findAllActiveForUser(response, directorsTeams);
         } else {
             List<TeamEntity> managersTeams = teamRepository.findAllByManager(user);
-            for (RequestEntity entity : requestRepository.findAll()) {
-                for (TeamEntity team : managersTeams) {
-                    if ((entity.getStatus().equals(Status.CONSIDER)) && (team.equals(entity.getUser().getTeam()))) {
-                        response.add(toDTO(entity));
-                        break;
-                    }
+            findAllActiveForUser(response, managersTeams);
+        }
+        return response;
+    }
+
+    private void findAllActiveForUser(List<RequestDTO> response, List<TeamEntity> directorsTeams) {
+        for (RequestEntity entity : requestRepository.findAll()) {
+            for (TeamEntity team : directorsTeams) {
+                if ((entity.getStatus().equals(Status.CONSIDER)) && (team.equals(entity.getUser().getTeam()))) {
+                    response.add(toDTO(entity));
+                    break;
                 }
             }
         }
-        return response;
     }
 
     @PreAuthorize("@Security.isTeamMember(#name, null)")
@@ -149,28 +155,24 @@ public class RequestService {
             }
         } else if (user.getRole().equals(Role.DIRECTOR)) {
             List<TeamEntity> directorsTeams = teamRepository.findAllByDepartment(departmentRepository.findByDirector(user).get(0));
-            for (RequestEntity entity : requestRepository.findAll()) {
-                for (TeamEntity team : directorsTeams) {
-                    if ((!entity.getTypeOfRequest().getNeedApproval()
-                            || !entity.getStatus().equals(Status.CONSIDER)) && (team.equals(entity.getUser().getTeam()))) {
-                        response.add(toDTO(entity));
-                        break;
-                    }
-                }
-            }
+            findAllResolvedForUser(response, directorsTeams);
         } else {
             List<TeamEntity> managersTeams = teamRepository.findAllByManager(user);
-            for (RequestEntity entity : requestRepository.findAll()) {
-                for (TeamEntity team : managersTeams) {
-                    if ((!entity.getTypeOfRequest().getNeedApproval()
-                            || !entity.getStatus().equals(Status.CONSIDER)) && (team.equals(entity.getUser().getTeam()))) {
-                        response.add(toDTO(entity));
-                        break;
-                    }
+            findAllResolvedForUser(response, managersTeams);
+        }
+        return response;
+    }
+
+    private void findAllResolvedForUser(List<RequestDTO> response, List<TeamEntity> managersTeams) {
+        for (RequestEntity entity : requestRepository.findAll()) {
+            for (TeamEntity team : managersTeams) {
+                if ((!entity.getTypeOfRequest().getNeedApproval()
+                        || !entity.getStatus().equals(Status.CONSIDER)) && (team.equals(entity.getUser().getTeam()))) {
+                    response.add(toDTO(entity));
+                    break;
                 }
             }
         }
-        return response;
     }
 
     private RequestDTO toDTO(RequestEntity entity) {
@@ -187,6 +189,7 @@ public class RequestService {
         } else {
             requestDTO.setName(entity.getUser().getName() + " " + entity.getUser().getFamilyName());
         }
+
         if (entity.getUser().getTeam() != null) {
             requestDTO.setTeamName(entity.getUser().getTeam().getName());
         } else {
@@ -197,6 +200,7 @@ public class RequestService {
         } else {
             requestDTO.setTeamName("-");
         }
+        requestDTO.setUsername(entity.getUser().getLogin());
         requestDTO.setName(entity.getUser().getName() + " " + entity.getUser().getFamilyName());
         requestDTO.setDescription(entity.getDescription());
         requestDTO.setStart(entity.getBeginning());
@@ -243,11 +247,22 @@ public class RequestService {
         if (needToSend && user.getTeam() != null) {
             UserEntity director = user.getTeam().getDepartment().getDirector();
             if (director.getEmail() != null) {
-                String message = String.format("Dear " + director.getName() + " " + director.getSurname() + ".\n" + request.getDescription() +
+                String message = "Dear " + director.getName() + " " + director.getSurname() + ".\n" + request.getDescription() +
                         "||Request was sent by " + user.getName() + " " + user.getSurname() + ". Reason: " + request.getType() + " Begin date: " + request.getStart() + ". End date: " + request.getEnd() + ". " +
-                        "Created on " + request.getCreation() + ". ||");
+                        "Created on " + request.getCreation() + ". ||";
                 userService.send(director.getEmail(), "Request by " + user.getName() + " " + user.getSurname() + ".", message);
             }
         }
+    }
+
+    public void sendRequestDecision(RequestDTO request) {
+        System.out.println("REQNAME "+request.getUsername());
+        UserEntity user = userRepository.findByLogin(request.getUsername()).get(0);
+        if (user.getEmail() != null) {
+            String message = "Dear " + user.getName() + " " + user.getSurname() + ".\n" + "Your request's status is now \"" + request.getStatus() + "\". If you have any questions, please, ask your manager (or your director, if manager can't help you now). \n" +
+                    "||Request was sent by " + user.getName() + " " + user.getSurname() + ". Reason: " + request.getType() + " Begin date: " + request.getStart() + ". End date: " + request.getEnd() + ".||";
+            userService.send(user.getEmail(), "Decision for request by " + user.getName() + " " + user.getSurname() + ". " + request.getType() + ".", message);
+        }
+
     }
 }
