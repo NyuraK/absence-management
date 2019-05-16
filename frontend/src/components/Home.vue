@@ -5,6 +5,7 @@
             <b-row>
                 <b-col>
                     <div style="text-align: center">
+                        <p> {{timezone}}</p>
                         <p>Your requests:</p>
                         <v-calendar
                                 is-expanded :attributes='attributes'>
@@ -66,6 +67,7 @@
         name: "Home",
         data() {
             return {
+                timezone: '',
                 vacantDays: '',
                 isAllActive: false,
                 accepted: true,
@@ -184,8 +186,11 @@
         components: {Footer, AbsRequest, Nav},
         created() {
             this.$acl.change(localStorage.getItem('user'));
-            let name = localStorage.getItem('username');
 
+            instance.get("/calendar/current_timezone").then(res=>{
+                console.log(res.data);
+                this.timezone = res.data;
+            });
             instance.get("/calendar/occupiedForSend").then(res => {
                 let arr = res.data;
                 let occ;

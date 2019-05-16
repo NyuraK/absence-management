@@ -44,7 +44,7 @@ public class JwtLoginTokenFilter extends AbstractAuthenticationProcessingFilter 
         try {
             creds = new ObjectMapper().readValue(request.getInputStream(), UserCredentials.class);
         } catch (IOException e) {
-            //TODO handle exception
+            //TODO handle exception: если не обработаю, то будет npe дальше. Отправлять на фронт что-нибудь, не проглатывать
             e.printStackTrace();
         }
 

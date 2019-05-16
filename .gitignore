@@ -33,3 +33,4 @@ frontend/target/
 backend/src/main/resources/public/
 backend/target/
 frontend/target/
+docker-compose.yaml
