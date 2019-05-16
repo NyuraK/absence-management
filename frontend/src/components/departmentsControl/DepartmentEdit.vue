@@ -3,6 +3,9 @@
         <Nav></Nav>
         <v-content>
             <v-container>
+                <v-alert v-model="alert" dismissible type="success" class="alert alert-success" outline>
+                    Department has been successfully updated.
+                </v-alert>
                 <h4>{{departmentName}}
                     <v-icon>edit</v-icon>
                 </h4>
@@ -32,7 +35,7 @@
                                 </template>
                                 <v-card>
                                     <v-card-text>
-                                        <ChangeDirector></ChangeDirector>
+                                        <ChangeDirector @changeDirector="changeDirector"></ChangeDirector>
                                     </v-card-text>
                                 </v-card>
                             </v-expansion-panel-content>
@@ -65,11 +68,13 @@
     import Footer from "../Footer";
 
     export default {
+
         name: "DepartmentEdit",
         components: {Footer, ChangeDirector, Nav},
 
         data() {
             return {
+                alert: false,
                 departmentName: '',
                 department: [],
                 departmentTeams: [],
@@ -78,26 +83,36 @@
 
         methods: {
             rename() {
-                instance.put('departments/' + this.$router.currentRoute.params['id'], this.department);
-                location.reload();
+                instance.put('departments/' + this.$router.currentRoute.params['id'], this.department)
+                    .then(resp => {
+                        this.atStart();
+                        this.alert = true;
+                    });
             },
+            changeDirector() {
+                this.atStart();
+                this.alert = true;
+            },
+            atStart(){
+                instance.get('departments/' + this.$router.currentRoute.params['id'])
+                    .then(response => {
+                        this.department = response.data;
+                        this.departmentName = this.department.name;
+                    });
+                instance.get('teams/',
+                    {
+                        params: {
+                            departmentId: this.$router.currentRoute.params['id']
+                        }
+                    })
+                    .then(response => {
+                        this.departmentTeams = response.data;
+                    });
+            }
         },
 
         created: function () {
-            instance.get('departments/' + this.$router.currentRoute.params['id'])
-                .then(response => {
-                    this.department = response.data;
-                    this.departmentName = this.department.name;
-                });
-            instance.get('teams/',
-                {
-                    params: {
-                        departmentId: this.$router.currentRoute.params['id']
-                    }
-                })
-                .then(response => {
-                    this.departmentTeams = response.data;
-                });
+            this.atStart();
         },
     }
 </script>

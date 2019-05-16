@@ -53,6 +53,7 @@
                 search: '',
                 teamUsers: '',
                 users: [],
+                select: [],
                 dialog: false,
                 selected: [],
                 headers: [
@@ -81,37 +82,43 @@
         methods: {
             add() {
                 for (let user of this.selected) {
-                    user.teamId = this.$router.currentRoute.params['id'];
-                    instance.put('users/' + user.userId, user);
+                    this.select.push(user.userId);
                 }
-                location.reload();
+                instance.put('users/addToTeam/' + this.$router.currentRoute.params['id'], this.select)
+                    .then(resp => {
+                        this.$emit("addUserToTeam");
+                        this.inStart();
+                    })
                 this.dialog = false;
             },
             checkUser(id) {
-                    var i;
-                    for (i = 0; i < this.teamUsers.length; i++) {
-                        if (this.teamUsers[i].userId === id) {
-                            return false;
-                        }
+                var i;
+                for (i = 0; i < this.teamUsers.length; i++) {
+                    if (this.teamUsers[i].userId === id) {
+                        return false;
                     }
-                    return true;
+                }
+                return true;
+            },
+            inStart() {
+                instance.get('users')
+                    .then(response => {
+                        this.users = response.data;
+                    });
+                instance.get('users/',
+                    {
+                        params: {
+                            teamId: this.$router.currentRoute.params['id']
+                        }
+                    })
+                    .then(response => {
+                        this.teamUsers = response.data;
+                    });
             }
         },
 
         created: function () {
-            instance.get('users')
-                .then(response => {
-                    this.users = response.data;
-                });
-            instance.get('users/',
-                {
-                    params: {
-                        teamId: this.$router.currentRoute.params['id']
-                    }
-                })
-                .then(response => {
-                    this.teamUsers = response.data;
-                });
+            this.inStart();
         },
 
         computed: {

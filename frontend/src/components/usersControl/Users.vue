@@ -3,15 +3,15 @@
         <Nav></Nav>
         <v-content>
             <v-container>
-<!--                <v-alert v-model="alert" dismissible type="success" class="alert alert-success" outline>-->
-<!--                    Profile has been successfully updated.-->
-<!--                </v-alert>-->
+                <v-alert v-model="alert" dismissible type="success" class="alert alert-success" outline>
+                    Profile has been successfully updated.
+                </v-alert>
                 <v-layout align-space-between justify-start column>
                     <h4>Manage users</h4>
                     <p></p>
                     <input v-model="search" class="form-control" placeholder="Search by name or role...">
                     <p></p>
-                    <NewUser></NewUser>
+                    <NewUser @newUser="updateUsers"></NewUser>
                     <ul class="list-group mt-1" v-for="user of findUsers" :key="user.user">
                         <li class="list-group-item">
                             <v-layout align-center justify-space-between row fill-height>
@@ -87,6 +87,9 @@
         created: function () {
             if (this.$route.query.alert) {
                 this.alert = this.$route.query.alert;
+                let query = Object.assign({}, this.$route.query);
+                delete query.alert;
+                this.$router.replace({ query });
             }
             instance.get('users')
                 .then(response => {
@@ -104,10 +107,21 @@
             deleteUser(id) {
                 instance.delete('users/' + id,
                 )
-                    .then(function (response) {
+                    .then(response => {
+                        instance.get('users')
+                            .then(resp => {
+                                this.users = resp.data;
+                                this.users.sort((a, b) => a.name.localeCompare(b.name))
+                            })
                     });
                 this.deleteDialog = false;
-                this.users = this.users.filter(x => x.userId !== id);
+            },
+            updateUsers() {
+                instance.get('users')
+                    .then(response => {
+                        this.users = response.data;
+                        this.users.sort((a, b) => a.name.localeCompare(b.name))
+                    })
             }
         },
         computed: {

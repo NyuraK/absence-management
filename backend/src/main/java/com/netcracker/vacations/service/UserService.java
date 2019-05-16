@@ -178,6 +178,14 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void addUsersToTeam(Integer teamId, int[] usersId) {
+        for (Integer user : usersId) {
+            UserEntity userEntity = userRepository.findByUsersId(user).get(0);
+            userEntity.setTeam(teamRepository.findByTeamsId(teamId).get(0));
+            userRepository.save(userEntity);
+        }
+    }
+
     private UserEntity toEntity(UserDTO userDTO) {
         UserEntity userEntity = new UserEntity();
         TeamEntity teamEntity = new TeamEntity();
