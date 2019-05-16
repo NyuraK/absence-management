@@ -39,18 +39,16 @@ public class RequestService {
     private TeamRepository teamRepository;
     private DepartmentRepository departmentRepository;
     private UserService userService;
-    private MethodsService methodService;
     private IntegrationService integrationService;
 
     @Autowired
-    public RequestService(RequestRepository requestRepository, RequestTypeRepository requestTypeRepository, UserRepository userRepository, TeamRepository teamRepository, DepartmentRepository departmentRepository, UserService userService, MethodsService methodService, IntegrationService integrationService) {
+    public RequestService(RequestRepository requestRepository, RequestTypeRepository requestTypeRepository, UserRepository userRepository, TeamRepository teamRepository, DepartmentRepository departmentRepository, UserService userService, IntegrationService integrationService) {
         this.requestRepository = requestRepository;
         this.requestTypeRepository = requestTypeRepository;
         this.userRepository = userRepository;
         this.teamRepository = teamRepository;
         this.departmentRepository = departmentRepository;
         this.userService = userService;
-        this.methodService = methodService;
         this.integrationService = integrationService;
     }
 
@@ -82,7 +80,7 @@ public class RequestService {
     private void checkIfInterruptsOtherAbsence(UserEntity user, LocalDate begin, LocalDate end) {
         for (RequestEntity entity : requestRepository.findAllByUser(user)) {
             if (entity.getStatus().equals(Status.ACCEPTED)
-                    && ((isBeforeOrEqual(entity.getBeginning(),begin) && isAfterOrEqual(entity.getEnding(), begin))
+                    && ((isBeforeOrEqual(entity.getBeginning(), begin) && isAfterOrEqual(entity.getEnding(), begin))
                     || (isBeforeOrEqual(entity.getBeginning(), end) && isAfterOrEqual(entity.getEnding(), end))
                     || (isAfterOrEqual(entity.getBeginning(), begin) && isBeforeOrEqual(entity.getEnding(), end))))
                 throw new WrongPeriodException("You already have absence on selected days");
@@ -99,7 +97,7 @@ public class RequestService {
 
     @PreAuthorize("@Security.isTeamMember(#username, null)")
     public void updateRequest(Status status, List<Integer> requests, @P("username") String username) {
-        ExecutorService executor = Executors.newFixedThreadPool(requests.size()+1);
+        ExecutorService executor = Executors.newFixedThreadPool(requests.size() + 1);
         for (Integer id : requests) {
             RequestEntity entity = requestRepository.findById(id).get();
             entity.setStatus(status);
@@ -107,7 +105,7 @@ public class RequestService {
                     && entity.getTypeOfRequest().getName().equals(RequestType.VACATION.getName()))
                 decrementRestDays(entity);
             requestRepository.save(entity);
-            Runnable sender= new DecisionRunnable(toDTO(entity), this);
+            Runnable sender = new DecisionRunnable(toDTO(entity), this);
             executor.execute(sender);
         }
     }
@@ -122,7 +120,7 @@ public class RequestService {
         userRepository.save(user);
     }
 
-    @PreAuthorize("@Security.isTeamMember(#name, null) or hasRole('DIRECTOR') or hasRole(ADMIN)")
+    @PreAuthorize("@Security.isTeamMember(#name, null) or hasRole('DIRECTOR') or hasRole('ADMIN')")
     public List<RequestDTO> getActiveRequests(@P("name") String name) {
         List<RequestDTO> response = new ArrayList<>();
         UserEntity user = userRepository.findByLogin(name).get(0);
@@ -134,26 +132,23 @@ public class RequestService {
             }
         } else if (user.getRole().equals(Role.DIRECTOR)) {
             List<TeamEntity> directorsTeams = teamRepository.findAllByDepartment(departmentRepository.findByDirector(user).get(0));
-            for (RequestEntity entity : requestRepository.findAll()) {
-                for (TeamEntity team : directorsTeams) {
-                    if ((entity.getStatus().equals(Status.CONSIDER)) && (team.equals(entity.getUser().getTeam()))) {
-                        response.add(toDTO(entity));
-                        break;
-                    }
-                }
-            }
+            findAllActiveForUser(response, directorsTeams);
         } else {
             List<TeamEntity> managersTeams = teamRepository.findAllByManager(user);
-            for (RequestEntity entity : requestRepository.findAll()) {
-                for (TeamEntity team : managersTeams) {
-                    if ((entity.getStatus().equals(Status.CONSIDER)) && (team.equals(entity.getUser().getTeam()))) {
-                        response.add(toDTO(entity));
-                        break;
-                    }
+            findAllActiveForUser(response, managersTeams);
+        }
+        return response;
+    }
+
+    private void findAllActiveForUser(List<RequestDTO> response, List<TeamEntity> directorsTeams) {
+        for (RequestEntity entity : requestRepository.findAll()) {
+            for (TeamEntity team : directorsTeams) {
+                if ((entity.getStatus().equals(Status.CONSIDER)) && (team.equals(entity.getUser().getTeam()))) {
+                    response.add(toDTO(entity));
+                    break;
                 }
             }
         }
-        return response;
     }
 
     @PreAuthorize("@Security.isTeamMember(#name, null)")
@@ -168,28 +163,24 @@ public class RequestService {
             }
         } else if (user.getRole().equals(Role.DIRECTOR)) {
             List<TeamEntity> directorsTeams = teamRepository.findAllByDepartment(departmentRepository.findByDirector(user).get(0));
-            for (RequestEntity entity : requestRepository.findAll()) {
-                for (TeamEntity team : directorsTeams) {
-                    if ((!entity.getTypeOfRequest().getNeedApproval()
-                            || !entity.getStatus().equals(Status.CONSIDER)) && (team.equals(entity.getUser().getTeam()))) {
-                        response.add(toDTO(entity));
-                        break;
-                    }
-                }
-            }
+            findAllResolvedForUser(response, directorsTeams);
         } else {
             List<TeamEntity> managersTeams = teamRepository.findAllByManager(user);
-            for (RequestEntity entity : requestRepository.findAll()) {
-                for (TeamEntity team : managersTeams) {
-                    if ((!entity.getTypeOfRequest().getNeedApproval()
-                            || !entity.getStatus().equals(Status.CONSIDER)) && (team.equals(entity.getUser().getTeam()))) {
-                        response.add(toDTO(entity));
-                        break;
-                    }
+            findAllResolvedForUser(response, managersTeams);
+        }
+        return response;
+    }
+
+    private void findAllResolvedForUser(List<RequestDTO> response, List<TeamEntity> directorsTeams) {
+        for (RequestEntity entity : requestRepository.findAll()) {
+            for (TeamEntity team : directorsTeams) {
+                if ((!entity.getTypeOfRequest().getNeedApproval()
+                        || !entity.getStatus().equals(Status.CONSIDER)) && (team.equals(entity.getUser().getTeam()))) {
+                    response.add(toDTO(entity));
+                    break;
                 }
             }
         }
-        return response;
     }
 
     private RequestDTO toDTO(RequestEntity entity) {
@@ -256,16 +247,15 @@ public class RequestService {
         return answer;
     }
 
-
     public void sendMailRequest(RequestDTO request) {
         UserEntity user = userRepository.findByLogin(request.getUsername()).get(0);
         boolean needToSend = requestTypeRepository.findByName(request.getType()).get(0).getNeedApproval();
         if (needToSend && user.getTeam() != null) {
             UserEntity director = user.getTeam().getDepartment().getDirector();
             if (director.getEmail() != null) {
-                String message = String.format("Dear " + director.getName() + " " + director.getSurname() + ".\n" + request.getDescription() +
+                String message = "Dear " + director.getName() + " " + director.getSurname() + ".\n" + request.getDescription() +
                         "||Request was sent by " + user.getName() + " " + user.getSurname() + ". Reason: " + request.getType() + " Begin date: " + request.getStart() + ". End date: " + request.getEnd() + ". " +
-                        "Created on " + request.getCreation() + ". ||");
+                        "Created on " + request.getCreation() + ". ||";
                 userService.send(director.getEmail(), "Request by " + user.getName() + " " + user.getSurname() + ".", message);
             }
         }
@@ -306,5 +296,4 @@ public class RequestService {
         }
 
     }
-
 }

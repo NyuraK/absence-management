@@ -95,7 +95,6 @@ public class IntegrationService {
         }
     }
 
-
     public void insertEvents(String code) throws Exception {
         Calendar service;
         List<RequestEntity> requests = requestRepository.findAllByUserLogin(login);

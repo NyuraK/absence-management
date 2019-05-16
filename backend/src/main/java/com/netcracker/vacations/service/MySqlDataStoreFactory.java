@@ -14,7 +14,7 @@ public class MySqlDataStoreFactory extends AbstractDataStoreFactory {
     }
 
     @Override
-    protected  DataStore<StoredCredential> createDataStore(String id) {
+    protected DataStore<StoredCredential> createDataStore(String id) {
         return new MySqlCredentialsDataStore(this, id, googleCredentialRepository);
     }
 }

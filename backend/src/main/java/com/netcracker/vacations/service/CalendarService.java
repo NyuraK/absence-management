@@ -4,7 +4,6 @@ import com.netcracker.vacations.domain.RequestEntity;
 import com.netcracker.vacations.domain.TeamEntity;
 import com.netcracker.vacations.domain.UserEntity;
 import com.netcracker.vacations.domain.enums.Status;
-import com.netcracker.vacations.dto.UserDTO;
 import com.netcracker.vacations.repository.*;
 import com.netcracker.vacations.security.SecurityExpressionMethods;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,8 +97,8 @@ public class CalendarService {
                             cal1.setTime(date);
                             cal2.setTime(begin);
                             cal3.setTime(end);
-                            boolean sameDayBegin = cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) && cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR);
-                            boolean sameDayEnd = cal1.get(Calendar.DAY_OF_YEAR) == cal3.get(Calendar.DAY_OF_YEAR) && cal1.get(Calendar.YEAR) == cal3.get(Calendar.YEAR);
+                            boolean sameDayBegin = isSameDay(cal1, cal2);
+                            boolean sameDayEnd = isSameDay(cal1, cal3);
                             if ((((begin).before(date)) || sameDayBegin) && ((((end).after(date)) || sameDayEnd))) {
                                 counter++;
                             }
@@ -127,6 +126,10 @@ public class CalendarService {
         return null;
     }
 
+    private boolean isSameDay(Calendar cal1, Calendar cal2) {
+        return cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) && cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR);
+    }
+
     private Date convertToDateViaSqlDate(LocalDate dateToConvert) {
         return java.sql.Date.valueOf(dateToConvert);
     }
@@ -152,25 +155,6 @@ public class CalendarService {
         return datesInRange;
     }
 
-    private UserDTO toDTO(UserEntity entity) {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setUserId(entity.getUsersId());
-        userDTO.setDescription(entity.getDescription());
-        userDTO.setEmail(entity.getEmail());
-        userDTO.setFamilyName(entity.getFamilyName());
-        userDTO.setHireDate(entity.getHireDate());
-        userDTO.setName(entity.getName());
-        userDTO.setSurname(entity.getSurname());
-        userDTO.setPassword(entity.getPassword());
-        userDTO.setPhoneNumber(entity.getPhoneNumber());
-        userDTO.setRole(entity.getRole().getName());
-        userDTO.setLogin(entity.getLogin());
-        userDTO.setRestDays(entity.getRestDays());
-        userDTO.setTeamId(entity.getTeam() == null ? -1 : entity.getTeam().getTeamsId());
-        userDTO.setTeamName(entity.getTeam() == null ? "User without team" : entity.getTeam().getName());
-        return userDTO;
-    }
-
     public List<String> getVacations(String status) {
         String name = SecurityExpressionMethods.currentUserLogin();
         UserEntity user = userRepo.findByLogin(name).get(0);
@@ -185,42 +169,12 @@ public class CalendarService {
         String begin;
         String end;
         for (RequestEntity req : reqs) {
-            if (status.equals("Accepted") && req.getStatus().equals(Status.ACCEPTED)) {DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                if (req.getTypeOfRequest().getName().equals("Business trip")) {
-                    business.add(req);
-                } else if (req.getTypeOfRequest().getName().equals("Child care")) {
-                    child.add(req);
-                } else if (req.getTypeOfRequest().getName().equals("Vacation")) {
-                    vacation.add(req);
-                } else if (req.getTypeOfRequest().getName().equals("Remote work")) {
-                    remote.add(req);
-                } else if (req.getTypeOfRequest().getName().equals("Sick leave")) {
-                    sick.add(req);
-                }
+            if (status.equals("Accepted") && req.getStatus().equals(Status.ACCEPTED)) {
+                collectRequests(business, child, vacation, sick, remote, req);
             } else if (status.equals("Consider") && req.getStatus().equals(Status.CONSIDER)) {
-                if (req.getTypeOfRequest().getName().equals("Business trip")) {
-                    business.add(req);
-                } else if (req.getTypeOfRequest().getName().equals("Child care")) {
-                    child.add(req);
-                } else if (req.getTypeOfRequest().getName().equals("Vacation")) {
-                    vacation.add(req);
-                } else if (req.getTypeOfRequest().getName().equals("Remote work")) {
-                    remote.add(req);
-                } else if (req.getTypeOfRequest().getName().equals("Sick leave")) {
-                    sick.add(req);
-                }
+                collectRequests(business, child, vacation, sick, remote, req);
             } else if (status.equals("Declined") && req.getStatus().equals(Status.DECLINED)) {
-                if (req.getTypeOfRequest().getName().equals("Business trip")) {
-                    business.add(req);
-                } else if (req.getTypeOfRequest().getName().equals("Child care")) {
-                    child.add(req);
-                } else if (req.getTypeOfRequest().getName().equals("Vacation")) {
-                    vacation.add(req);
-                } else if (req.getTypeOfRequest().getName().equals("Remote work")) {
-                    remote.add(req);
-                } else if (req.getTypeOfRequest().getName().equals("Sick leave")) {
-                    sick.add(req);
-                }
+                collectRequests(business, child, vacation, sick, remote, req);
             }
         }
         for (RequestEntity req : business) {
@@ -252,6 +206,20 @@ public class CalendarService {
             System.out.println(date);
         }
         return dates;
+    }
+
+    private void collectRequests(List<RequestEntity> business, List<RequestEntity> child, List<RequestEntity> vacation, List<RequestEntity> sick, List<RequestEntity> remote, RequestEntity req) {
+        if (req.getTypeOfRequest().getName().equals("Business trip")) {
+            business.add(req);
+        } else if (req.getTypeOfRequest().getName().equals("Child care")) {
+            child.add(req);
+        } else if (req.getTypeOfRequest().getName().equals("Vacation")) {
+            vacation.add(req);
+        } else if (req.getTypeOfRequest().getName().equals("Remote work")) {
+            remote.add(req);
+        } else if (req.getTypeOfRequest().getName().equals("Sick leave")) {
+            sick.add(req);
+        }
     }
 
 }

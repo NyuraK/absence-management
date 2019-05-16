@@ -17,13 +17,19 @@ public class DepartmentsController {
     }
 
     @GetMapping
-    public List<DepartmentDTO> departments() { return departmentService.getDepartments(); }
+    public List<DepartmentDTO> departments() {
+        return departmentService.getDepartments();
+    }
 
     @GetMapping("/{id}")
-    public DepartmentDTO getDepartment(@PathVariable("id") Integer id) { return departmentService.getDepartment(id); }
+    public DepartmentDTO getDepartment(@PathVariable("id") Integer id) {
+        return departmentService.getDepartment(id);
+    }
 
     @PostMapping("/addDepartment")
-    public DepartmentDTO addDepartment(@RequestBody DepartmentDTO departmentDTO) { return departmentService.addDepartment(departmentDTO); }
+    public DepartmentDTO addDepartment(@RequestBody DepartmentDTO departmentDTO) {
+        return departmentService.addDepartment(departmentDTO);
+    }
 
     @PutMapping("/{id}")
     public DepartmentDTO updateDepartment(

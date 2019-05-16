@@ -21,7 +21,6 @@ public class IntegrationCallbackController {
     @Value("${redirect}")
     private String redirect;
 
-
     @GetMapping
     public RedirectView callback(@RequestParam(name = "code") String code) throws Exception {
         integrationService.insertEvents(code);

@@ -45,7 +45,8 @@ public class TeamService {
     public TeamDTO getTeam(Integer id) {
         if (teamRepository.findById(id).isPresent()) {
             return toDTO(teamRepository.findById(id).get());
-        };
+        }
+        ;
         return null;
     }
 
@@ -174,7 +175,6 @@ public class TeamService {
             absenceDTO.setBegin(new Date().toString());
             absenceDTO.setEnd(new Date().toString());
         }
-
         return absenceDTO;
     }
 

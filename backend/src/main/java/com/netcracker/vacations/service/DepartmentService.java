@@ -69,7 +69,7 @@ public class DepartmentService {
         departmentDTO.setName(entity.getName());
         departmentDTO.setDirectorId(entity.getDirector() == null ? null : entity.getDirector().getUsersId());
         departmentDTO.setDirectorName(entity.getDirector() == null ? null : entity.getDirector().getName() + " "
-        + entity.getDirector().getSurname());
+                + entity.getDirector().getSurname());
         return departmentDTO;
     }
 }

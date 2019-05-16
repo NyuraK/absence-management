@@ -7,9 +7,9 @@ public class PasswordRunnable implements Runnable {
 
     private UserService service;
 
-    PasswordRunnable(UserDTO user,UserService service) {
+    PasswordRunnable(UserDTO user, UserService service) {
         this.user = user;
-        this.service=service;
+        this.service = service;
     }
 
     @Override

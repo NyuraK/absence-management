@@ -76,7 +76,7 @@ public class MySqlCredentialsDataStore extends AbstractDataStore<StoredCredentia
     }
 
     @Override
-    public com.google.api.client.util.store.DataStore<StoredCredential> clear(){
+    public com.google.api.client.util.store.DataStore<StoredCredential> clear() {
         googleCredentialRepository.deleteAll();
         return this;
     }

@@ -47,7 +47,6 @@ public class DepartmentEntity {
         this.director = director;
     }
 
-
     public String getName() {
         return name;
     }

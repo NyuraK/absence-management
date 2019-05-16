@@ -7,9 +7,9 @@ public class DecisionRunnable implements Runnable {
 
     private RequestService service;
 
-    DecisionRunnable(RequestDTO request,RequestService service) {
-        this.request =request;
-        this.service=service;
+    DecisionRunnable(RequestDTO request, RequestService service) {
+        this.request = request;
+        this.service = service;
     }
 
     @Override
