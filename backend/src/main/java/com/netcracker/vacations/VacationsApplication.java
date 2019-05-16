@@ -12,6 +12,7 @@ public class VacationsApplication {
     void started() {
         TimeZone.setDefault(TimeZone.getTimeZone("Europe/Moscow"));
     }
+
     public static void main(String[] args) {
         SpringApplication.run(VacationsApplication.class, args);
     }

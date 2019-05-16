@@ -3,7 +3,7 @@
         <Nav></Nav>
         <b-container>
             <b-row>
-                <b-col cols="4">
+                <b-col md="4">
                     <b-form-select v-model="selectedTeam" :options="teams" @change="show">
                         <template slot="first">
                             <option :value="null" disabled>--Please pick a team to see the days on which you do not want
