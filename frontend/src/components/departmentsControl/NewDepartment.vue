@@ -71,7 +71,7 @@
 
         computed: {
             findDirectors() {
-                return this.directors = this.directors.filter(x => x.teamName === 'Main Team');
+                return this.directors = this.directors.filter(x => x.teamName === 'Department Managers');
 
             },
         }
