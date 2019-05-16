@@ -98,8 +98,6 @@ public class UsersController {
         service.updatePassword(0, password, "UserChange", username);
     }
 
-
-
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable("id") Integer id) {

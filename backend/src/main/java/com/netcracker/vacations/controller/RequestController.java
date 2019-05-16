@@ -33,7 +33,6 @@ public class RequestController {
 
     @PostMapping
     public ResponseEntity<?> addRequest(@RequestBody RequestDTO request) {
-        logger.info(request.getStart() + " " + request.getEnd());
         reqService.saveRequest(request);
         if (request.getNeedToEmail()) {
             reqService.sendMailRequest(request);
@@ -74,6 +73,18 @@ public class RequestController {
         String username = SecurityExpressionMethods.currentUserLogin();
         reqService.updateRequest(Status.ACCEPTED, requests, username);
         integrationService.insertEventsAfterApproval(requests);
+    }
+
+    @GetMapping("/my")
+    public List<RequestDTO> getUserRequest() {
+        String username = SecurityExpressionMethods.currentUserLogin();
+        return reqService.getUserRequests(username);
+    }
+
+    @PatchMapping("/delete")
+    public void deleteRequest(@RequestBody Integer id) {
+        String username = SecurityExpressionMethods.currentUserLogin();
+        reqService.deleteRequest(username, id);
     }
 }
 

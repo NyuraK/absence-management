@@ -89,7 +89,7 @@
                 };
                 instance.post("/requests", msg).then(res => {
                 }).catch(err => {
-                    if (err.response.status === 406) {
+                    if (err.response.data !== '') {
                         this.error_msg = err.response.data;
                         this.$refs['my-modal'].show();
                     }
