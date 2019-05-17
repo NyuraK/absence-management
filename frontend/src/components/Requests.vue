@@ -128,12 +128,7 @@
             }
         },
         mounted() {
-            let name = localStorage.getItem('username');
-            instance.get("/calendar/occupiedForDiscuss", {
-                params: {
-                    name: name
-                }
-            }).then(res => {
+            instance.get("/calendar/occupiedForDiscuss").then(res => {
                 let arr = res.data;
                 let occ;
                 for (let i = 0; i < arr.length; i++) {
@@ -173,6 +168,35 @@
             })
         },
         methods: {
+            reloadDays(){
+                instance.get("/calendar/occupiedForDiscuss").then(res => {
+                    let arr = res.data;
+                    let occ;
+                    for (let i = 0; i < arr.length; i++) {
+                        occ = [];
+                        for (let j = 1; j < arr[i].length; j++) {
+                            occ.push(arr[i][j]);
+                        }
+                        this.occupiedDays[arr[i][0]] = occ;
+                    }
+                }).catch(err => {
+                    console.log(err);
+                });
+                instance.get("/calendar/busyForDiscuss").then(res => {
+                    let arr = res.data;
+                    let busy;
+                    for (let i = 0; i < arr.length; i++) {
+                        busy = [];
+
+                        for (let j = 1; j < arr[i].length; j++) {
+                            busy.push(arr[i][j]);
+                        }
+                        this.busyDays[arr[i][0]] = busy;
+                    }
+                }).catch(err => {
+                    console.log(err);
+                });
+            },
             show: function () {
                 this.attr[0].dates = this.occupiedDays[this.selectedTeam].map(dateString => new Date(dateString));
                 this.attr[1].dates = this.busyDays[this.selectedTeam].map(dateString => new Date(dateString));
@@ -184,7 +208,6 @@
             },
 
             approve() {
-                let name = localStorage.getItem('username');
                 instance.patch("/requests/approve", this.selected).then(() => {
                     instance.get("/requests/active").then((resp) => {
                         this.items = resp.data;
@@ -197,11 +220,11 @@
                     }).catch(err => {
                         console.log(err);
                     })
+                    this.reloadDays();
                 });
             },
 
             decline() {
-                let name = localStorage.getItem('username');
                 instance.patch("/requests/decline", this.selected).then(() => {
                     instance.get("/requests/active").then((resp) => {
                         this.items = resp.data;
@@ -210,6 +233,7 @@
                     });
                     instance.get("/requests/resolved").then((resp) => {
                         this.itemsResolved = resp.data;
+                        this.reloadDays();
                     }).catch(err => {
                         console.log(err);
                     })
