@@ -71,6 +71,9 @@
                 accepted: true,
                 declined: false,
                 consider: false,
+                isAcceptedDone: false,
+                isDeclinedDone: false,
+                isConsiderDone: false,
                 occupiedDays: new Object(),
                 busyDays: new Object(),
                 team: null,
@@ -253,6 +256,7 @@
                     this.declined = false;
                     this.consider = false;
                     this.clearDates();
+                    console.log(this.acceptedVacs);
                     this.determinateType(this.acceptedVacs);
                     this.showVac();
                     console.log("ACCEPT");
@@ -265,6 +269,7 @@
                     this.consider = false;
                     this.accepted = false;
                     this.clearDates();
+                    console.log(this.declinedVacs);
                     this.determinateType(this.declinedVacs);
                     this.showVac();
                     console.log("DECLINE");
@@ -278,6 +283,7 @@
                     this.declined = false;
                     this.accepted = false;
                     this.clearDates();
+                    console.log(this.considerVacs);
                     this.determinateType(this.considerVacs);
                     this.showVac();
                     console.log("CONSIDER");
@@ -349,14 +355,6 @@
             },
             reloadReqs() {
                 this.getVacs();
-                if (this.consider === true) {
-                    this.onConsider();
-                } else if (this.declined === true) {
-                    this.onDeclined();
-                } else if (this.accepted === true) {
-                    this.onAccepted();
-                }
-                //this.showVac();
             },
             getVacs() {
                 instance.get("/calendar/occupiedForSend").then(res => {
@@ -399,16 +397,25 @@
                 });
                 instance.get("/calendar/accepted").then(res => {
                     this.acceptedVacs = res.data;
+                    this.isAcceptedDone = true;
+                    if (this.accepted === true) {
+                        this.onAccepted();}
                 }).catch(err => {
                     console.log(err);
                 });
                 instance.get("/calendar/declined").then(res => {
                     this.declinedVacs = res.data;
+                    this.isDeclinedDone = true;
+                    if (this.declined === true) {
+                        this.onDeclined();}
                 }).catch(err => {
                     console.log(err);
                 });
                 instance.get("/calendar/consider").then(res => {
                     this.considerVacs = res.data;
+                    this.isConsiderDone = true;
+                    if (this.consider === true) {
+                        this.onConsider();}
                 }).catch(err => {
                     console.log(err);
                 });
@@ -416,7 +423,10 @@
                 instance.get("/users/restdays").then((resp) => {
                     this.vacantDays = resp.data;
                 });
-            }
+
+
+
+            },
         }
     }
 </script>
