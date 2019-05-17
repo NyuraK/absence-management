@@ -207,6 +207,7 @@ public class RequestService {
         } else {
             requestDTO.setTeamName("-");
         }
+        requestDTO.setUsername(entity.getUser().getLogin());
         requestDTO.setName(entity.getUser().getName() + " " + entity.getUser().getFamilyName());
         requestDTO.setDescription(entity.getDescription());
         requestDTO.setStart(convertToDateViaSqlDate(entity.getBeginning()));
