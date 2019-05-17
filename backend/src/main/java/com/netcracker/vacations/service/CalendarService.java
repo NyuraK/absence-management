@@ -202,9 +202,6 @@ public class CalendarService {
             end = req.getEnding().toString();
             dates.add("RE//" + begin + "//" + end);
         }
-        for (String date : dates) {
-            System.out.println(date);
-        }
         return dates;
     }
 

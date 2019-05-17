@@ -287,7 +287,6 @@ public class RequestService {
     }
 
     public void sendRequestDecision(RequestDTO request) {
-        System.out.println("REQNAME " + request.getUsername());
         UserEntity user = userRepository.findByLogin(request.getUsername()).get(0);
         if (user.getEmail() != null) {
             String message = "Dear " + user.getName() + " " + user.getSurname() + ".\n" + "Your request's status is now \"" + request.getStatus() + "\". If you have any questions, please, ask your manager (or your director, if manager can't help you now). \n" +
