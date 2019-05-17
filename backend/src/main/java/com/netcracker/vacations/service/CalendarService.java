@@ -21,16 +21,14 @@ public class CalendarService {
     private TeamRepository teamRepo;
     private DepartmentRepository depRepo;
     private RequestRepository reqRepo;
-    private RequestTypeRepository typeRepo;
     SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy", Locale.ENGLISH);
 
     @Autowired
-    public CalendarService(UserRepository userRepo, TeamRepository teamRepo, DepartmentRepository depRepo, RequestRepository reqRepo, RequestTypeRepository typeRepo) {
+    public CalendarService(UserRepository userRepo, TeamRepository teamRepo, DepartmentRepository depRepo, RequestRepository reqRepo) {
         this.userRepo = userRepo;
         this.teamRepo = teamRepo;
         this.depRepo = depRepo;
         this.reqRepo = reqRepo;
-        this.typeRepo = typeRepo;
     }
 
     public List<List<String>> getVacationsPerDay(String mode, String purpose) {
