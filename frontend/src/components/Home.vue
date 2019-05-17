@@ -256,10 +256,8 @@
                     this.declined = false;
                     this.consider = false;
                     this.clearDates();
-                    console.log(this.acceptedVacs);
                     this.determinateType(this.acceptedVacs);
                     this.showVac();
-                    console.log("ACCEPT");
                 } else if (this.accepted === false) {
                     this.clearDates();
                 }
@@ -269,10 +267,8 @@
                     this.consider = false;
                     this.accepted = false;
                     this.clearDates();
-                    console.log(this.declinedVacs);
                     this.determinateType(this.declinedVacs);
                     this.showVac();
-                    console.log("DECLINE");
                 } else if (this.declined === false) {
                     this.clearDates();
                 }
@@ -283,10 +279,8 @@
                     this.declined = false;
                     this.accepted = false;
                     this.clearDates();
-                    console.log(this.considerVacs);
                     this.determinateType(this.considerVacs);
                     this.showVac();
-                    console.log("CONSIDER");
                 } else if (this.consider === false) {
                     this.clearDates();
                 }
