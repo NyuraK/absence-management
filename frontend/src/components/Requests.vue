@@ -128,34 +128,7 @@
             }
         },
         mounted() {
-            instance.get("/calendar/occupiedForDiscuss").then(res => {
-                let arr = res.data;
-                let occ;
-                for (let i = 0; i < arr.length; i++) {
-                    occ = [];
-                    for (let j = 1; j < arr[i].length; j++) {
-                        occ.push(arr[i][j]);
-                    }
-                    this.occupiedDays[arr[i][0]] = occ;
-                    this.teams.push({text: arr[i][0], value: arr[i][0]},);
-                }
-            }).catch(err => {
-                console.log(err);
-            });
-            instance.get("/calendar/busyForDiscuss").then(res => {
-                let arr = res.data;
-                let busy;
-                for (let i = 0; i < arr.length; i++) {
-                    busy = [];
-
-                    for (let j = 1; j < arr[i].length; j++) {
-                        busy.push(arr[i][j]);
-                    }
-                    this.busyDays[arr[i][0]] = busy;
-                }
-            }).catch(err => {
-                console.log(err);
-            });
+            this.reloadDays("team");
             instance.get("/requests/active").then((resp) => {
                 this.items = resp.data;
             }).catch(err => {
@@ -168,7 +141,7 @@
             })
         },
         methods: {
-            reloadDays(){
+            reloadDays(mode){
                 instance.get("/calendar/occupiedForDiscuss").then(res => {
                     let arr = res.data;
                     let occ;
@@ -178,6 +151,12 @@
                             occ.push(arr[i][j]);
                         }
                         this.occupiedDays[arr[i][0]] = occ;
+                        if (mode === "team") {
+                            this.teams.push({text: arr[i][0], value: arr[i][0]},);
+                        }
+                        if (mode === "days"){
+                            this.show();
+                        }
                     }
                 }).catch(err => {
                     console.log(err);
@@ -187,11 +166,14 @@
                     let busy;
                     for (let i = 0; i < arr.length; i++) {
                         busy = [];
-
                         for (let j = 1; j < arr[i].length; j++) {
                             busy.push(arr[i][j]);
                         }
                         this.busyDays[arr[i][0]] = busy;
+
+                        if (mode === "days"){
+                            this.show();
+                        }
                     }
                 }).catch(err => {
                     console.log(err);
@@ -211,6 +193,7 @@
                 instance.patch("/requests/approve", this.selected).then(() => {
                     instance.get("/requests/active").then((resp) => {
                         this.items = resp.data;
+
                     }).catch(err => {
                             console.log(err);
                         });
@@ -219,8 +202,8 @@
                         this.itemsResolved = resp.data;
                     }).catch(err => {
                         console.log(err);
-                    })
-                    this.reloadDays();
+                    });
+                    this.reloadDays("days");
                 });
             },
 
@@ -233,7 +216,7 @@
                     });
                     instance.get("/requests/resolved").then((resp) => {
                         this.itemsResolved = resp.data;
-                        this.reloadDays();
+                        this.reloadDays("days");
                     }).catch(err => {
                         console.log(err);
                     })
