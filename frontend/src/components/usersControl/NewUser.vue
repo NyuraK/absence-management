@@ -26,6 +26,11 @@
                 </v-card-text>
             </v-card>
         </v-dialog>
+        <b-modal ref="my-modal" hide-footer>
+            <div class="d-block text-center">
+                <h3>{{error_msg}}</h3>
+            </div>
+        </b-modal>
     </div>
 </template>
 
@@ -58,6 +63,7 @@
                 description: '',
                 teams: [],
                 team: [],
+                error_msg: ''
             }
         },
         methods: {
@@ -80,7 +86,12 @@
                 )
                     .then(response => {
                         this.$emit("newUser");
-                    });
+                    }).catch(err => {
+                    if (err.response.data !== '') {
+                        this.error_msg = err.response.data;
+                        this.$refs['my-modal'].show();
+                    }
+                });
                 this.login = '';
                 this.name = '';
                 this.surname = '';

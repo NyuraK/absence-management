@@ -5,6 +5,7 @@ import com.netcracker.vacations.domain.UserEntity;
 import com.netcracker.vacations.domain.enums.Role;
 import com.netcracker.vacations.dto.TeamDTO;
 import com.netcracker.vacations.dto.UserDTO;
+import com.netcracker.vacations.exception.MailServiceException;
 import com.netcracker.vacations.exception.NoTeamException;
 import com.netcracker.vacations.repository.TeamRepository;
 import com.netcracker.vacations.repository.UserRepository;
@@ -13,6 +14,7 @@ import com.netcracker.vacations.security.SecurityExpressionMethods;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,7 +39,7 @@ public class UserService {
     @Autowired
     private JavaMailSender mailSender;
 
-    @Value("${spring.mail.username}")
+    @Value("${spring-mail-username}")
     private String username;
 
     private UserRepository userRepository;
@@ -253,7 +255,7 @@ public class UserService {
         long elapsedMonths;
         if (lastVisit == null) {
             elapsedMonths = ChronoUnit.MONTHS.between(hireDate, today);
-        } else if (ChronoUnit.MONTHS.between(today, lastVisit) != 0 ) {
+        } else if (ChronoUnit.MONTHS.between(today, lastVisit) != 0) {
             elapsedMonths = ChronoUnit.MONTHS.between(hireDate, lastVisit);
         } else {
             return;
@@ -290,8 +292,11 @@ public class UserService {
         mailMessage.setTo(emailTo);
         mailMessage.setSubject(subject);
         mailMessage.setText(message);
-
-        mailSender.send(mailMessage);
+        try {
+            mailSender.send(mailMessage);
+        } catch (MailSendException ex) {
+            throw new MailServiceException(ex.getMessage());
+        }
     }
 
     @PreAuthorize("@Security.isAllowed(#username)")

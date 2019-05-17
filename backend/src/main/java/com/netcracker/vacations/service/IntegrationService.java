@@ -48,11 +48,13 @@ public class IntegrationService {
         this.googleCredentialRepository = googleCredentialRepository;
     }
 
-    @Value("${google.client.client-id}")
+    @Value("${google-client-client-id}")
     private String clientId;
-    @Value("${google.client.client-secret}")
+
+    @Value("${google-client-client-secret}")
     private String clientSecret;
-    @Value("${google.client.redirectUri}")
+
+    @Value("${google-client-redirectUri}")
     private String redirectURI;
 
     private static final List<String> SCOPES = Collections.singletonList("https://www.googleapis.com/auth/calendar.events");
