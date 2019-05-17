@@ -155,27 +155,49 @@ public class CalendarService {
         return datesInRange;
     }
 
-    public List<String> getVacations(String status) {
+    public Map<String, List<String>> getVacations() {
         String name = SecurityExpressionMethods.currentUserLogin();
         UserEntity user = userRepo.findByLogin(name).get(0);
+        Map<String, List<String>> vacCollection = new HashMap<>();
+
         List<RequestEntity> reqs = reqRepo.findAllByUser(user);
-        List<RequestEntity> business = new ArrayList<RequestEntity>();
-        List<RequestEntity> child = new ArrayList<RequestEntity>();
-        List<RequestEntity> vacation = new ArrayList<RequestEntity>();
-        List<RequestEntity> sick = new ArrayList<RequestEntity>();
-        List<RequestEntity> remote = new ArrayList<RequestEntity>();
+        List<RequestEntity> accepted = new ArrayList<>();
+        List<RequestEntity> declined = new ArrayList<>();
+        List<RequestEntity> consider = new ArrayList<>();
+
+        for (RequestEntity req : reqs) {
+            if (req.getStatus().equals(Status.ACCEPTED)) {
+                accepted.add(req);
+            }
+            if (req.getStatus().equals(Status.DECLINED)) {
+                declined.add(req);
+            }
+            if (req.getStatus().equals(Status.CONSIDER)) {
+                consider.add(req);
+            }
+        }
+
+        vacCollection.put(Status.ACCEPTED.getName(), collectToString(accepted));
+        vacCollection.put(Status.DECLINED.getName(), collectToString(declined));
+        vacCollection.put(Status.CONSIDER.getName(), collectToString(consider));
+
+        return vacCollection;
+    }
+
+    private List<String> collectToString(List<RequestEntity> reqs) {
+        List<RequestEntity> business = new ArrayList<>();
+        List<RequestEntity> child = new ArrayList<>();
+        List<RequestEntity> vacation = new ArrayList<>();
+        List<RequestEntity> sick = new ArrayList<>();
+        List<RequestEntity> remote = new ArrayList<>();
 
         List<String> dates = new ArrayList<String>();
+
         String begin;
         String end;
+
         for (RequestEntity req : reqs) {
-            if (status.equals("Accepted") && req.getStatus().equals(Status.ACCEPTED)) {
-                collectRequests(business, child, vacation, sick, remote, req);
-            } else if (status.equals("Consider") && req.getStatus().equals(Status.CONSIDER)) {
-                collectRequests(business, child, vacation, sick, remote, req);
-            } else if (status.equals("Declined") && req.getStatus().equals(Status.DECLINED)) {
-                collectRequests(business, child, vacation, sick, remote, req);
-            }
+            collectRequests(business, child, vacation, sick, remote, req);
         }
         for (RequestEntity req : business) {
             begin = req.getBeginning().toString();

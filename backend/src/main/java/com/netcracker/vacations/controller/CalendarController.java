@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/calendar")
@@ -39,19 +40,9 @@ public class CalendarController {
         return service.getVacationsPerDay("Busy", "Send");
     }
 
-    @GetMapping("/accepted")
-    public List<String> getAccepted() {
-        return service.getVacations("Accepted");
-    }
-
-    @GetMapping("/declined")
-    public List<String> getDeclined() {
-        return service.getVacations("Declined");
-    }
-
-    @GetMapping("/consider")
-    public List<String> getConsider() {
-        return service.getVacations("Consider");
+    @GetMapping("/vacdays")
+    public Map<String, List<String>> getVacDays() {
+        return service.getVacations();
     }
 
 }

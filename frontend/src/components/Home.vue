@@ -14,7 +14,7 @@
                 <b-col>
                     <div>
                         <p>Send new request</p>
-                        <AbsRequest @addRequest="reloadReqs"></AbsRequest>
+                        <AbsRequest @addRequest="getVacs"></AbsRequest>
                     </div>
                 </b-col>
             </b-row>
@@ -71,9 +71,6 @@
                 accepted: true,
                 declined: false,
                 consider: false,
-                isAcceptedDone: false,
-                isDeclinedDone: false,
-                isConsiderDone: false,
                 occupiedDays: new Object(),
                 busyDays: new Object(),
                 team: null,
@@ -186,11 +183,11 @@
         },
         components: {Footer, AbsRequest, Nav},
         mounted() {
-            instance.get("/calendar/accepted").then(res => {
-                this.acceptedVacs = res.data;
+            instance.get("/calendar/vacdays").then(res => {
+                this.acceptedVacs = res.data["Accepted"];
                 let vac;
-                for (let i = 0; i < res.data.length; i++) {
-                    vac = res.data[i].split("//");
+                for (let i = 0; i < this.acceptedVacs.length; i++) {
+                    vac = this.acceptedVacs[i].split("//");
                     if (vac[0] === "SI") {
                         this.vacSick.push({start: new Date(vac[1]), end: new Date(vac[2])},);
                     } else if (vac[0] === "VA") {
@@ -347,9 +344,6 @@
                     this.attributes[4].dates = [];
                 }
             },
-            reloadReqs() {
-                this.getVacs();
-            },
             getVacs() {
                 instance.get("/calendar/occupiedForSend").then(res => {
                     let arr = res.data;
@@ -389,25 +383,15 @@
                 }).catch(err => {
                     console.log(err);
                 });
-                instance.get("/calendar/accepted").then(res => {
-                    this.acceptedVacs = res.data;
-                    this.isAcceptedDone = true;
+                instance.get("/calendar/vacdays").then(res => {
+                    console.log(res.data);
+                    this.acceptedVacs = res.data["Accepted"];
+                    this.declinedVacs = res.data["Declined"];
+                    this.considerVacs = res.data["Under consideration"];
                     if (this.accepted === true) {
                         this.onAccepted();}
-                }).catch(err => {
-                    console.log(err);
-                });
-                instance.get("/calendar/declined").then(res => {
-                    this.declinedVacs = res.data;
-                    this.isDeclinedDone = true;
                     if (this.declined === true) {
                         this.onDeclined();}
-                }).catch(err => {
-                    console.log(err);
-                });
-                instance.get("/calendar/consider").then(res => {
-                    this.considerVacs = res.data;
-                    this.isConsiderDone = true;
                     if (this.consider === true) {
                         this.onConsider();}
                 }).catch(err => {
