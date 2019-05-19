@@ -1,5 +1,9 @@
 package com.netcracker.vacations.controller;
 
+import com.netcracker.vacations.converter.AbsenceConverter;
+import com.netcracker.vacations.converter.TeamConverter;
+import com.netcracker.vacations.domain.RequestEntity;
+import com.netcracker.vacations.domain.UserEntity;
 import com.netcracker.vacations.dto.AbsenceDTO;
 import com.netcracker.vacations.dto.TeamDTO;
 import com.netcracker.vacations.security.SecurityExpressionMethods;
@@ -8,8 +12,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -26,15 +32,15 @@ public class TeamsController {
     @GetMapping
     public List<TeamDTO> teams(@RequestParam(name = "departmentId", required = false) Integer departmentId) {
         if (departmentId != null) {
-            return teamService.getTeamsFromDepartment(departmentId);
+            return teamService.getTeamsFromDepartment(departmentId).stream().map(TeamConverter::convert).collect(Collectors.toList());
         }
-        return teamService.getTeams();
+        return teamService.getTeams().stream().map(TeamConverter::convert).collect(Collectors.toList());
     }
 
     @PreAuthorize("hasAnyRole('DIRECTOR', 'ADMIN') or @Security.isTeamManager(#id)")
     @GetMapping("/{id}")
     public TeamDTO getTeam(@PathVariable("id") @P("id") Integer id) {
-        return teamService.getTeam(id);
+        return TeamConverter.convert(teamService.getTeam(id));
     }
 
     @PreAuthorize("hasAnyRole('DIRECTOR', 'ADMIN')")
@@ -61,22 +67,34 @@ public class TeamsController {
     @GetMapping(value = {"/members", "/members/{id}"})
     public List<AbsenceDTO> getTeamMembers(@PathVariable(value = "id") Optional<Integer> teamId) {
         String username = SecurityExpressionMethods.currentUserLogin();
+        List<AbsenceDTO> response = new ArrayList<>();
         if (teamId.isPresent())
-            return teamService.getTeamMembers(username, teamId.get());
-        else return teamService.getTeamMembers(username);
-
+            for (UserEntity user : teamService.getTeamMembers(username, teamId.get()))
+                response.add(AbsenceConverter.convert(user));
+        else
+            for (UserEntity user : teamService.getTeamMembers(username))
+                response.add(AbsenceConverter.convert(user));
+        return response;
     }
 
     @GetMapping("/absences/{id}")
     public List<AbsenceDTO> getTeamAbsences(@PathVariable("id") @P("teamID") Integer teamID) {
         String username = SecurityExpressionMethods.currentUserLogin();
-        return teamService.getTeamAbsences(username, teamID);
+        List<AbsenceDTO> response = new ArrayList<>();
+        for (RequestEntity entity : teamService.getTeamAbsences(username, teamID)) {
+            response.add(AbsenceConverter.convert(entity));
+        }
+        return response;
     }
 
     @GetMapping("/my")
     public List<TeamDTO> getManagerTeams() {
         String username = SecurityExpressionMethods.currentUserLogin();
-        return teamService.getManagerTeams(username);
+        List<TeamDTO> response = new ArrayList<>();
+        for (com.netcracker.vacations.domain.TeamEntity entity: teamService.getManagerTeams(username)) {
+            response.add(TeamConverter.convert(entity));
+        }
+        return response;
     }
 
 }

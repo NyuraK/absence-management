@@ -14,7 +14,6 @@ public class DepartmentDTO {
         this.directorName = directorName;
     }
 
-
     public Integer getDepartmentId() {
         return departmentId;
     }

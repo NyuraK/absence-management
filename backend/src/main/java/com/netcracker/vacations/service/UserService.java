@@ -1,6 +1,5 @@
 package com.netcracker.vacations.service;
 
-import com.netcracker.vacations.domain.TeamEntity;
 import com.netcracker.vacations.domain.UserEntity;
 import com.netcracker.vacations.domain.enums.Role;
 import com.netcracker.vacations.dto.TeamDTO;
@@ -93,11 +92,11 @@ public class UserService {
         UserDTO user = toDTO(currentUser);
         if (currentUser.getRole().equals(Role.MANAGER)) {
             List<String> subordinateTeamsLines = new ArrayList<>();
-            List<TeamEntity> subordinateTeams = teamRepository.findAllByManager(currentUser);
+            List<com.netcracker.vacations.domain.TeamEntity> subordinateTeams = teamRepository.findAllByManager(currentUser);
             if (subordinateTeams.isEmpty()) {
                 user.setSubordinateTeams("-");
             } else {
-                for (TeamEntity team : subordinateTeams) {
+                for (com.netcracker.vacations.domain.TeamEntity team : subordinateTeams) {
                     subordinateTeamsLines.add(team.getName());
                 }
                 String teams = String.join(", ", subordinateTeamsLines);
@@ -167,7 +166,7 @@ public class UserService {
 
     private UserEntity toEntity(UserDTO userDTO) {
         UserEntity userEntity = new UserEntity();
-        TeamEntity teamEntity = new TeamEntity();
+        com.netcracker.vacations.domain.TeamEntity teamEntity = new com.netcracker.vacations.domain.TeamEntity();
         if (userDTO.getTeamId() == null || userDTO.getTeamId() == -1) {
             teamEntity = null;
         } else {
@@ -301,7 +300,7 @@ public class UserService {
 
     @PreAuthorize("@Security.isAllowed(#username)")
     public TeamDTO getUserTeam(@P("username") String username) {
-        TeamEntity team = userRepository.findByLogin(username).get(0).getTeam();
+        com.netcracker.vacations.domain.TeamEntity team = userRepository.findByLogin(username).get(0).getTeam();
         if (team == null) throw new NoTeamException("You are not a member of any team");
         return new TeamDTO().setTeamId(team.getTeamsId()).setName(team.getName());
     }

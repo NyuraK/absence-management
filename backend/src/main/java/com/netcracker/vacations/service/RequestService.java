@@ -1,5 +1,6 @@
 package com.netcracker.vacations.service;
 
+import com.netcracker.vacations.converter.DateConverter;
 import com.netcracker.vacations.domain.RequestEntity;
 import com.netcracker.vacations.domain.RequestTypeEntity;
 import com.netcracker.vacations.domain.TeamEntity;
@@ -23,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -60,8 +60,8 @@ public class RequestService {
             status = Status.ACCEPTED;
         }
         UserEntity user = userRepository.findByLogin(request.getUsername()).get(0);
-        LocalDate begin = convertToLocalDateViaInstant(request.getStart());
-        LocalDate end = convertToLocalDateViaInstant(request.getEnd());
+        LocalDate begin = DateConverter.convertToLocalDateViaInstant(request.getStart());
+        LocalDate end = DateConverter.convertToLocalDateViaInstant(request.getEnd());
         checkIfValidDates(request);
         checkIfAllowedVacationPeriod(user, begin, end, type);
         checkIfInterruptsOtherAbsence(user, begin, end);
@@ -115,7 +115,7 @@ public class RequestService {
                     && entity.getTypeOfRequest().getName().equals(RequestType.VACATION.getName()))
                 decrementRestDays(entity);
             requestRepository.save(entity);
-            Runnable sender = new DecisionRunnable(toDTO(entity), this);
+            Runnable sender = new DecisionRunnable(entity, this);
             executor.execute(sender);
         }
     }
@@ -131,13 +131,13 @@ public class RequestService {
     }
 
     @PreAuthorize("@Security.isTeamMember(#name, null) or hasRole('DIRECTOR') or hasRole('ADMIN')")
-    public List<RequestDTO> getActiveRequests(@P("name") String name) {
-        List<RequestDTO> response = new ArrayList<>();
+    public List<RequestEntity> getActiveRequests(@P("name") String name) {
+        List<RequestEntity> response = new ArrayList<>();
         UserEntity user = userRepository.findByLogin(name).get(0);
         if (user.getRole().equals(Role.ADMIN)) {
             for (RequestEntity entity : requestRepository.findAll()) {
                 if ((entity.getStatus().equals(Status.CONSIDER))) {
-                    response.add(toDTO(entity));
+                    response.add(entity);
                 }
             }
         } else if (user.getRole().equals(Role.DIRECTOR)) {
@@ -150,11 +150,11 @@ public class RequestService {
         return response;
     }
 
-    private void findAllActiveForUser(List<RequestDTO> response, List<TeamEntity> directorsTeams) {
+    private void findAllActiveForUser(List<RequestEntity> response, List<TeamEntity> directorsTeams) {
         for (RequestEntity entity : requestRepository.findAll()) {
             for (TeamEntity team : directorsTeams) {
                 if ((entity.getStatus().equals(Status.CONSIDER)) && (team.equals(entity.getUser().getTeam()))) {
-                    response.add(toDTO(entity));
+                    response.add(entity);
                     break;
                 }
             }
@@ -162,13 +162,13 @@ public class RequestService {
     }
 
     @PreAuthorize("@Security.isTeamMember(#name, null)")
-    public List<RequestDTO> getResolvedRequests(@P("name") String name) {
-        List<RequestDTO> response = new ArrayList<>();
+    public List<RequestEntity> getResolvedRequests(@P("name") String name) {
+        List<RequestEntity> response = new ArrayList<>();
         UserEntity user = userRepository.findByLogin(name).get(0);
         if (user.getRole().equals(Role.ADMIN)) {
             for (RequestEntity entity : requestRepository.findAll()) {
                 if (!entity.getStatus().equals(Status.CONSIDER)) {
-                    response.add(toDTO(entity));
+                    response.add(entity);
                 }
             }
         } else if (user.getRole().equals(Role.DIRECTOR)) {
@@ -181,52 +181,17 @@ public class RequestService {
         return response;
     }
 
-    private void findAllResolvedForUser(List<RequestDTO> response, List<TeamEntity> directorsTeams) {
+    private void findAllResolvedForUser(List<RequestEntity> response, List<TeamEntity> directorsTeams) {
         for (RequestEntity entity : requestRepository.findAll()) {
             for (TeamEntity team : directorsTeams) {
                 if ((!entity.getTypeOfRequest().getNeedApproval()
                         || !entity.getStatus().equals(Status.CONSIDER)) && (team.equals(entity.getUser().getTeam()))) {
-                    response.add(toDTO(entity));
+                    response.add(entity);
                     break;
                 }
             }
         }
     }
-
-    private RequestDTO toDTO(RequestEntity entity) {
-        RequestDTO requestDTO = new RequestDTO();
-        requestDTO.setId(entity.getRequestsId());
-        String name = entity.getUser().getName();
-        String familyName = entity.getUser().getFamilyName();
-        if ((name == null || name.isEmpty()) && (familyName == null || familyName.isEmpty())) {
-            requestDTO.setName("-");
-        } else if (familyName == null || familyName.isEmpty()) {
-            requestDTO.setName(entity.getUser().getName());
-        } else if (name == null || name.isEmpty()) {
-            requestDTO.setName(entity.getUser().getFamilyName());
-        } else {
-            requestDTO.setName(entity.getUser().getName() + " " + entity.getUser().getFamilyName());
-        }
-        if (entity.getUser().getTeam() != null) {
-            requestDTO.setTeamName(entity.getUser().getTeam().getName());
-        } else {
-            requestDTO.setTeamName("-");
-        }
-        if (entity.getUser().getTeam() != null) {
-            requestDTO.setTeamName(entity.getUser().getTeam().getName());
-        } else {
-            requestDTO.setTeamName("-");
-        }
-        requestDTO.setUsername(entity.getUser().getLogin());
-        requestDTO.setName(entity.getUser().getName() + " " + entity.getUser().getFamilyName());
-        requestDTO.setDescription(entity.getDescription());
-        requestDTO.setStart(convertToDateViaSqlDate(entity.getBeginning()));
-        requestDTO.setEnd(convertToDateViaSqlDate(entity.getEnding()));
-        requestDTO.setType(entity.getTypeOfRequest().getName());
-        requestDTO.setStatus(entity.getStatus().getName());
-        return requestDTO;
-    }
-
 
     public boolean isManagerOnRest() {
         String login = SecurityExpressionMethods.currentUserLogin();
@@ -245,9 +210,9 @@ public class RequestService {
             boolean sameDayBegin = calCurrent.get(Calendar.DAY_OF_YEAR) == calBegin.get(Calendar.DAY_OF_YEAR) && calCurrent.get(Calendar.YEAR) == calBegin.get(Calendar.YEAR);
             boolean sameDayEnd = calCurrent.get(Calendar.DAY_OF_YEAR) == calEnd.get(Calendar.DAY_OF_YEAR) && calCurrent.get(Calendar.YEAR) == calEnd.get(Calendar.YEAR);
             for (RequestEntity req : requests) {
-                calBegin.setTime(convertToDateViaSqlDate(req.getBeginning()));
-                calEnd.setTime(convertToDateViaSqlDate(req.getEnding()));
-                if ((((convertToDateViaSqlDate(req.getBeginning()).before(currentDate)) || sameDayBegin) && ((((convertToDateViaSqlDate(req.getEnding()).after(currentDate)) || sameDayEnd))))) {
+                calBegin.setTime(DateConverter.convertToDateViaSqlDate(req.getBeginning()));
+                calEnd.setTime(DateConverter.convertToDateViaSqlDate(req.getEnding()));
+                if ((((DateConverter.convertToDateViaSqlDate(req.getBeginning()).before(currentDate)) || sameDayBegin) && ((((DateConverter.convertToDateViaSqlDate(req.getEnding()).after(currentDate)) || sameDayEnd))))) {
                     if (req.getTypeOfRequest().getInfluenceOnVr()) {
                         answer = true;
                         break;
@@ -272,22 +237,8 @@ public class RequestService {
         }
     }
 
-    private Date convertToDateViaSqlDate(LocalDate dateToConvert) {
-        return java.sql.Date.valueOf(dateToConvert);
-    }
-
-    public LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
-        return dateToConvert.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
-    }
-
-    public List<RequestDTO> getUserRequests(String username) {
-        List<RequestDTO> response = new ArrayList<>();
-        for (RequestEntity entity : requestRepository.findAllByUser(userRepository.findByLogin(username).get(0))) {
-            response.add(toDTO(entity));
-        }
-        return response;
+    public List<RequestEntity> getUserRequests(String username) {
+        return requestRepository.findAllByUser(userRepository.findByLogin(username).get(0));
     }
 
     public void deleteRequest(String username, Integer id) {
@@ -297,12 +248,12 @@ public class RequestService {
         }
     }
 
-    public void sendRequestDecision(RequestDTO request) {
-        UserEntity user = userRepository.findByLogin(request.getUsername()).get(0);
+    public void sendRequestDecision(RequestEntity request) {
+        UserEntity user = request.getUser();
         if (user.getEmail() != null) {
             String message = "Dear " + user.getName() + " " + user.getSurname() + ".\n" + "Your request's status is now \"" + request.getStatus() + "\". If you have any questions, please, ask your manager (or your director, if manager can't help you now). \n" +
-                    "||Request was sent by " + user.getName() + " " + user.getSurname() + ". Reason: " + request.getType() + " Begin date: " + request.getStart() + ". End date: " + request.getEnd() + ".||";
-            userService.send(user.getEmail(), "Decision for request by " + user.getName() + " " + user.getSurname() + ". " + request.getType() + ".", message);
+                    "||Request was sent by " + user.getName() + " " + user.getSurname() + ". Reason: " + request.getTypeOfRequest().getName() + " Begin date: " + request.getBeginning() + ". End date: " + request.getEnding() + ".||";
+            userService.send(user.getEmail(), "Decision for request by " + user.getName() + " " + user.getSurname() + ". " + request.getTypeOfRequest().getName() + ".", message);
         }
 
     }
