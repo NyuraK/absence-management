@@ -8,6 +8,7 @@ import com.netcracker.vacations.domain.enums.RequestType;
 import com.netcracker.vacations.domain.enums.Role;
 import com.netcracker.vacations.domain.enums.Status;
 import com.netcracker.vacations.dto.RequestDTO;
+import com.netcracker.vacations.exception.InvalidRequest;
 import com.netcracker.vacations.exception.TooManyDaysException;
 import com.netcracker.vacations.exception.WrongPeriodException;
 import com.netcracker.vacations.repository.*;
@@ -58,22 +59,31 @@ public class RequestService {
         if (!type.getNeedApproval()) {
             status = Status.ACCEPTED;
         }
-
         UserEntity user = userRepository.findByLogin(request.getUsername()).get(0);
         LocalDate begin = convertToLocalDateViaInstant(request.getStart());
         LocalDate end = convertToLocalDateViaInstant(request.getEnd());
-        Period intervalPeriod = Period.between(begin, end);
-        if (type.getName().equals(RequestType.VACATION.getName())) {
-            if (intervalPeriod.getDays() > user.getRestDays()) {
-                throw new TooManyDaysException("You took too many days. You have only " + user.getRestDays() + " vacant days");
-            }
-        }
+        checkIfValidDates(request);
+        checkIfAllowedVacationPeriod(user, begin, end, type);
         checkIfInterruptsOtherAbsence(user, begin, end);
         RequestEntity requestEntity = new RequestEntity(user, begin, end, type, status);
         requestEntity.setDescription(request.getDescription());
         requestRepository.save(requestEntity);
         if (Status.ACCEPTED.equals(status)) {
             integrationService.insertEventWithoutConfirm(requestEntity);
+        }
+    }
+
+    private void checkIfValidDates(RequestDTO request) {
+        if (request.getStart().before(new Date()))
+            throw new InvalidRequest("You cannot submit requests on passed days");
+    }
+
+    private void checkIfAllowedVacationPeriod(UserEntity user, LocalDate begin, LocalDate end, RequestTypeEntity type) {
+        Period intervalPeriod = Period.between(begin, end);
+        if (type.getName().equals(RequestType.VACATION.getName())) {
+            if (intervalPeriod.getDays() > user.getRestDays()) {
+                throw new TooManyDaysException("You took too many days. You have only " + user.getRestDays() + " vacant days");
+            }
         }
     }
 
