@@ -1,5 +1,6 @@
 package com.netcracker.vacations.service;
 
+import com.netcracker.vacations.converter.UserConverter;
 import com.netcracker.vacations.domain.UserEntity;
 import com.netcracker.vacations.domain.enums.Role;
 import com.netcracker.vacations.dto.TeamDTO;
@@ -10,6 +11,8 @@ import com.netcracker.vacations.repository.TeamRepository;
 import com.netcracker.vacations.repository.UserRepository;
 import com.netcracker.vacations.security.MyUserPrincipal;
 import com.netcracker.vacations.security.SecurityExpressionMethods;
+import org.apache.catalina.User;
+import org.hibernate.mapping.Collection;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +38,7 @@ import java.util.concurrent.Executors;
 @Service
 @Transactional
 public class UserService {
+
     @Autowired
     private JavaMailSender mailSender;
 
@@ -51,30 +55,30 @@ public class UserService {
         this.teamRepository = teamRepository;
     }
 
-    public List<UserDTO> getUsers() {
-        List<UserDTO> response = new ArrayList<>();
+    public List<UserEntity> getUsers() {
+        List<UserEntity> response = new ArrayList<>();
         for (UserEntity entity : userRepository.findAll()) {
-            response.add(toDTO(entity));
+            response.add(entity);
         }
         return response;
     }
 
-    public List<UserDTO> getUsersSubordinateToManager(Integer id) {
-        List<UserDTO> response = new ArrayList<>();
+    public List<UserEntity> getUsersSubordinateToManager(Integer id) {
+        List<UserEntity> response = new ArrayList<>();
         for (UserEntity entity : userRepository.findAllByTeamManagerUsersId(id)) {
-            response.add(toDTO(entity));
+            response.add(entity);
         }
         return response;
     }
 
-    public UserDTO getUser(Integer id) {
-        return toDTO(userRepository.findById(id).get());
+    public UserEntity getUser(Integer id) {
+        return userRepository.findById(id).get();
     }
 
-    public List<UserDTO> getUsersFromTeam(Integer teamId) {
-        List<UserDTO> response = new ArrayList<>();
+    public List<UserEntity> getUsersFromTeam(Integer teamId) {
+        List<UserEntity> response = new ArrayList<>();
         for (UserEntity entity : userRepository.findAllByTeamTeamsId(teamId)) {
-            response.add(toDTO(entity));
+            response.add(entity);
         }
         return response;
     }
@@ -89,7 +93,7 @@ public class UserService {
     public UserDTO getUserInfo() {
         String login = SecurityExpressionMethods.currentUserLogin();
         UserEntity currentUser = userRepository.findByLogin(login).get(0);
-        UserDTO user = toDTO(currentUser);
+        UserDTO user = UserConverter.toDTO(currentUser);
         if (currentUser.getRole().equals(Role.MANAGER)) {
             List<String> subordinateTeamsLines = new ArrayList<>();
             List<com.netcracker.vacations.domain.TeamEntity> subordinateTeams = teamRepository.findAllByManager(currentUser);
@@ -122,7 +126,7 @@ public class UserService {
         userDTO.setPassword(UUID.randomUUID().toString());
         ExecutorService executor = Executors.newFixedThreadPool(5);
         Runnable sender = new PasswordRunnable(userDTO, this);
-        userRepository.save(toEntity(userDTO));
+        userRepository.save(UserConverter.toEntity(userDTO));
         executor.execute(sender);
 
         return userDTO;
@@ -132,11 +136,11 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public UserDTO updateUser(Integer id, UserDTO userDTO) {
+    public UserEntity updateUser(Integer id, UserEntity user) {
         UserEntity userEntity = userRepository.findByUsersId(id).get(0);
-        BeanUtils.copyProperties(toEntity(userDTO), userEntity, "usersId", "password");
+        BeanUtils.copyProperties(user, userEntity, "usersId", "password");
         userRepository.save(userEntity);
-        return userDTO;
+        return user;
     }
 
     @PreAuthorize("@Security.isAllowed(#username)")
@@ -162,54 +166,6 @@ public class UserService {
         UserEntity currentUser = userRepository.findByLogin(login).get(0);
         BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
         return bcrypt.matches(password, currentUser.getPassword());
-    }
-
-    private UserEntity toEntity(UserDTO userDTO) {
-        UserEntity userEntity = new UserEntity();
-        com.netcracker.vacations.domain.TeamEntity teamEntity = new com.netcracker.vacations.domain.TeamEntity();
-        if (userDTO.getTeamId() == null || userDTO.getTeamId() == -1) {
-            teamEntity = null;
-        } else {
-            teamEntity.setTeamsId(userDTO.getTeamId());
-        }
-        userEntity.setTeam(teamEntity);
-        userEntity.setDescription(userDTO.getDescription());
-        userEntity.setEmail(userDTO.getEmail());
-        userEntity.setFamilyName(userDTO.getFamilyName());
-        userEntity.setHireDate(userDTO.getHireDate());
-        userEntity.setLogin(userDTO.getLogin());
-        userEntity.setName(userDTO.getName());
-        userEntity.setPassword(userDTO.getPassword());
-        userEntity.setPhoneNumber(userDTO.getPhoneNumber());
-        userEntity.setRestDays(userDTO.getRestDays());
-        userEntity.setRole(Role.findByName(userDTO.getRole()));
-        userEntity.setSurname(userDTO.getSurname());
-        userEntity.setUsersId(userDTO.getUserId());
-        userEntity.setActivationCode(userDTO.getActivationCode());
-        return userEntity;
-    }
-
-    private UserDTO toDTO(UserEntity entity) {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setUserId(entity.getUsersId());
-        userDTO.setDescription(entity.getDescription());
-        userDTO.setEmail(entity.getEmail());
-        userDTO.setFamilyName(entity.getFamilyName());
-        userDTO.setHireDate(entity.getHireDate());
-        userDTO.setName(entity.getName());
-        userDTO.setSurname(entity.getSurname());
-        userDTO.setPassword(entity.getPassword());
-        userDTO.setPhoneNumber(entity.getPhoneNumber());
-        userDTO.setRole(entity.getRole().getName());
-        userDTO.setLogin(entity.getLogin());
-        userDTO.setRestDays(entity.getRestDays());
-        userDTO.setIntegrated(entity.getIntegrated());
-        userDTO.setTeamId(entity.getTeam() == null ? null : entity.getTeam().getTeamsId());
-        userDTO.setTeamName(entity.getTeam() == null ? null : entity.getTeam().getName());
-        userDTO.setDepartmentId(entity.getTeam() == null ? null :
-                entity.getTeam().getDepartment() == null ? null :
-                        entity.getTeam().getDepartment().getDepartmentsId());
-        return userDTO;
     }
 
     public String getUserByCode(String code) {

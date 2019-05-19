@@ -1,5 +1,6 @@
 package com.netcracker.vacations.controller;
 
+import com.netcracker.vacations.converter.UserConverter;
 import com.netcracker.vacations.dto.UserDTO;
 import com.netcracker.vacations.security.SecurityExpressionMethods;
 import com.netcracker.vacations.service.UserService;
@@ -8,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
@@ -24,17 +26,17 @@ public class UsersController {
     public List<UserDTO> users(@RequestParam(name = "teamId", required = false) Integer teamId,
                                @RequestParam(name = "managerId", required = false) Integer managerId) {
         if (teamId != null) {
-            return service.getUsersFromTeam(teamId);
+            return service.getUsersFromTeam(teamId).stream().map(UserConverter::toDTO).collect(Collectors.toList());
         } else if (managerId != null) {
-            return service.getUsersSubordinateToManager(managerId);
+            return service.getUsersSubordinateToManager(managerId).stream().map(UserConverter::toDTO).collect(Collectors.toList());
         }
-        return service.getUsers();
+        return service.getUsers().stream().map(UserConverter::toDTO).collect(Collectors.toList());
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public UserDTO getUser(@PathVariable("id") Integer id) {
-        return service.getUser(id);
+        return UserConverter.toDTO(service.getUser(id));
     }
 
     @GetMapping("/name")
@@ -48,7 +50,7 @@ public class UsersController {
     }
 
     @GetMapping("/checkPassword")
-    public boolean checkPassword(@RequestParam String password){
+    public boolean checkPassword(@RequestParam String password) {
         return service.checkPassword(password);
     }
 
@@ -58,7 +60,7 @@ public class UsersController {
     }
 
     @GetMapping("/sendMailForgot")
-    public boolean sendMailForgot(@RequestParam String email){
+    public boolean sendMailForgot(@RequestParam String email) {
         return service.sendMailForgot(email);
     }
 
@@ -79,7 +81,7 @@ public class UsersController {
             @PathVariable("id") Integer id,
             @RequestBody UserDTO userDTO
     ) {
-        return service.updateUser(id, userDTO);
+        return UserConverter.toDTO(service.updateUser(id, UserConverter.toEntity(userDTO)));
     }
 
     @PreAuthorize("hasRole('ADMIN')")

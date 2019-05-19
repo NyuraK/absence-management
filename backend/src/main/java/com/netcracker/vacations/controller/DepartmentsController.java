@@ -1,10 +1,12 @@
 package com.netcracker.vacations.controller;
 
+import com.netcracker.vacations.converter.DepartmentConverter;
 import com.netcracker.vacations.dto.DepartmentDTO;
 import com.netcracker.vacations.service.DepartmentService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/departments")
@@ -18,12 +20,13 @@ public class DepartmentsController {
 
     @GetMapping
     public List<DepartmentDTO> departments() {
-        return departmentService.getDepartments();
+        return departmentService.getDepartments().stream().map(DepartmentConverter::toDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
     public DepartmentDTO getDepartment(@PathVariable("id") Integer id) {
-        return departmentService.getDepartment(id);
+
+        return DepartmentConverter.toDTO(departmentService.getDepartment(id));
     }
 
     @PostMapping("/addDepartment")

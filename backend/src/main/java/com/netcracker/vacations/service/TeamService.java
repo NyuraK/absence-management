@@ -67,8 +67,8 @@ public class TeamService {
         return teamDTO;
     }
 
-    private com.netcracker.vacations.domain.TeamEntity toEntity(TeamDTO teamDTO) {
-        com.netcracker.vacations.domain.TeamEntity teamEntity = new com.netcracker.vacations.domain.TeamEntity();
+    private TeamEntity toEntity(TeamDTO teamDTO) {
+        TeamEntity teamEntity = new TeamEntity();
         teamEntity.setTeamsId(null);
         teamEntity.setName(teamDTO.getName());
         teamEntity.setQuota(teamDTO.getQuota());
@@ -99,7 +99,7 @@ public class TeamService {
     }
 
     @PreAuthorize("@Security.isAllowed(#username)")
-    public List<com.netcracker.vacations.domain.TeamEntity> getManagerTeams(@P("username") String username) {
+    public List<TeamEntity> getManagerTeams(@P("username") String username) {
         UserEntity manager = userRepository.findByLogin(username).get(0);
         List<com.netcracker.vacations.domain.TeamEntity> teams = new ArrayList<>(teamRepository.findAllByManager(manager));
         if (manager.getTeam() != null)

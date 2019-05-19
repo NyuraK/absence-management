@@ -18,20 +18,20 @@ public class DepartmentService {
     private UserRepository userRepository;
 
     public DepartmentService(DepartmentRepository departmentRepository, UserRepository userRepository) {
-        this.userRepository = userRepository;
         this.departmentRepository = departmentRepository;
+        this.userRepository = userRepository;
     }
 
-    public List<DepartmentDTO> getDepartments() {
-        List<DepartmentDTO> response = new ArrayList<>();
+    public List<DepartmentEntity> getDepartments() {
+        List<DepartmentEntity> response = new ArrayList<>();
         for (DepartmentEntity entity : departmentRepository.findAll()) {
-            response.add(toDTO(entity));
+            response.add(entity);
         }
         return response;
     }
 
-    public DepartmentDTO getDepartment(Integer id) {
-        return toDTO(departmentRepository.findById(id).get());
+    public DepartmentEntity getDepartment(Integer id) {
+        return departmentRepository.findById(id).get();
     }
 
     public DepartmentDTO addDepartment(DepartmentDTO departmentDTO) {
@@ -63,13 +63,4 @@ public class DepartmentService {
         return departmentEntity;
     }
 
-    private DepartmentDTO toDTO(DepartmentEntity entity) {
-        DepartmentDTO departmentDTO = new DepartmentDTO();
-        departmentDTO.setDepartmentId(entity.getDepartmentsId());
-        departmentDTO.setName(entity.getName());
-        departmentDTO.setDirectorId(entity.getDirector() == null ? null : entity.getDirector().getUsersId());
-        departmentDTO.setDirectorName(entity.getDirector() == null ? null : entity.getDirector().getName() + " "
-                + entity.getDirector().getSurname());
-        return departmentDTO;
-    }
 }
