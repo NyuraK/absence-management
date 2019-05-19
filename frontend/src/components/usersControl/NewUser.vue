@@ -11,7 +11,7 @@
                     <v-text-field label="Surname*" v-model="surname"></v-text-field>
                     <v-text-field label="Family name" v-model="familyName"></v-text-field>
                     <v-select :items="roles" label="Role*" v-model="role"></v-select>
-                    <v-text-field v-model="email" :rules="[rules.email]" label="E-mail*"></v-text-field>
+                    <v-text-field v-model="email" label="E-mail*"></v-text-field>
                     <v-text-field label="Login*" v-model="login"></v-text-field>
                     <v-select :items="teams" label="Team" v-model="team" item-text="name" return-object></v-select>
                     <v-text-field label="Hire date*" type="date" v-model="hireDate"></v-text-field>
@@ -43,13 +43,12 @@
         data() {
             return {
 
-                rules: {
-                    required: value => !!value || 'Required.',
-                    email: value => {
-                        const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-                        return pattern.test(value) || 'Invalid e-mail.'
-                    }
-                },
+                // rules: {
+                //     email: value => {
+                //         const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                //         return pattern.test(value) || 'Invalid e-mail.'
+                //     }
+                // },
                 roles: ['Director', 'Manager', 'Employee', 'Administrator'],
                 dialog: false,
                 name: '',
