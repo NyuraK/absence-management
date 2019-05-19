@@ -40,10 +40,11 @@ public class SecurityExpressionMethods {
     public boolean isTeamMember(String username, Optional<Integer> teamID) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         final UserEntity currentUser = ((MyUserPrincipal) authentication.getPrincipal()).getUser();
-        boolean isTeamMember;
+        boolean isTeamMember = false;
         boolean isTeamManager;
         if (teamID.isPresent()) {
-            isTeamMember = currentUser.getTeam().getTeamsId().equals(teamID.get());
+            if (currentUser.getTeam() != null)
+                isTeamMember = teamID.get().equals(currentUser.getTeam().getTeamsId());
             isTeamManager = isTeamManager(teamID.get());
             return currentUser.getLogin().equals(username) && (isTeamMember || isTeamManager);
         }

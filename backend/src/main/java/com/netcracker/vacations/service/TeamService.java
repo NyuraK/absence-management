@@ -4,7 +4,6 @@ import com.netcracker.vacations.domain.RequestEntity;
 import com.netcracker.vacations.domain.TeamEntity;
 import com.netcracker.vacations.domain.UserEntity;
 import com.netcracker.vacations.domain.enums.Status;
-import com.netcracker.vacations.dto.AbsenceDTO;
 import com.netcracker.vacations.dto.TeamDTO;
 import com.netcracker.vacations.repository.DepartmentRepository;
 import com.netcracker.vacations.repository.RequestRepository;
@@ -16,7 +15,10 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -34,28 +36,19 @@ public class TeamService {
         this.requestRepository = requestRepository;
     }
 
-    public List<TeamDTO> getTeams() {
-        List<TeamDTO> response = new ArrayList<>();
-        for (TeamEntity entity : teamRepository.findAll()) {
-            response.add(toDTO(entity));
-        }
-        return response;
+    public List<TeamEntity> getTeams() {
+        return teamRepository.findAll();
     }
 
-    public TeamDTO getTeam(Integer id) {
+    public TeamEntity getTeam(Integer id) {
         if (teamRepository.findById(id).isPresent()) {
-            return toDTO(teamRepository.findById(id).get());
+            return teamRepository.findById(id).get();
         }
-        ;
         return null;
     }
 
-    public List<TeamDTO> getTeamsFromDepartment(Integer id) {
-        List<TeamDTO> response = new ArrayList<>();
-        for (TeamEntity entity : teamRepository.findAllByDepartmentDepartmentsId(id)) {
-            response.add(toDTO(entity));
-        }
-        return response;
+    public List<TeamEntity> getTeamsFromDepartment(Integer id) {
+        return teamRepository.findAllByDepartmentDepartmentsId(id);
     }
 
     public TeamDTO addTeam(TeamDTO teamDTO) {
@@ -68,14 +61,14 @@ public class TeamService {
     }
 
     public TeamDTO updateTeam(Integer id, TeamDTO teamDTO) {
-        TeamEntity teamEntity = teamRepository.findByTeamsId(id).get(0);
+        com.netcracker.vacations.domain.TeamEntity teamEntity = teamRepository.findByTeamsId(id).get(0);
         BeanUtils.copyProperties(toEntity(teamDTO), teamEntity, "teamsId");
         teamRepository.save(teamEntity);
         return teamDTO;
     }
 
-    private TeamEntity toEntity(TeamDTO teamDTO) {
-        TeamEntity teamEntity = new TeamEntity();
+    private com.netcracker.vacations.domain.TeamEntity toEntity(TeamDTO teamDTO) {
+        com.netcracker.vacations.domain.TeamEntity teamEntity = new com.netcracker.vacations.domain.TeamEntity();
         teamEntity.setTeamsId(null);
         teamEntity.setName(teamDTO.getName());
         teamEntity.setQuota(teamDTO.getQuota());
@@ -94,53 +87,28 @@ public class TeamService {
         return teamEntity;
     }
 
-    private TeamDTO toDTO(TeamEntity teamEntity) {
-        TeamDTO teamDTO = new TeamDTO();
-        teamDTO.setTeamId(teamEntity.getTeamsId());
-        teamDTO.setName(teamEntity.getName());
-        teamDTO.setQuota(teamEntity.getQuota());
-        teamDTO.setDepartmentId(teamEntity.getDepartment() == null ? null : teamEntity.getDepartment().getDepartmentsId());
-        teamDTO.setDepartmentName(teamEntity.getDepartment() == null ? null : teamEntity.getDepartment().getName());
-        teamDTO.setManagerId(teamEntity.getManager() == null ? null : teamEntity.getManager().getUsersId());
-        teamDTO.setManagerName(teamEntity.getManager() == null ? null : teamEntity.getManager().getName());
-        teamDTO.setManagerSurname(teamEntity.getManager() == null ? null : teamEntity.getManager().getSurname());
-        return teamDTO;
-    }
-
     @PreAuthorize("@Security.isTeamMember(#username, #teamId)")
-    public List<AbsenceDTO> getTeamMembers(@P("username") String username, @P("teamId") Integer teamId) {
-        List<AbsenceDTO> res = new ArrayList<>();
-        for (UserEntity user : userRepository.findAllByTeamTeamsId(teamId)) {
-            res.add(toAbsenceDTO(user, new RequestEntity()));
-        }
-        return res;
+    public List<UserEntity> getTeamMembers(@P("username") String username, @P("teamId") Integer teamId) {
+        return new ArrayList<>(userRepository.findAllByTeamTeamsId(teamId));
     }
 
     @PreAuthorize("@Security.isTeamMember(#username, null)")
-    public List<AbsenceDTO> getTeamMembers(@P("username") String username) {
-        List<AbsenceDTO> res = new ArrayList<>();
+    public List<UserEntity> getTeamMembers(@P("username") String username) {
         Integer teamsId = userRepository.findByLogin(username).get(0).getTeam().getTeamsId();
-        for (UserEntity user : userRepository.findAllByTeamTeamsId(teamsId)) {
-            AbsenceDTO absenceDTO = toAbsenceDTO(user, new RequestEntity());
-            absenceDTO.setTeamID(teamsId);
-            res.add(absenceDTO);
-        }
-        return res;
+        return new ArrayList<>(userRepository.findAllByTeamTeamsId(teamsId));
     }
 
     @PreAuthorize("@Security.isAllowed(#username)")
-    public List<TeamDTO> getManagerTeams(@P("username") String username) {
+    public List<com.netcracker.vacations.domain.TeamEntity> getManagerTeams(@P("username") String username) {
         UserEntity manager = userRepository.findByLogin(username).get(0);
-        List<TeamDTO> teams = new ArrayList<>();
-        for (TeamEntity team : teamRepository.findAllByManager(manager))
-            teams.add(toDTO(team));
+        List<com.netcracker.vacations.domain.TeamEntity> teams = new ArrayList<>(teamRepository.findAllByManager(manager));
         if (manager.getTeam() != null)
-            teams.add(toDTO(manager.getTeam()));
+            teams.add(manager.getTeam());
         return teams;
     }
 
     @PreAuthorize("@Security.isTeamMember(#username, #teamID)")
-    public List<AbsenceDTO> getTeamAbsences(@P("username") String username, Integer teamID) {
+    public List<RequestEntity> getTeamAbsences(@P("username") String username, Integer teamID) {
         List<UserEntity> team = userRepository.findAllByTeamTeamsId(teamID);
         List<RequestEntity> requests = requestRepository.findAllByStatus(Status.ACCEPTED);
 
@@ -149,33 +117,15 @@ public class TeamService {
             absences.computeIfAbsent(requestEntity.getUser(), k -> new ArrayList<>()).add(requestEntity);
         }
 
-        List<AbsenceDTO> result = new ArrayList<>();
+        List<RequestEntity> result = new ArrayList<>();
 
         for (UserEntity user : team) {
             if (absences.get(user) != null) {
                 List<RequestEntity> temp = absences.get(user);
-                for (RequestEntity request : temp) {
-                    result.add(toAbsenceDTO(user, request));
-                }
+                result.addAll(temp);
             }
         }
         return result;
-    }
-
-    private AbsenceDTO toAbsenceDTO(UserEntity user, RequestEntity requestEntity) {
-        AbsenceDTO absenceDTO = new AbsenceDTO();
-        absenceDTO.setName(user.getName());
-        absenceDTO.setSurname(user.getSurname());
-        if (requestEntity.getUser() != null) {
-            absenceDTO.setType(requestEntity.getTypeOfRequest().getName());
-            absenceDTO.setBegin(requestEntity.getBeginning().toString());
-            absenceDTO.setEnd(requestEntity.getEnding().toString());
-        } else {
-            absenceDTO.setType("");
-            absenceDTO.setBegin(new Date().toString());
-            absenceDTO.setEnd(new Date().toString());
-        }
-        return absenceDTO;
     }
 
 }

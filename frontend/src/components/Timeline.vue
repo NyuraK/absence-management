@@ -93,20 +93,8 @@
                 instance.get('/teams/members/' + id)
                     .then((res) => {
                         this.members = extractMembers(res.data);
+                        this.showAbsences(id);
                     }).catch((err) => {
-                    console.log(err);
-                });
-
-                instance.get('/teams/absences/'
-                    + id
-                ).then((res) => {
-                    this.absences = extractMembers(res.data);
-                    if (this.absences.length > 0) {
-                        Array.prototype.push.apply(this.absences, this.members);
-                        this.showChart = true;
-                    }
-
-                }).catch((err) => {
                     console.log(err);
                 });
             },
