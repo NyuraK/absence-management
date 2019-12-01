@@ -39,11 +39,11 @@ import java.util.concurrent.Executors;
 @Transactional
 public class UserService {
 
-    @Autowired
-    private JavaMailSender mailSender;
+//    @Autowired
+//    private JavaMailSender mailSender;
 
-    @Value("${spring-mail-username}")
-    private String username;
+//    @Value("${spring.mail.username}")
+//    private String username;
 
     private UserRepository userRepository;
 
@@ -195,7 +195,7 @@ public class UserService {
                 user.setActivationCode(UUID.randomUUID().toString());
                 String message = "Dear " + user.getName() + " " + user.getSurname() + ",\n" + "if you can not use your old password, you can pick a new one. " +
                         "For doing this visit next link: https://absence-management.azurewebsites.net/activation/" + user.getActivationCode();
-                send(email, "Changing your password.", message);
+//                send(email, "Changing your password.", message);
                 isSent = true;
             }
         }
@@ -243,12 +243,12 @@ public class UserService {
     public void send(String emailTo, String subject, String message) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
 
-        mailMessage.setFrom(username);
+//        mailMessage.setFrom(username);
         mailMessage.setTo(emailTo);
         mailMessage.setSubject(subject);
         mailMessage.setText(message);
         try {
-            mailSender.send(mailMessage);
+//            mailSender.send(mailMessage);
         } catch (MailSendException ex) {
             throw new MailServiceException(ex.getMessage());
         }

@@ -31,7 +31,7 @@ import java.util.Collections;
 import java.util.List;
 
 
-@Service
+//@Service
 @Transactional
 public class IntegrationService {
 

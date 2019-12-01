@@ -24,13 +24,12 @@ public class RequestController {
     private static final Logger logger = LoggerFactory.getLogger(RequestController.class);
 
     private RequestService reqService;
-    private IntegrationService integrationService;
+//    private IntegrationService integrationService;
 
     @Autowired
-    public RequestController(RequestService reqService, IntegrationService integrationService) {
+    public RequestController(RequestService reqService) {
 
         this.reqService = reqService;
-        this.integrationService = integrationService;
     }
 
     @PostMapping
@@ -74,7 +73,7 @@ public class RequestController {
     public void approveRequest(@RequestBody List<Integer> requests) throws Exception {
         String username = SecurityExpressionMethods.currentUserLogin();
         reqService.updateRequest(Status.ACCEPTED, requests, username);
-        integrationService.insertEventsAfterApproval(requests);
+//        integrationService.insertEventsAfterApproval(requests);
     }
 
     @GetMapping("/my")

@@ -40,17 +40,17 @@ public class RequestService {
     private TeamRepository teamRepository;
     private DepartmentRepository departmentRepository;
     private UserService userService;
-    private IntegrationService integrationService;
+//    private IntegrationService integrationService;
 
     @Autowired
-    public RequestService(RequestRepository requestRepository, RequestTypeRepository requestTypeRepository, UserRepository userRepository, TeamRepository teamRepository, DepartmentRepository departmentRepository, UserService userService, IntegrationService integrationService) {
+    public RequestService(RequestRepository requestRepository, RequestTypeRepository requestTypeRepository, UserRepository userRepository, TeamRepository teamRepository, DepartmentRepository departmentRepository, UserService userService) {
         this.requestRepository = requestRepository;
         this.requestTypeRepository = requestTypeRepository;
         this.userRepository = userRepository;
         this.teamRepository = teamRepository;
         this.departmentRepository = departmentRepository;
         this.userService = userService;
-        this.integrationService = integrationService;
+//        this.integrationService = integrationService;
     }
 
     public void saveRequest(RequestDTO request) throws Exception {
@@ -68,9 +68,9 @@ public class RequestService {
         RequestEntity requestEntity = new RequestEntity(user, begin, end, type, status);
         requestEntity.setDescription(request.getDescription());
         requestRepository.save(requestEntity);
-        if (Status.ACCEPTED.equals(status)) {
-            integrationService.insertEventWithoutConfirm(requestEntity);
-        }
+//        if (Status.ACCEPTED.equals(status)) {
+//            integrationService.insertEventWithoutConfirm(requestEntity);
+//        }
     }
 
     private void checkIfValidDates(RequestDTO request) {

@@ -10,16 +10,16 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import java.util.Properties;
 
 
-@Lazy
-@Configuration
+//@Lazy
+//@Configuration
 public class MailConfig {
-    @Value("${spring-mail-host}")
+    @Value("${spring.mail.host}")
     private String host;
 
-    @Value("${spring-mail-username}")
+    @Value("${spring.mail.username}")
     private String username;
 
-    @Value("${spring-mail-password}")
+    @Value("${spring.mail.password}")
     private String password;
 
     @Value("${spring.mail.port}")
@@ -31,7 +31,7 @@ public class MailConfig {
     @Value("${mail.debug}")
     private String debug;
 
-    @Bean
+//    @Bean
     public JavaMailSender getMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 
