@@ -9,7 +9,7 @@
                     <h3 class="headline mb-0">Enter user details</h3>
                     <v-text-field label="First name*" v-model="name"></v-text-field>
                     <v-text-field label="Surname*" v-model="surname"></v-text-field>
-                    <v-text-field label="Family name" v-model="familyName"></v-text-field>
+                    <v-text-field label="Password*" v-model="password"></v-text-field>
                     <v-select :items="roles" label="Role*" v-model="role"></v-select>
                     <v-text-field v-model="email" label="E-mail*"></v-text-field>
                     <v-text-field label="Login*" v-model="login"></v-text-field>
@@ -53,7 +53,7 @@
                 dialog: false,
                 name: '',
                 surname: '',
-                familyName: '',
+                password: '',
                 email: '',
                 role: '',
                 login: '',
@@ -68,41 +68,40 @@
         methods: {
             save: function () {
 
-                var newUser = {
+                let newUser = {
                     login: this.login,
                     name: this.name,
                     surname: this.surname,
-                    familyName: this.familyName,
+                    password: this.password,
                     email: this.email,
                     role: this.role,
-                    teamId: this.team.teamId,
-                    hireDate: this.hireDate,
-                    phoneNumber: this.phoneNumber,
+                    team: this.team.id,
+                    hire_date: new Date(this.hireDate),
+                    phone_number: this.phoneNumber,
                     description: this.description
                 };
-                instance.post('users/addUser',
+                instance.post('users/',
                     newUser
                 )
                     .then(response => {
                         this.$emit("newUser");
+                        this.login = '';
+                        this.name = '';
+                        this.surname = '';
+                        this.password = '';
+                        this.email = '';
+                        this.role = '';
+                        this.team = [];
+                        this.hireDate = '';
+                        this.phoneNumber = '';
+                        this.description = '';
+                        this.dialog = false;
                     }).catch(err => {
                     if (err.response.data !== '') {
                         this.error_msg = err.response.data;
                         this.$refs['my-modal'].show();
                     }
                 });
-                this.login = '';
-                this.name = '';
-                this.surname = '';
-                this.familyName = '';
-                this.email = '';
-                this.role = '';
-                this.team = [];
-                this.hireDate = '';
-                this.phoneNumber = '';
-                this.description = '';
-                this.dialog = false;
-
             }
         },
         created: function () {

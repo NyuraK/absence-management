@@ -43,14 +43,14 @@
                                                     <p>{{fields.surname}}</p>
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <label>Patronymic</label>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <p>{{fields.familyName}}</p>
-                                                </div>
-                                            </div>
+<!--                                            <div class="row">-->
+<!--                                                <div class="col-md-6">-->
+<!--                                                    <label>Patronymic</label>-->
+<!--                                                </div>-->
+<!--                                                <div class="col-md-6">-->
+<!--                                                    <p>{{fields.familyName}}</p>-->
+<!--                                                </div>-->
+<!--                                            </div>-->
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <label>Email</label>
@@ -180,11 +180,10 @@
             }
         },
         created() {
-            instance.get("/users/info").then((resp) => {
+            instance.get("/users/" + localStorage.getItem('user_id') + "/info").then((resp) => {
                 this.fields = resp.data;
                 this.integrated = resp.data.integrated;
-                console.log(this.fields);
-                console.log(this.fields.login);
+                this.fields['teamName'] = localStorage.getItem('team');
             }).catch(err => {
                 console.log(err);
             })
@@ -205,6 +204,7 @@
                 instance.put('integration')
                     .then(response => instance.get("/users/info").then((resp) => {
                         this.fields = resp.data;
+                        this.fields['teamName'] = localStorage.getItem('team');
                         this.integrated = resp.data.integrated;
                     }));
 

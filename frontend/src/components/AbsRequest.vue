@@ -52,6 +52,7 @@
                     absType: null,
                     text: ''
                 },
+                absTypesMap: {},
                 absTypes: [],
                 show: true,
                 isManagerOnRest: false,
@@ -64,29 +65,31 @@
         },
         created() {
             instance.get('/requests/types').then((resp) => {
-                this.absTypes = resp.data;
+                this.absTypes = Object.keys(resp.data);
+                this.absTypesMap = resp.data;
             }).catch(err => {
                 console.log(err);
             });
-            instance.get('/requests/managerVac').then((resp) => {
-                this.isManagerOnRest = resp.data;
-                console.log("Is manager on the rest " + this.isManagerOnRest);
-            }).catch(err => {
-                console.log(err);
-            });
+            // instance.get('/requests/managerVac').then((resp) => {
+                this.isManagerOnRest = false;
+                // console.log("Is manager on the rest " + this.isManagerOnRest);
+            // }).catch(err => {
+            //     console.log(err);
+            // });
         },
         methods: {
             onSubmit(evt) {
                 evt.preventDefault();
                 let msg = {
-                    username: localStorage.getItem('username'),
-                    start: this.range.start,
+                    user: localStorage.getItem('user_id'),
+                    begin: this.range.start,
                     end: this.range.end,
-                    type: this.form.absType,
+                    type: this.absTypesMap[this.form.absType].id,
                     description: this.form.text,
                     needToEmail: this.isManagerOnRest,
+                    status: 'Under consideration'
                 };
-                instance.post("/requests", msg).then(res => {
+                instance.post("/requests/", msg).then(res => {
                     this.$emit("addRequest");
                 }).catch(err => {
                     if (err.response.data !== '') {

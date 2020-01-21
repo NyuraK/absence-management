@@ -29,9 +29,9 @@
             return {
                 items: [],
                 fields: [
-                    {key: "start", label: "Beginning"},
+                    {key: "begin", label: "Beginning"},
                     {key: "end", label: "End"},
-                    {key: "type", label: "Type"},
+                    {key: "type_name", label: "Type"},
                     {key: "status", label: "Status"},
                     {key: "description", label: "Description"},
                 ],
@@ -48,14 +48,14 @@
             },
 
             delete_request() {
-                instance.patch("/requests/delete", this.selected)
+                instance.delete("/requests/" + this.selected)
                     .then(() => {
                         this.getRequests();
                     });
             },
 
             getRequests() {
-                instance.get("/requests/my").then(res => {
+                instance.get("/users/" + localStorage.getItem('user_id')+ "/requests").then(res => {
                     this.items = res.data;
                 })
             }

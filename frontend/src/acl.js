@@ -10,9 +10,9 @@ export default new AclCreate({
     router,
     acceptLocalRules: true,
     globalRules: {
-        isAdmin: new AclRule('ROLE_ADMIN').generate(),
-        isManager: new AclRule('ROLE_MANAGER').or('ROLE_ADMIN').or('ROLE_DIRECTOR').generate(),
-        isLoggedUser: new AclRule('ROLE_EMPLOYEE').or('ROLE_MANAGER').or('ROLE_ADMIN').or('ROLE_DIRECTOR').generate(),
+        isAdmin: new AclRule('Administrator').generate(),
+        isManager: new AclRule('Manager').or('Administrator').or('Director').generate(),
+        isLoggedUser: new AclRule('Employee').or('Manager').or('Administrator').or('Director').generate(),
         isPublic: new AclRule('public').generate()
     }
 });

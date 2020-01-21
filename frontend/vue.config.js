@@ -2,6 +2,6 @@ module.exports = {
     outputDir: 'target/dist',
     assetsDir: 'static',
     devServer: {
-        proxy: 'http://localhost:8088'
+        proxy: 'http://localhost:8000'
     }
 };

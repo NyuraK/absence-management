@@ -83,18 +83,18 @@
                 selected: [],
                 fields: [
                     {key: "name", label: "Name"},
-                    {key: "teamName", label: "Team"},
-                    {key: "start", label: "Beginning"},
+                    {key: "team", label: "Team"},
+                    {key: "begin", label: "Beginning"},
                     {key: "end", label: "End"},
-                    {key: "type", label: "Type"},
+                    {key: "type_name", label: "Type"},
                     {key: "description", label: "Description"},
                 ],
                 resolvedFields: [
                     {key: "name", label: "Name"},
-                    {key: "teamName", label: "Team"},
-                    {key: "start", label: "Beginning"},
+                    {key: "team", label: "Team"},
+                    {key: "begin", label: "Beginning"},
                     {key: "end", label: "End"},
-                    {key: "type", label: "Type"},
+                    {key: "type_name", label: "Type"},
                     {key: "description", label: "Description"},
                     {key: "status", label: "Status"}
                 ],
@@ -128,7 +128,7 @@
             }
         },
         mounted() {
-            this.reloadDays("team");
+            // this.reloadDays("team");
             instance.get("/requests/active").then((resp) => {
                 this.items = resp.data;
             }).catch(err => {
@@ -180,7 +180,8 @@
                 });
             },
             show: function () {
-                this.attr[0].dates = this.occupiedDays[this.selectedTeam].map(dateString => new Date(dateString));
+                this.attr[0].dates = this.occupied;
+                Days[this.selectedTeam].map(dateString => new Date(dateString));
                 this.attr[1].dates = this.busyDays[this.selectedTeam].map(dateString => new Date(dateString));
             },
             rowSelected(items) {
@@ -190,7 +191,7 @@
             },
 
             approve() {
-                instance.patch("/requests/approve", this.selected).then(() => {
+                instance.patch("/requests/approve/", this.selected).then(() => {
                     instance.get("/requests/active").then((resp) => {
                         this.items = resp.data;
 
@@ -208,7 +209,7 @@
             },
 
             decline() {
-                instance.patch("/requests/decline", this.selected).then(() => {
+                instance.patch("/requests/decline/", this.selected).then(() => {
                     instance.get("/requests/active").then((resp) => {
                         this.items = resp.data;
                     }).catch(err => {

@@ -42,14 +42,14 @@
                     <v-checkbox v-model="remote" label="Remote work" color="cyan" @change="showVac()"
                                 :disabled="isAllActive" hide-details></v-checkbox>
                 </b-col>
-                <b-col cols="3">
-                    <div style="text-align: center">
-                        <p>Occupied days for {{team}} team:</p>
-                        <v-calendar
-                                is-expanded :attributes='attr'>
-                        </v-calendar>
-                    </div>
-                </b-col>
+<!--                <b-col cols="3">-->
+<!--                    <div style="text-align: center">-->
+<!--                        <p>Occupied days for {{team}} team:</p>-->
+<!--                        <v-calendar-->
+<!--                                is-expanded :attributes='attr'>-->
+<!--                        </v-calendar>-->
+<!--                    </div>-->
+<!--                </b-col>-->
             </b-row>
         </b-container>
         <Footer></Footer>
@@ -183,7 +183,7 @@
         },
         components: {Footer, AbsRequest, Nav},
         mounted() {
-            instance.get("/calendar/vacdays").then(res => {
+            instance.get("/requests/vacdays").then(res => {
                 this.acceptedVacs = res.data["Accepted"];
                 let vac;
                 for (let i = 0; i < this.acceptedVacs.length; i++) {
@@ -345,63 +345,65 @@
                 }
             },
             getVacs() {
-                instance.get("/calendar/occupiedForSend").then(res => {
-                    let arr = res.data;
-                    let occ;
-                    for (let i = 0; i < arr.length; i++) {
-                        occ = [];
-                        for (let j = 1; j < arr[i].length; j++) {
-                            occ.push(arr[i][j]);
-                        }
-                        this.occupiedDays[arr[i][0]] = occ;
-                        if (arr[0][0] != null) {
-                            this.team = arr[0][0];
-                        } else {
-                            this.team = '';
-                        }
-                    }
-                    this.attr[0].dates = this.occupiedDays[arr[0][0]].map(dateString => new Date(dateString));
-
-
-                }).catch(err => {
-                    console.log(err);
-                });
-                instance.get("/calendar/busyForSend").then(res => {
-                    let arr = res.data;
-
-                    let busy;
-                    for (let i = 0; i < arr.length; i++) {
-                        busy = [];
-
-                        for (let j = 1; j < arr[i].length; j++) {
-                            busy.push(arr[i][j]);
-                        }
-                        this.busyDays[arr[i][0]] = busy;
-                    }
-                    this.attr[1].dates = this.busyDays[arr[0][0]].map(dateString => new Date(dateString));
-                    console.log(this.busyDays);
-                }).catch(err => {
-                    console.log(err);
-                });
-                instance.get("/calendar/vacdays").then(res => {
+                // instance.get("/calendar/occupiedForSend").then(res => {
+                //     let arr = res.data;
+                //     let occ;
+                //     for (let i = 0; i < arr.length; i++) {
+                //         occ = [];
+                //         for (let j = 1; j < arr[i].length; j++) {
+                //             occ.push(arr[i][j]);
+                //         }
+                //         this.occupiedDays[arr[i][0]] = occ;
+                //         if (arr[0][0] != null) {
+                //             this.team = arr[0][0];
+                //         } else {
+                //             this.team = '';
+                //         }
+                //     }
+                //     this.attr[0].dates = this.occupiedDays[arr[0][0]].map(dateString => new Date(dateString));
+                //
+                //
+                // }).catch(err => {
+                //     console.log(err);
+                // });
+                // instance.get("/calendar/busyForSend").then(res => {
+                //     let arr = res.data;
+                //
+                //     let busy;
+                //     for (let i = 0; i < arr.length; i++) {
+                //         busy = [];
+                //
+                //         for (let j = 1; j < arr[i].length; j++) {
+                //             busy.push(arr[i][j]);
+                //         }
+                //         this.busyDays[arr[i][0]] = busy;
+                //     }
+                //     this.attr[1].dates = this.busyDays[arr[0][0]].map(dateString => new Date(dateString));
+                //     console.log(this.busyDays);
+                // }).catch(err => {
+                //     console.log(err);
+                // });
+                instance.get("/requests/vacdays").then(res => {
                     console.log(res.data);
                     this.acceptedVacs = res.data["Accepted"];
                     this.declinedVacs = res.data["Declined"];
                     this.considerVacs = res.data["Under consideration"];
                     if (this.accepted === true) {
-                        this.onAccepted();}
+                        this.onAccepted();
+                    }
                     if (this.declined === true) {
-                        this.onDeclined();}
+                        this.onDeclined();
+                    }
                     if (this.consider === true) {
-                        this.onConsider();}
+                        this.onConsider();
+                    }
                 }).catch(err => {
                     console.log(err);
                 });
 
-                instance.get("/users/restdays").then((resp) => {
+                instance.get("/users/" + localStorage.getItem('user_id') + "/restdays").then((resp) => {
                     this.vacantDays = resp.data;
                 });
-
 
 
             },

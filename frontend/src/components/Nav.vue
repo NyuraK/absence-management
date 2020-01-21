@@ -29,11 +29,11 @@
                         Manage teams
                     </router-link>
                 </b-nav-item>
-                <b-nav-item v-if="$acl.check('isAdmin')">
-                    <router-link tag="li" :to="'/departments'">
-                        Manage departments
-                    </router-link>
-                </b-nav-item>
+<!--                <b-nav-item v-if="$acl.check('isAdmin')">-->
+<!--                    <router-link tag="li" :to="'/departments'">-->
+<!--                        Manage departments-->
+<!--                    </router-link>-->
+<!--                </b-nav-item>-->
             </b-navbar-nav>
             <b-navbar-nav class="ml-auto">
                 <b-nav-item>

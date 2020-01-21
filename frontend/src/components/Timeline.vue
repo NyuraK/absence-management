@@ -69,7 +69,7 @@
             this.$acl.change(localStorage.getItem('user'));
             this.userTeam.teamId = localStorage.getItem('teamId') == null ? 0 : localStorage.getItem('teamId');
             this.userTeam.name = localStorage.getItem('team');
-            instance.get('/teams/my').then((res) => {
+            instance.get('/users/' + localStorage.getItem('user_id') + '/teams/').then((res) => {
                 this.teams = parseTeam(res.data);
                 this.showSelector = true;
             });
@@ -90,7 +90,7 @@
                 this.absences = [];
                 this.showChart = false;
                 this.$router.replace({name: "Timeline", params: {id: id}});
-                instance.get('/teams/members/' + id)
+                instance.get('/teams/'+ id + '/members/')
                     .then((res) => {
                         this.members = extractMembers(res.data);
                         this.showAbsences(id);
@@ -110,7 +110,7 @@
             },
 
             showAbsences(id) {
-                instance.get('/teams/absences/' + id).then((res) => {
+                instance.get('/teams/'+ id + '/absences/').then((res) => {
                     this.absences = extractMembers(res.data);
                     if (this.absences.length > 0) {
                         Array.prototype.push.apply(this.absences, this.members);
@@ -127,7 +127,7 @@
         let teams = [];
         for (let i = 0; i < data.length; i++) {
             teams.push({
-                id: data[i].teamId,
+                id: data[i].id,
                 name: data[i].name
             });
         }

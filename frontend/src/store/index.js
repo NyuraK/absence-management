@@ -34,16 +34,15 @@ const store = new Vuex.Store({
     actions: {
         login(context, payload) {
             return new Promise((resolve, reject) => {
-                axios.post('/login', payload)
+                axios.post('/api/v1/login', payload)
                     .then((response) => {
-                        let accessToken = response.headers['authorization'];
+                        let accessToken = 'Bearer ' + response.data['token'];
                         context.commit('authSuccess', accessToken);
                         localStorage.setItem('token', accessToken);
                         instance.defaults.headers.Authorization = accessToken;
-                        let ca = accessToken.substring(7);
-                        let decodedValue = jwt.decode(ca, {algorithm: 'HS512'});
-                        localStorage.setItem('user', decodedValue.authorities);
-                        localStorage.setItem('username', decodedValue.sub);
+                        localStorage.setItem('user', response.data['role']);
+                        localStorage.setItem('username', response.data['login']);
+                        localStorage.setItem('user_id', response.data['user_id']);
                         resolve(response);
                     })
                     .catch((error) => {
@@ -54,9 +53,9 @@ const store = new Vuex.Store({
             })
         },
         getTeam({commit}) {
-            instance.get('/users/team').then((resp) => {
+            instance.get('/users/' + localStorage.getItem('user_id') + '/team').then((resp) => {
                 localStorage.setItem('team', resp.data.name);
-                localStorage.setItem('teamId', resp.data.teamId);
+                localStorage.setItem('teamId', resp.data.id);
             }).catch((err) => {
                 if (err.response.status === 500)
                     commit('teamFailure', err.response.data);
@@ -65,8 +64,8 @@ const store = new Vuex.Store({
 
         getUserInfo({commit}) {
             return new Promise((resolve, reject) => {
-                instance.get("/users/name").then(resp => {
-                    localStorage.setItem('user_info', resp.data);
+                instance.get('/users/' + localStorage.getItem('user_id') + '/info').then(resp => {
+                    localStorage.setItem('user_info', resp.data['name'] + ' ' +  resp.data['surname']);
                     resolve(resp);
                 }).catch(err => {
                     console.log(err);

@@ -184,44 +184,44 @@
         components: {AbsRequest, Nav},
         created() {
             let name = localStorage.getItem('username');
-            instance.get("/calendar/occupiedForSend").then(res => {
-                let arr = res.data;
-                let occ;
-                for (let i = 0; i < arr.length; i++) {
-                    occ = [];
-                    for (let j = 1; j < arr[i].length; j++) {
-                        occ.push(arr[i][j]);
-                    }
-                    this.occupiedDays[arr[i][0]] = occ;
-                    if (arr[0][0] != null) {
-                        this.team = arr[0][0];
-                    } else {
-                        this.team = '';
-                    }
-                }
-                this.attr[0].dates = this.occupiedDays[arr[0][0]].map(dateString => new Date(dateString));
-
-
-            }).catch(err => {
-                console.log(err);
-            });
-            instance.get("/calendar/busyForSend").then(res => {
-                let arr = res.data;
-                console.log(arr);
-                let busy;
-                for (let i = 0; i < arr.length; i++) {
-                    busy = [];
-
-                    for (let j = 1; j < arr[i].length; j++) {
-                        busy.push(arr[i][j]);
-                    }
-                    this.busyDays[arr[i][0]] = busy;
-                }
-                this.attr[1].dates = this.busyDays[arr[0][0]].map(dateString => new Date(dateString));
-                console.log(this.busyDays);
-            }).catch(err => {
-                console.log(err);
-            });
+            // instance.get("/calendar/occupiedForSend").then(res => {
+            //     let arr = res.data;
+            //     let occ;
+            //     for (let i = 0; i < arr.length; i++) {
+            //         occ = [];
+            //         for (let j = 1; j < arr[i].length; j++) {
+            //             occ.push(arr[i][j]);
+            //         }
+            //         this.occupiedDays[arr[i][0]] = occ;
+            //         if (arr[0][0] != null) {
+            //             this.team = arr[0][0];
+            //         } else {
+            //             this.team = '';
+            //         }
+            //     }
+            //     this.attr[0].dates = this.occupiedDays[arr[0][0]].map(dateString => new Date(dateString));
+            //
+            //
+            // }).catch(err => {
+            //     console.log(err);
+            // });
+            // instance.get("/calendar/busyForSend").then(res => {
+            //     let arr = res.data;
+            //     console.log(arr);
+            //     let busy;
+            //     for (let i = 0; i < arr.length; i++) {
+            //         busy = [];
+            //
+            //         for (let j = 1; j < arr[i].length; j++) {
+            //             busy.push(arr[i][j]);
+            //         }
+            //         this.busyDays[arr[i][0]] = busy;
+            //     }
+            //     this.attr[1].dates = this.busyDays[arr[0][0]].map(dateString => new Date(dateString));
+            //     console.log(this.busyDays);
+            // }).catch(err => {
+            //     console.log(err);
+            // });
             instance.get("/calendar/accepted").then(res => {
                 this.acceptedVacs = res.data;
                 let vac;

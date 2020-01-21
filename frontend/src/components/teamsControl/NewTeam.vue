@@ -9,9 +9,9 @@
                     <h3 class="headline mb-0">Enter team details</h3>
                     <v-text-field label="Name*" v-model="name"></v-text-field>
                     <v-text-field label="Quota*"  v-model="quota"></v-text-field>
-                    <v-select :items="departments"  label="Department*" v-model="department"
-                              item-text="name"
-                              return-object></v-select>
+<!--                    <v-select :items="departments"  label="Department*" v-model="department"-->
+<!--                              item-text="name"-->
+<!--                              return-object></v-select>-->
                     <v-select :items="findManagers"  label="Manager*" v-model="managerId"
                               :item-text="text"
                               item-value="userId"></v-select>
@@ -56,36 +56,35 @@
                 var newTeam = {
                     name: this.name,
                     quota: this.quota,
-                    managerId: this.managerId,
-                    departmentId: this.department.departmentId
+                    manager: this.managerId,
+                    // departmentId: this.department.departmentId
                 };
-                instance.post('teams/addTeam',
+                instance.post('teams/',
                     newTeam
                 )
                     .then(resp => {
                         this.$emit("newTeam");
+                        this.name = '';
+                        this.quota = '';
+                        this.managerId = '';
+                        this.department = [];
+                        this.dialog = false;
                     });
-                this.name = '';
-                this.quota = '';
-                this.managerId = '';
-                this.department = [];
-                this.dialog = false;
             }
         },
 
         created: function () {
-            instance.get('departments')
-                .then(response => {
-                    this.departments = response.data;
-                });
+            // instance.get('departments')
+            //     .then(response => {
+            //         this.departments = response.data;
+            //     });
             instance.get('users')
                 .then(response => this.managers = response.data);
         },
 
         computed: {
             findManagers() {
-                return this.managers.filter(item => item.departmentId === this.department.departmentId && item.role !== 'Employee'
-                    || item.userId === this.department.directorId);
+                return this.managers.filter(item => item.role !== 'Employee' && item.role !== 'Administrator');
             },
         }
 

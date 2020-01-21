@@ -53,7 +53,7 @@
         },
         methods: {
             check: function () {
-                this.$store.dispatch('login', {username: this.username, password: this.password}).then(() => {
+                this.$store.dispatch('login', {login: this.username, password: this.password}).then(() => {
                     this.$acl.change(localStorage.getItem('user'));
                     this.$store.dispatch('getTeam');
                     this.$store.dispatch('getUserInfo').then(() => this.$router.push('/home'));
